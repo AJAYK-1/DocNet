@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { jwtDecode } from 'jwt-decode'
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 
 
 export default function DoctorViewAppointment() {
@@ -10,6 +10,9 @@ export default function DoctorViewAppointment() {
     const decodedtoken = jwtDecode(doctorstoken)
 
     const [Appointments, setAppointments] = useState([])
+
+    const params = useParams()
+    console.log(params.id)
 
     useEffect(() => {
         axios.get("http://localhost:9000/api/doctor/fetchappointments", { headers: { id: decodedtoken.id } })
@@ -21,11 +24,13 @@ export default function DoctorViewAppointment() {
             })
     }, [])
 
+    
     const navigate = useNavigate()
 
-    const handleButton = async(e) => {
-        e.preventDefault()
-        navigate("/addprescription")
+    const handleButton = async(id) => {
+        // e.preventDefault()
+        console.log(id)
+        navigate(`/addprescription/${id}`)
     }
 
     return (
@@ -40,7 +45,6 @@ export default function DoctorViewAppointment() {
                         <th>Patient Age:</th>
                         <th>Patient Gender:</th>
                         <th>Patient's Symptoms:</th>
-                        <th><button onClick={handleButton}>Add Prescription</button></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,6 +57,7 @@ export default function DoctorViewAppointment() {
                                     <td>{appointment.patientAge}</td>
                                     <td>{appointment.patientGender}</td>
                                     <td>{appointment.patientSymptoms}</td>
+                                    <td><button onClick={()=>handleButton(appointment._id)}>Add Prescription</button></td>
                                 </tr>
                             )
                         })}

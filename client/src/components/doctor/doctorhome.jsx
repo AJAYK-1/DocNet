@@ -4,7 +4,8 @@ export default function Doctorhome() {
   return (
     <>
       <div>Welcome Doctor</div>
-      <a href="/viewappointment">View Appointment</a>
+      <a href="/viewappointment">View Appointment</a><br />
+      <a href="/viewprescription">View Prescription</a>
     </>
   )
 }

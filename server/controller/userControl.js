@@ -1,6 +1,7 @@
 const User = require('../models/userModel')
 const Doctor = require('../models/doctorModel')
 const Appointment = require('../models/appointmentModel')
+const Prescription = require('../models/prescriptionModel')
 const jwt = require('jsonwebtoken')
 
 
@@ -108,11 +109,33 @@ const bookAppointment = async (req, res) => {
 }
 
 
+const fetchMyPrescription = async (req, res) => {
+    try {
+        const userId = req.headers.id
+        console.log(userId)
+        const prescriptions = await Prescription.find()
+            .populate({ path: "appointmentId", populate: { path: "doctorId" } })
+
+        const fetchedprescription = prescriptions.filter(check => check.appointmentId.userId == userId)
+            .map(check => ({
+                docname: check.appointmentId.doctorId.docname,
+                patientName: check.appointmentId.patientName,
+                prescription: check.prescription
+            }))
+        console.log(fetchedprescription)
+        res.json(fetchedprescription)
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
 module.exports = {
     registerUser,
     userlogin,
     viewLoggedUser,
     viewDoctors,
     viewDoctorsProfile,
-    bookAppointment
+    bookAppointment,
+    fetchMyPrescription
 }

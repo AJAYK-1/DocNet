@@ -1,6 +1,6 @@
 const express = require('express')
 const RouterUser = express.Router()
-const { registerUser, userlogin, viewLoggedUser, viewDoctors, viewDoctorsProfile, bookAppointment } = require('../controller/userControl')
+const { registerUser, userlogin, viewLoggedUser, viewDoctors, viewDoctorsProfile, bookAppointment, fetchMyPrescription } = require('../controller/userControl')
 
 
 RouterUser.post('/registeruser',registerUser)
@@ -9,6 +9,7 @@ RouterUser.get('/viewloggeduser',viewLoggedUser)
 RouterUser.get('/viewdoctors',viewDoctors)
 RouterUser.get('/viewdoctorprofile/:id',viewDoctorsProfile)
 RouterUser.post('/bookappointment',bookAppointment)
+RouterUser.get('/fetchmyprescription',fetchMyPrescription)
 
 
 module.exports = RouterUser

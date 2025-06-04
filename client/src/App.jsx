@@ -15,6 +15,8 @@ import UserProfile from './components/user/userprofile'
 import Appointment from './components/user/appointment'
 import DoctorViewAppointment from './components/doctor/viewappointment'
 import AddPrescription from './components/doctor/addprescription'
+import ViewPrescription from './components/doctor/viewprescription'
+import GetMyPrescription from './components/user/getprescription'
 
 
 function App() {
@@ -37,12 +39,14 @@ function App() {
           <Route path='/registration' element={<Registration />} />
           <Route path='/userprofile' element={<UserProfile />} />
           <Route path='/appointment/:id' element={<Appointment />} />
+          <Route path='/getprescription' element={<GetMyPrescription/>} />
 
           {/* DOCTOR PAGES */}
           <Route path='/doctorhome' element={<Doctorhome />} />
           <Route path='/doctorreg' element={<DoctorRegistration />} />
           <Route path='/viewappointment' element={<DoctorViewAppointment />} />
-          <Route path='/addprescription' element={<AddPrescription />} />
+          <Route path='/addprescription/:id' element={<AddPrescription />} />
+          <Route path='/viewprescription' element={<ViewPrescription/>} />
 
         </Routes>
       </BrowserRouter>

@@ -2,8 +2,7 @@ const mongoose = require('mongoose')
 
 
 const prescriptionSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "user_tbl" },
-    doctorId: { type: mongoose.Schema.Types.ObjectId, ref: "Doctor_tbl" },
+    appointmentId: {type: mongoose.Schema.Types.ObjectId, ref: "Appointment_tbl"},
     prescription: [
         {
             medicine: { type: String },

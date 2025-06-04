@@ -30,6 +30,8 @@ export default function UserHome() {
         <>
             <h1>Welcome User</h1>
             <a href="/userprofile">Your Profile</a>
+            <br />
+            <a href="/getprescription">Your Prescription</a>
             <div>
                 {DocProfiles.map((doctors) => {
                     return (
