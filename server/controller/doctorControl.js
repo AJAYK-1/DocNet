@@ -7,16 +7,33 @@ const path = require('path')
 const DoctorRegister = async (req, res) => {
     try {
         const { docname, email, password } = req.body
+        console.log(req.file)
+        const profileImage = req.file.filename
         const ExistingDoctor = await Doctor.findOne({ email })
         if (ExistingDoctor) {
             res.json({ msg: "Account already exists...", status: 400 })
         } else {
             const DoctorData = await Doctor({
-                docname, email, password
+                docname,
+                email,
+                password,
+                profileImage
             })
             await DoctorData.save()
             res.json({ msg: "Registration Successfull...", status: 200 })
         }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
+const viewLoggedDoctor = async (req, res) => {
+    try {
+        const id = req.headers.id
+        const LoggedinDoctor = await Doctor.findById(id)
+        console.log(LoggedinDoctor)
+        res.json(LoggedinDoctor)
     } catch (err) {
         console.log(err)
     }
@@ -83,6 +100,7 @@ const viewPrescription = async (req, res) => {
 
 module.exports = {
     DoctorRegister,
+    viewLoggedDoctor,
     fetchAppointments,
     addPrescription,
     viewPrescription

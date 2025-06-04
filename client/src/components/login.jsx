@@ -21,7 +21,7 @@ export default function Login() {
         e.preventDefault()
         if (UserData.email == "admin@gmail.com" && UserData.password == "admin") {
             alert("Logged in as ADMIN...")
-            navigate("/adminviewusers")
+            navigate("/adminhome")
         } else {
             AXIOS.post('http://localhost:9000/api/user/login', UserData)
                 .then((res) => {

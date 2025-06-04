@@ -10,17 +10,33 @@ export default function DoctorRegistration() {
         email: '',
         password: ''
     })
+    const [doctorImage, setDoctorImage] = useState(null)
 
     const handleChange = async (e) => {
         setDoctorData({ ...DoctorData, [e.target.name]: e.target.value })
     }
 
+    const handleImage = async (e) => {
+        setDoctorImage(e.target.files[0])
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
-        AXIOS.post("http://localhost:9000/api/doctor/doctorregistration", DoctorData)
+
+        const formData = new FormData()
+
+        formData.append('docname', DoctorData.docname)
+        formData.append('email', DoctorData.email)
+        formData.append('password', DoctorData.password)
+        formData.append('profileImage', doctorImage)
+
+        AXIOS.post("http://localhost:9000/api/doctor/doctorregistration", formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+        })
             .then((res) => {
                 console.log(res.data)
                 setDoctorData({ docname: "", email: "", password: "" })
+                setDoctorImage(null)
             }).catch((err) => {
                 console.log(err)
             })
@@ -39,6 +55,9 @@ export default function DoctorRegistration() {
                 <br />
                 <label > Password:</label>
                 <input type="password" name='password' value={DoctorData.password} onChange={handleChange} />
+                <br />
+                <label >Upload Profile Picture:</label>
+                <input type='file' name='profileImage' onChange={handleImage} />
                 <br />
                 <button type='submit'>Submit</button>
                 <br />

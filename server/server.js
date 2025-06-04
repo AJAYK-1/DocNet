@@ -2,6 +2,7 @@ const express = require('express')
 const App = express()
 const cors = require('cors')
 const DataBaseConnect = require('./middleware/dbconnection')
+const upload = require('./middleware/multerConfig')
 
 
 App.use(cors())
@@ -20,6 +21,10 @@ App.use('/api/doctor',RouterDoctor)
 
 const RouterAdmin = require('./routes/adminRouter')
 App.use('/api/admin',RouterAdmin)
+
+
+// App.use('/api',upload)
+App.use('/uploads',express.static('uploads'))
 
 
 App.listen(9000, () => {
