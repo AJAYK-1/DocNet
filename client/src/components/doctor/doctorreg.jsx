@@ -1,6 +1,10 @@
 import React from 'react'
 import { useState } from 'react'
 import AXIOS from 'axios'
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/esm/Button';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function DoctorRegistration() {
@@ -8,7 +12,8 @@ export default function DoctorRegistration() {
     const [DoctorData, setDoctorData] = useState({
         docname: '',
         email: '',
-        password: ''
+        password: '',
+        address: ''
     })
     const [doctorImage, setDoctorImage] = useState(null)
 
@@ -20,6 +25,8 @@ export default function DoctorRegistration() {
         setDoctorImage(e.target.files[0])
     }
 
+    const navigate = useNavigate()
+
     const handleSubmit = async (e) => {
         e.preventDefault()
 
@@ -28,6 +35,7 @@ export default function DoctorRegistration() {
         formData.append('docname', DoctorData.docname)
         formData.append('email', DoctorData.email)
         formData.append('password', DoctorData.password)
+        formData.append('address', DoctorData.address)
         formData.append('profileImage', doctorImage)
 
         AXIOS.post("http://localhost:9000/api/doctor/doctorregistration", formData, {
@@ -35,8 +43,9 @@ export default function DoctorRegistration() {
         })
             .then((res) => {
                 console.log(res.data)
-                setDoctorData({ docname: "", email: "", password: "" })
+                setDoctorData({ docname: "", email: "", password: "", address: "" })
                 setDoctorImage(null)
+                navigate("/login")
             }).catch((err) => {
                 console.log(err)
             })
@@ -45,24 +54,56 @@ export default function DoctorRegistration() {
 
     return (
         <>
+
             <h2>Doctor Registration</h2>
-            <form onSubmit={handleSubmit}>
-                <label > Name:</label>
-                <input type="text" name='docname' value={DoctorData.docname} onChange={handleChange} />
+
+            <Form noValidate onSubmit={handleSubmit}>
+
+                <FloatingLabel
+                    controlId="floatingInput"
+                    label="Name:"
+                    className="mb-3"
+                >
+                    <Form.Control type="text" name='docname' onChange={handleChange} placeholder="Enter your name..." />
+                </FloatingLabel>
+
+                <FloatingLabel
+                    controlId="floatingEmail"
+                    label="Email address:"
+                    className="mb-3"
+                >
+                    <Form.Control type="email" name='email' onChange={handleChange} placeholder="Enter your email..." />
+                </FloatingLabel>
+
+                <FloatingLabel
+                    controlId="floatingPassword"
+                    label="Password:"
+                >
+                    <Form.Control type="password" name='password' onChange={handleChange} placeholder="Password" />
+                </FloatingLabel><br />
+
+                <FloatingLabel controlId="floatingTextarea2" label="Address:">
+                    <Form.Control
+                        type='text'
+                        as="textarea"
+                        name='address'
+                        onChange={handleChange}
+                        placeholder="Enter your address here..."
+                        style={{ height: '100px' }}
+                    />
+                </FloatingLabel>
                 <br />
-                <label > Email:</label>
-                <input type="email" name='email' value={DoctorData.email} onChange={handleChange} />
+                <Form.Control
+                    type="file"
+                    required
+                    name="profileImage"
+                    onChange={handleImage}
+                />
                 <br />
-                <label > Password:</label>
-                <input type="password" name='password' value={DoctorData.password} onChange={handleChange} />
-                <br />
-                <label >Upload Profile Picture:</label>
-                <input type='file' name='profileImage' onChange={handleImage} />
-                <br />
-                <button type='submit'>Submit</button>
+                <Button type="submit">SignUp</Button>
                 <br />
                 Already have an account? <a href="/login">SignIn here</a>
-            </form>
+            </Form>
         </>
     )
 }

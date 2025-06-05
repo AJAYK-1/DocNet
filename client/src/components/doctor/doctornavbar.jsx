@@ -7,12 +7,12 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 
-export default function Home() {
+export default function DoctorNavbar() {
     return (
         <>
             <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
                 <Container fluid>
-                    <Navbar.Brand href="#">Navbar scroll</Navbar.Brand>
+                    <Navbar.Brand href="#">DocNet</Navbar.Brand>
                     <Navbar.Toggle aria-controls="navbarScroll" />
                     <Navbar.Collapse id="navbarScroll">
                         <Nav
@@ -20,17 +20,18 @@ export default function Home() {
                             style={{ maxHeight: '100px' }}
                             navbarScroll
                         >
-                            <Nav.Link href="#action1">Home</Nav.Link>
-                            {/* <Nav.Link href="#action2">Link</Nav.Link> */}
+                            <Nav.Link href="/doctorhome">Home</Nav.Link>
+                            <Nav.Link href="/viewappointment">Appointments</Nav.Link>
+                            <Nav.Link href="/viewprescription">Presciptions</Nav.Link>
                             <NavDropdown title="Account" id="navbarScrollingDropdown">
-                                <NavDropdown.Item href="/login">SignIn</NavDropdown.Item>
-                                <NavDropdown.Item href="/doctorreg">
-                                    Doctor Registration
-                                </NavDropdown.Item>
-                                {/* <NavDropdown.Divider /> */}
-                                {/* <NavDropdown.Item href="#action5">
-                                    Something else here
+                                <NavDropdown.Item href="/doctorprofile">My Profile</NavDropdown.Item>
+                                {/* <NavDropdown.Item href="#action4">
+                                    Logout
                                 </NavDropdown.Item> */}
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item href="/login">
+                                    Logout
+                                </NavDropdown.Item>
                             </NavDropdown>
                             {/* <Nav.Link href="#" disabled>
                                 Link
@@ -48,7 +49,6 @@ export default function Home() {
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-            <h2>Welcome to DocNet</h2>
         </>
     )
 }

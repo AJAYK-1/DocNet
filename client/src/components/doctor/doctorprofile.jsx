@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import AXIOS from 'axios'
 import { jwtDecode } from 'jwt-decode'
+import DoctorNavbar from './doctornavbar'
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import Image from 'react-bootstrap/Image';
+import Row from 'react-bootstrap/Row';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+
 
 export default function DoctorProfile() {
 
@@ -24,12 +32,30 @@ export default function DoctorProfile() {
 
     return (
         <>
+            <DoctorNavbar />
             <h1>Welcome Doctor</h1>
-            <div>
-                <img src={`http://localhost:9000/uploads/${DocData.profileImage}`} alt="Doctor Image" height={200} width={200} />
-                <h3>Name: {DocData.docname}</h3>
-                <h3>Email: {DocData.email}</h3>
-            </div>
+            <Container >
+                <Row>
+                    <Col xs={5} md={5}>
+                        <Image src={`http://localhost:9000/uploads/${DocData.profileImage}`} height={300} width={300} roundedCircle />
+                        <Card style={{ width: '18rem' }}>
+                            <Card.Body>
+                                <Card.Title>
+                                    Dr. {DocData.docname}
+                                    </Card.Title>
+                                <Card.Title>
+                                    Email: {DocData.email}
+                                    </Card.Title>
+                                <Card.Text>
+                                    Address: {DocData.address}
+                                </Card.Text>
+                                <Button variant="outline-warning">📝Edit</Button>
+                                <Button variant="outline-danger">📤Logout</Button>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+            </Container>
         </>
     )
 }

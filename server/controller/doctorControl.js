@@ -6,8 +6,9 @@ const path = require('path')
 
 const DoctorRegister = async (req, res) => {
     try {
-        const { docname, email, password } = req.body
+        const { docname, email, password, address } = req.body
         console.log(req.file)
+        console.log(req.body)
         const profileImage = req.file.filename
         const ExistingDoctor = await Doctor.findOne({ email })
         if (ExistingDoctor) {
@@ -17,6 +18,7 @@ const DoctorRegister = async (req, res) => {
                 docname,
                 email,
                 password,
+                address,
                 profileImage
             })
             await DoctorData.save()

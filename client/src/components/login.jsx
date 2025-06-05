@@ -1,7 +1,9 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AXIOS from 'axios'
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+
 
 
 export default function Login() {
@@ -45,17 +47,23 @@ export default function Login() {
     return (
         <>
             <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <label > Email:</label>
-                <input type="email" name='email' value={UserData.email} onChange={handleChange} />
+            <Form noValidate onSubmit={handleSubmit}>
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <Form.Label>Email address</Form.Label>
+                    <Form.Control type="email" name='email' placeholder="Enter email" onChange={handleChange} />
+                    <Form.Text className="text-muted">
+                        We'll never share your email with anyone else.
+                    </Form.Text>
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control type="password" name='password' placeholder="Password" onChange={handleChange} />
+                </Form.Group>
+                <Button type="submit">SignIn</Button>
                 <br />
-                <label > Password:</label>
-                <input type="password" name='password' value={UserData.password} onChange={handleChange} />
-                <br />
-                <button type='submit'>SignIn</button>
-                <br />
-                Don't have an account?<a href="/registration">SignUp here</a>
-            </form>
+                Don't have an account? <a href="/registration">SignUp here</a>
+            </Form>
         </>
     )
 }
