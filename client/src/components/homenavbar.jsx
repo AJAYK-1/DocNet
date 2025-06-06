@@ -8,14 +8,8 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useNavigate } from 'react-router-dom';
 
 
-export default function DoctorNavbar() {
+export default function HomeNavbar() {
 
-    const navigate = useNavigate()
-
-    const handleLogout = () => {
-        localStorage.removeItem('token')
-        navigate("/login")
-    }
     return (
         <>
             <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
@@ -28,22 +22,14 @@ export default function DoctorNavbar() {
                             style={{ maxHeight: '100px' }}
                             navbarScroll
                         >
-                            <Nav.Link href="/doctorhome">Home</Nav.Link>
-                            <Nav.Link href="/viewappointment">Appointments</Nav.Link>
-                            <Nav.Link href="/viewprescription">Presciptions</Nav.Link>
+                            <Nav.Link href="/home">Home</Nav.Link>
+                            <Nav.Link href="/about">About</Nav.Link>
                             <NavDropdown title="Account" id="navbarScrollingDropdown">
-                                <NavDropdown.Item href="/doctorprofile">My Profile</NavDropdown.Item>
-                                {/* <NavDropdown.Item href="#action4">
-                                    Logout
-                                </NavDropdown.Item> */}
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item onClick={handleLogout}>
-                                    Logout
+                                <NavDropdown.Item href="/login">SignIn</NavDropdown.Item>
+                                <NavDropdown.Item href="/registration">
+                                    Registration
                                 </NavDropdown.Item>
                             </NavDropdown>
-                            {/* <Nav.Link href="#" disabled>
-                                Link
-                            </Nav.Link> */}
                         </Nav>
                         <Form className="d-flex">
                             <Form.Control

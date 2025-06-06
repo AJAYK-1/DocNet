@@ -1,6 +1,10 @@
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import { jwtDecode } from 'jwt-decode'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import DoctorNavbar from './doctornavbar'
+import { Card, Container, Row, Col } from 'react-bootstrap'
+import { FaNotesMedical, FaUser, FaPills } from 'react-icons/fa'
 
 
 export default function ViewPrescription() {
@@ -11,67 +15,59 @@ export default function ViewPrescription() {
     const decodedtoken = jwtDecode(fetchtoken)
 
     useEffect(() => {
-        axios.get("http://localhost:9000/api/doctor/viewprescription", { headers: { id: decodedtoken.id } })
+        axios.get("http://localhost:9000/api/doctor/viewprescription", {
+            headers: { id: decodedtoken.id }
+        })
             .then((res) => {
                 setPrescriptions(res.data)
-            }).catch((err) => {
+            })
+            .catch((err) => {
                 console.log(err)
             })
     }, [])
 
+
     return (
         <>
-            <h1>Prescriptions</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>User Name:</th>
-                        <th>Patient Name:</th>
-                        <th>Medicine:</th>
-                        <th>Quantity:</th>
-                        <th>Dosage:</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {prescriptions.map((presc) => {
-                        return (
-                            <tr key={presc._id}>
-                                <td>{presc.username}</td>
-                                <td>{presc.patientName}</td>
-                                <td>{presc.prescription.map((item) => {
-                                    return (
-                                        <>
-                                            <tr key={item._id}>
-                                                <td>{item.medicine}</td>
-                                            </tr>
-                                        </>
-                                    )
-                                })}</td>
-
-                                <td>{presc.prescription.map((item) => {
-                                    return (
-                                        <>
-                                            <tr key={item._id}>
-                                                <td>{item.quantity}</td>
-                                            </tr>
-                                        </>
-                                    )
-                                })}</td>
-
-                                <td>{presc.prescription.map((item) => {
-                                    return (
-                                        <>
-                                            <tr key={item._id}>
-                                                <td>{item.dosage}</td>
-                                            </tr>
-                                        </>
-                                    )
-                                })}</td>
-                            </tr>
-                        )
-                    })}
-                </tbody>
-            </table>
+            <DoctorNavbar />
+            <Container className="mt-5">
+                <h2 className="text-center mb-4" style={{ fontFamily: "'Poppins', sans-serif", color: '#2c3e50',borderBottom: '2px solid #BDC3C7',fontSize:'2.2rem' }}>
+                    <FaNotesMedical style={{ marginRight: '10px',marginBottom: '10px', color: '#2980B9' }} />
+                    Prescriptions
+                </h2>
+                {prescriptions.length === 0 ? (
+                    <p className="text-center">No prescriptions found.</p>
+                ) : (
+                    prescriptions.map((presc, prescIndex) => (
+                        <Card className="mb-4 shadow" key={prescIndex}>
+                            <Card.Header style={{ backgroundColor: '#2c3e50', color: '#fff' }}>
+                                <FaUser className="me-2" />
+                                Patient: {presc.patientName} | From: {presc.username}
+                            </Card.Header>
+                            <Card.Body>
+                                <Row className="g-3">
+                                    {presc.prescription.map((item, index) => (
+                                        <Col md={4} sm={6} xs={12} key={index}>
+                                            <Card className="h-100 border-info">
+                                                <Card.Body>
+                                                    <Card.Title className="text-info">
+                                                        <FaPills className="me-2 text-danger" />
+                                                        {item.medicine}
+                                                    </Card.Title>
+                                                    <Card.Text>
+                                                        <strong>Quantity:</strong> {item.quantity}<br />
+                                                        <strong>Dosage:</strong> {item.dosage}
+                                                    </Card.Text>
+                                                </Card.Body>
+                                            </Card>
+                                        </Col>
+                                    ))}
+                                </Row>
+                            </Card.Body>
+                        </Card>
+                    ))
+                )}
+            </Container>
         </>
     )
 }

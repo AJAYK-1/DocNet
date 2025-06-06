@@ -1,69 +1,90 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { jwtDecode } from 'jwt-decode'
-import {useNavigate, useParams} from 'react-router-dom'
-
+import { useNavigate, useParams } from 'react-router-dom'
+import DoctorNavbar from './doctornavbar'
+import { FaHeartbeat } from 'react-icons/fa'
 
 export default function DoctorViewAppointment() {
+  const doctorstoken = localStorage.getItem('token')
+  const decodedtoken = jwtDecode(doctorstoken)
 
-    const doctorstoken = localStorage.getItem('token')
-    const decodedtoken = jwtDecode(doctorstoken)
+  const [Appointments, setAppointments] = useState([])
+  const navigate = useNavigate()
 
-    const [Appointments, setAppointments] = useState([])
+  useEffect(() => {
+    axios
+      .get('http://localhost:9000/api/doctor/fetchappointments', {
+        headers: { id: decodedtoken.id },
+      })
+      .then((res) => {
+        setAppointments(res.data)
+        console.log(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
 
-    const params = useParams()
-    console.log(params.id)
+  const handleButton = (id) => {
+    navigate(`/addprescription/${id}`)
+  }
 
-    useEffect(() => {
-        axios.get("http://localhost:9000/api/doctor/fetchappointments", { headers: { id: decodedtoken.id } })
-            .then((res) => {
-                setAppointments(res.data)
-                console.log(res.data)
-            }).catch((err) => {
-                console.log(err)
-            })
-    }, [])
+  return (
+    <>
+      <DoctorNavbar />
+      <div className="container mt-5">
+        <h2
+          className="mb-4 text-center d-flex justify-content-center align-items-center"
+          style={{
+            fontFamily: "'Dancing Script', cursive",
+            fontSize: '2.2rem',
+            color: '#34495E',
+            borderBottom: '2px solid #BDC3C7',
+            display: 'inline-flex',
+            paddingBottom: '0.2rem',
+          }}
+        >
+          <FaHeartbeat style={{ marginRight: '10px', color: '#E74C3C' }} />
+          Your Appointments
+        </h2>
 
-    
-    const navigate = useNavigate()
-
-    const handleButton = async(id) => {
-        // e.preventDefault()
-        console.log(id)
-        navigate(`/addprescription/${id}`)
-    }
-
-    return (
-        <>
-            <h2>Your Appointments</h2>
-            <div>
-                <table>
-                    <thead>
-                        <tr>
-                        <th>Username:</th>
-                        <th>Patient Name:</th>
-                        <th>Patient Age:</th>
-                        <th>Patient Gender:</th>
-                        <th>Patient's Symptoms:</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Appointments.map((appointment) => {
-                            return (
-                                <tr key={appointment._id}>
-
-                                    <td>{appointment.userId.username}</td>
-                                    <td>{appointment.patientName}</td>
-                                    <td>{appointment.patientAge}</td>
-                                    <td>{appointment.patientGender}</td>
-                                    <td>{appointment.patientSymptoms}</td>
-                                    <td><button onClick={()=>handleButton(appointment._id)}>Add Prescription</button></td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>
-        </>
-    )
+        {Appointments.length === 0 ? (
+          <p className="text-center mt-5 fs-5 text-muted">No appointments found.</p>
+        ) : (
+          <div className="row g-4">
+            {Appointments.map((appointment) => (
+              <div className="col-md-6 col-lg-4" key={appointment._id}>
+                <div className="card shadow-sm h-100">
+                  <div className="card-body d-flex flex-column">
+                    <h5 className="card-title text-danger">
+                      An appointment from  {appointment.userId?.username || 'N/A'}
+                    </h5>
+                    <p className="card-text mb-1">
+                      <strong>Patient Name:</strong> {appointment.patientName}
+                    </p>
+                    <p className="card-text mb-1">
+                      <strong>Age:</strong> {appointment.patientAge}
+                    </p>
+                    <p className="card-text mb-1">
+                      <strong>Gender:</strong> {appointment.patientGender}
+                    </p>
+                    <p className="card-text mb-3">
+                      <strong>Symptoms:</strong> {appointment.patientSymptoms}
+                    </p>
+                    <button
+                      className="btn btn-outline-info mt-auto"
+                      onClick={() => handleButton(appointment._id)}
+                    >
+                      💊 Prescribe Medicines
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
+  )
 }

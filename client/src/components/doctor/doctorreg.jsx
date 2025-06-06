@@ -5,6 +5,7 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/esm/Button';
 import { useNavigate } from 'react-router-dom';
+import HomeNavbar from '../homenavbar';
 
 
 export default function DoctorRegistration() {
@@ -54,6 +55,7 @@ export default function DoctorRegistration() {
 
     return (
         <>
+        <HomeNavbar/>
 
             <h2>Doctor Registration</h2>
 

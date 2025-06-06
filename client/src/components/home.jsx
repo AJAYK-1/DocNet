@@ -1,54 +1,101 @@
 import React from 'react'
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import { Container, Row, Col, Button, Card } from 'react-bootstrap'
+import HomeNavbar from './homenavbar'
+import Footer from './footer'
+import { FaUserMd, FaNotesMedical, FaLaptopMedical } from 'react-icons/fa'
+import Carousel from 'react-bootstrap/Carousel';
 
 
 export default function Home() {
     return (
         <>
-            <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
-                <Container fluid>
-                    <Navbar.Brand href="#">Navbar scroll</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="navbarScroll" />
-                    <Navbar.Collapse id="navbarScroll">
-                        <Nav
-                            className="me-auto my-2 my-lg-0"
-                            style={{ maxHeight: '100px' }}
-                            navbarScroll
-                        >
-                            <Nav.Link href="#action1">Home</Nav.Link>
-                            {/* <Nav.Link href="#action2">Link</Nav.Link> */}
-                            <NavDropdown title="Account" id="navbarScrollingDropdown">
-                                <NavDropdown.Item href="/login">SignIn</NavDropdown.Item>
-                                <NavDropdown.Item href="/doctorreg">
-                                    Doctor Registration
-                                </NavDropdown.Item>
-                                {/* <NavDropdown.Divider /> */}
-                                {/* <NavDropdown.Item href="#action5">
-                                    Something else here
-                                </NavDropdown.Item> */}
-                            </NavDropdown>
-                            {/* <Nav.Link href="#" disabled>
-                                Link
-                            </Nav.Link> */}
-                        </Nav>
-                        <Form className="d-flex">
-                            <Form.Control
-                                type="search"
-                                placeholder="Search"
-                                className="me-2"
-                                aria-label="Search"
-                            />
-                            <Button variant="outline-success">Search</Button>
-                        </Form>
-                    </Navbar.Collapse>
+            <HomeNavbar />
+
+            <div style={{
+                background: 'linear-gradient(to right, #3498db, #2ecc71)',
+                color: '#fff',
+                padding: '80px 0',
+                textAlign: 'center'
+            }}>
+                <Container>
+                    <h1 style={{ fontSize: '3rem', fontWeight: 'bold', fontFamily: 'Poppins' }}>Welcome to DocNet</h1>
+                    <p style={{ fontSize: '1.2rem', marginTop: '20px' }}>
+                        Your all-in-one healthcare companion for doctors and patients.
+                    </p>
+                    <div className="mt-4">
+                        <Button variant="light" href="/login" className="me-3">Login</Button>
+                        <Button variant="outline-light" href="/registration">Register</Button>
+                    </div>
                 </Container>
-            </Navbar>
-            <h2>Welcome to DocNet</h2>
+            </div>
+            <div className='mt-2'>
+                <Carousel>
+                    <Carousel.Item interval={1000}>
+                        <img src='https://wallpaperaccess.com/full/3275630.jpg' height={'600px'} width={'100%'} text="First slide" />
+                        <Carousel.Caption style={{ textShadow: '2px 2px 2px rgba(0, 0, 0, 0.9)' }}>
+                            <h3>“Wherever the art of medicine is loved, there is also a love of humanity.”</h3>
+                            <p>– Hippocrates</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    <Carousel.Item interval={1000}>
+                        <img src='https://wallpaperaccess.com/full/136995.jpg' height={'600px'} width={'100%'} text="Second slide" />
+                        <Carousel.Caption style={{ textShadow: '2px 2px 2px rgba(0, 0, 0, 0.9)' }}>
+                            <h3>“The best doctor gives the least medicine — and the most attention.”</h3>
+                            <p>– Benjamin Franklin</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    <Carousel.Item interval={1000}>
+                        <img src='https://wallpaperaccess.com/full/624111.jpg' height={'600px'} width={'100%'} text="Third slide" />
+                        <Carousel.Caption style={{ textShadow: '2px 2px 2px rgba(0, 0, 0, 0.9)' }}>
+                            <h3>“Digital healthcare empowers patients, saves lives, and transforms futures.”</h3>
+                            <p>– DocNet Vision</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                </Carousel>
+            </div>
+
+
+            <Container className="my-5">
+                <h2 className="text-center mb-4" style={{ fontFamily: 'Poppins', color: '#2c3e50' }}>What You Can Do with DocNet</h2>
+                <Row className="g-4">
+                    <Col md={4}>
+                        <Card className="h-100 shadow-sm text-center">
+                            <Card.Body>
+                                <FaUserMd size={40} className="text-primary mb-3" />
+                                <Card.Title>Doctor Registration</Card.Title>
+                                <Card.Text>
+                                    Doctors can sign up, upload their profile, and manage patient prescriptions with ease.
+                                </Card.Text>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                    <Col md={4}>
+                        <Card className="h-100 shadow-sm text-center">
+                            <Card.Body>
+                                <FaNotesMedical size={40} className="text-success mb-3" />
+                                <Card.Title>Prescriptions Management</Card.Title>
+                                <Card.Text>
+                                    View and manage prescriptions in a clean, structured format built for quick access.
+                                </Card.Text>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                    <Col md={4}>
+                        <Card className="h-100 shadow-sm text-center">
+                            <Card.Body>
+                                <FaLaptopMedical size={40} className="text-danger mb-3" />
+                                <Card.Title>Accessible Portal</Card.Title>
+                                <Card.Text>
+                                    Patients and doctors access a unified dashboard — secure, fast, and user-friendly.
+                                </Card.Text>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+            </Container>
+
+            {/* Footer */}
+            <Footer />
         </>
     )
 }

@@ -20,6 +20,7 @@ import ViewPrescription from './components/doctor/viewprescription'
 import GetMyPrescription from './components/user/getprescription'
 import DoctorProfile from './components/doctor/doctorprofile'
 import AdminViewDoctors from './components/admin/adminviewdoctors'
+import About from './components/about';
 
 
 function App() {
@@ -30,8 +31,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* COMMON PAGES */}
-          <Route path='/' element={<Home />} />
+          <Route path='/home' element={<Home />} />
           <Route path='/login' element={<Login />} />
+          <Route path='/about' element={<About/>} />
 
           {/* ADMIN PAGES */}
           <Route path='/adminhome' element={<Adminhome />} />
