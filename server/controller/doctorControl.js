@@ -6,7 +6,7 @@ const path = require('path')
 
 const DoctorRegister = async (req, res) => {
     try {
-        const { docname, email, password, address } = req.body
+        const { docname, email, password, address, license, qualification, specialization } = req.body
         console.log(req.file)
         console.log(req.body)
         const profileImage = req.file.filename
@@ -19,6 +19,9 @@ const DoctorRegister = async (req, res) => {
                 email,
                 password,
                 address,
+                license,
+                qualification,
+                specialization,
                 profileImage
             })
             await DoctorData.save()
@@ -37,6 +40,21 @@ const viewLoggedDoctor = async (req, res) => {
         console.log(LoggedinDoctor)
         res.json(LoggedinDoctor)
     } catch (err) {
+        console.log(err)
+    }
+}
+
+
+const changeAvalibility = async(req,res) => {
+    try {
+        const {id,statusChange} = req.body
+        console.log(statusChange)
+        const LoggedDoctor = await Doctor.findById(id)
+        console.log(LoggedDoctor)
+        LoggedDoctor.availability = statusChange
+        await LoggedDoctor.save()
+        res.json({msg: "Availability status changed", status : 200})
+    } catch(err) {
         console.log(err)
     }
 }
@@ -103,6 +121,7 @@ const viewPrescription = async (req, res) => {
 module.exports = {
     DoctorRegister,
     viewLoggedDoctor,
+    changeAvalibility,
     fetchAppointments,
     addPrescription,
     viewPrescription

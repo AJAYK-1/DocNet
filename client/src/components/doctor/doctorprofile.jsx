@@ -6,22 +6,20 @@ import { Container, Row, Col, Image, Card, Button } from 'react-bootstrap'
 import { gsap } from 'gsap'
 import { useNavigate } from 'react-router-dom'
 import { FaAddressCard } from 'react-icons/fa';
+import Collapse from 'react-bootstrap/Collapse';
 
 
 export default function DoctorProfile() {
     const token = localStorage.getItem('token')
     const decoded = jwtDecode(token)
-    const [DocData, setDocData] = useState({
-        docname: '',
-        email: '',
-        address: '',
-        profileImage: '',
-    })
+    const [DocData, setDocData] = useState({})
+    const [open, setOpen] = useState(false);
 
     // Refs for GSAP target elements
     const cardRef = useRef(null)
     const imageRef = useRef(null)
     const headerRef = useRef(null)
+
 
     useEffect(() => {
         AXIOS.get('http://localhost:9000/api/doctor/viewloggeddoctor', {
@@ -34,9 +32,10 @@ export default function DoctorProfile() {
                 console.log(err)
             })
     }, [])
+    console.log(DocData.availability)
 
     useEffect(() => {
-        
+
         gsap.fromTo(
             headerRef.current,
             { opacity: 0, x: 100 },
@@ -55,6 +54,21 @@ export default function DoctorProfile() {
             { opacity: 1, x: 0, duration: 1, ease: 'power3.out', delay: 0.2 }
         )
     }, [])
+
+    const colour = DocData.availability == "Available" ? "success" : "danger"
+
+    const handleAvailability = (e) => {
+        e.preventDefault()
+        const statusChange = DocData.availability == "Available" ? "Unavailable" : "Available"
+        AXIOS.put('http://localhost:9000/api/doctor/changeavailability', { id: decoded.id, statusChange }
+        ).then((res) => {
+            window.location.reload()
+            console.log(DocData.availability)
+            alert(res.data.msg)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
 
     const navigate = useNavigate()
 
@@ -119,11 +133,37 @@ export default function DoctorProfile() {
                                     <strong>Email:</strong> {DocData.email || 'N/A'}
                                 </Card.Text>
 
+                                <Card.Text className="mb-2" style={{ fontSize: '1.1rem', color: '#34495E' }}>
+                                    <strong>Medical License:</strong> {DocData.license || 'N/A'}
+                                </Card.Text>
+
+                                <Card.Text className="mb-2" style={{ fontSize: '1.1rem', color: '#34495E' }}>
+                                    <strong>Educational Qualification:</strong> {DocData.qualification || 'N/A'}
+                                </Card.Text>
+
+                                <Card.Text className="mb-2" style={{ fontSize: '1.1rem', color: '#34495E' }}>
+                                    <strong>Specialization:</strong> {DocData.specialization || 'N/A'}
+                                </Card.Text>
+
                                 <Card.Text className="mb-4" style={{ fontSize: '1.1rem', color: '#34495E' }}>
                                     <strong>Address:</strong> {DocData.address || 'N/A'}
                                 </Card.Text>
 
-                                <div className="d-flex gap-3 justify-content-center">
+                                <Button variant={colour} size="md" style={{ fontWeight: '600' }} onMouseEnter={() => setOpen(!open)} onMouseLeave={() => setOpen(!open)}  onClick={handleAvailability}>
+                                    {DocData.availability == "Available" ? "You are Available for Appointments" : "You are Unavailable for Appointments"}
+                                </Button>
+                                <div style={{ minHeight: '0px' }}>
+                                    <Collapse in={open} dimension="width">
+                                        <div id="example-collapse-text">
+                                            <Card body style={{ width: '400px' }}>
+                                                ⚠️ Clicking this will change your availability status.
+                                                    If you are available now clicking it will make you unavailable.
+                                            </Card>
+                                        </div>
+                                    </Collapse>
+                                </div>
+
+                                <div className="d-flex gap-3 justify-content-center mt-3">
                                     <Button variant="outline-warning" size="md" style={{ fontWeight: '600' }}>
                                         📝 Edit Profile
                                     </Button>

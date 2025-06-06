@@ -10,7 +10,6 @@ import Adminhome from './components/admin/adminhome'
 import Userhome from "./components/user/userhome";
 import Doctorhome from "./components/doctor/doctorhome"
 import AdminViewUsers from './components/admin/adminviewusers'
-import DoctorRegistration from './components/doctor/doctorreg'
 import Home from './components/home'
 import UserProfile from './components/user/userprofile'
 import Appointment from './components/user/appointment'
@@ -49,7 +48,6 @@ function App() {
 
           {/* DOCTOR PAGES */}
           <Route path='/doctorhome' element={<Doctorhome />} />
-          <Route path='/doctorreg' element={<DoctorRegistration />} />
           <Route path='/doctorprofile' element={<DoctorProfile/>}/>
           <Route path='/viewappointment' element={<DoctorViewAppointment />} />
           <Route path='/addprescription/:id' element={<AddPrescription />} />

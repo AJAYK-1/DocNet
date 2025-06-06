@@ -5,8 +5,13 @@ const doctorSchema = new mongoose.Schema({
     docname: { type: String },
     email: { type: String },
     password: { type: String },
-    address: {type:String},
-    profileImage: { type:String}
+    address: { type: String },
+    license: { type: String },
+    qualification: { type: String },
+    specialization: { type: String },
+    profileImage: { type: String },
+    availability: { type: String, default: "Available" },
+    doctorStatus: { type: String, default: "Active" },
 }, { timestamps: true })
 
 const Doctor = mongoose.model("Doctor_tbl", doctorSchema)

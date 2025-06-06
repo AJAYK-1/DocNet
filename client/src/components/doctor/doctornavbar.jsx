@@ -33,17 +33,11 @@ export default function DoctorNavbar() {
                             <Nav.Link href="/viewprescription">Presciptions</Nav.Link>
                             <NavDropdown title="Account" id="navbarScrollingDropdown">
                                 <NavDropdown.Item href="/doctorprofile">My Profile</NavDropdown.Item>
-                                {/* <NavDropdown.Item href="#action4">
-                                    Logout
-                                </NavDropdown.Item> */}
                                 <NavDropdown.Divider />
                                 <NavDropdown.Item onClick={handleLogout}>
                                     Logout
                                 </NavDropdown.Item>
                             </NavDropdown>
-                            {/* <Nav.Link href="#" disabled>
-                                Link
-                            </Nav.Link> */}
                         </Nav>
                         <Form className="d-flex">
                             <Form.Control

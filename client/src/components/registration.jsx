@@ -16,7 +16,10 @@ export default function CombinedRegistration() {
     docname: '',
     email: '',
     password: '',
-    address: ''
+    address: '',
+    license: '',
+    qualification: '',
+    specialization: ''
   });
 
   const [doctorImage, setDoctorImage] = useState(null);
@@ -52,18 +55,21 @@ export default function CombinedRegistration() {
   const handleDoctorSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('docname', doctorForm.docname);
-    formData.append('email', doctorForm.email);
-    formData.append('password', doctorForm.password);
-    formData.append('address', doctorForm.address);
-    formData.append('profileImage', doctorImage);
+    formData.append('docname', doctorForm.docname)
+    formData.append('email', doctorForm.email)
+    formData.append('password', doctorForm.password)
+    formData.append('address', doctorForm.address)
+    formData.append('license', doctorForm.license)
+    formData.append('qualification', doctorForm.qualification)
+    formData.append('specialization', doctorForm.specialization)
+    formData.append('profileImage', doctorImage)
 
     AXIOS.post("http://localhost:9000/api/doctor/doctorregistration", formData, {
       headers: { "Content-Type": "multipart/form-data" }
     })
       .then((res) => {
         alert("Doctor Registered Successfully");
-        setDoctorForm({ docname: '', email: '', password: '', address: '' });
+        setDoctorForm({ docname: '', email: '', password: '', address: '', license: '', qualification: '', specialization: '' });
         setDoctorImage(null);
         navigate('/login');
       }).catch((err) => {
@@ -75,7 +81,7 @@ export default function CombinedRegistration() {
   return (
     <>
       <HomeNavbar />
-      <Container className="mt-5" style={{ alignContent: 'center', width: '500px',padding:'30px', borderRadius: '15px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
+      <Container className="mt-5" style={{ alignContent: 'center', width: '500px', padding: '30px', borderRadius: '15px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
         <h2
           className="text-center mb-4 fw-bold text-dark border-bottom pb-2"
           style={{
@@ -127,22 +133,68 @@ export default function CombinedRegistration() {
             <Form onSubmit={handleDoctorSubmit}>
 
               <FloatingLabel controlId="floatingDocName" label="Doctor Name" className="mb-3">
-                <Form.Control type="text" name="docname" value={doctorForm.docname} onChange={handleDoctorChange} placeholder="Enter name" />
+                <Form.Control type="text" name="docname" onChange={handleDoctorChange} placeholder="Enter name" />
               </FloatingLabel>
 
               <FloatingLabel controlId="floatingDocEmail" label="Email address" className="mb-3">
-                <Form.Control type="email" name="email" value={doctorForm.email} onChange={handleDoctorChange} placeholder="Enter email" />
+                <Form.Control type="email" name="email" onChange={handleDoctorChange} placeholder="Enter email" />
                 <Form.Text className="text-muted">
                   We'll never share your email with anyone else.
                 </Form.Text>
               </FloatingLabel>
 
               <FloatingLabel controlId="floatingDocPassword" label="Password" className="mb-3">
-                <Form.Control type="password" name="password" value={doctorForm.password} onChange={handleDoctorChange} placeholder="Password" />
+                <Form.Control type="password" name="password" onChange={handleDoctorChange} placeholder="Password" />
               </FloatingLabel>
 
+              <FloatingLabel controlId="floatingLicense" label="Medical License Number" className="mb-3">
+                <Form.Control type="text" name="license" onChange={handleDoctorChange} placeholder="Enter Medical License Number" />
+              </FloatingLabel>
+
+              <FloatingLabel controlId="floatingQualification" label="Educational Qualification" className="mb-3">
+                <Form.Control type="text" name="qualification" onChange={handleDoctorChange} placeholder="Enter Educational Qualification" />
+              </FloatingLabel>
+
+              <FloatingLabel controlId="floatingSpecialization" label="Specialization" className="mb-3">
+                <Form.Select name="specialization" onChange={handleDoctorChange} required>
+                  <option value="">-- Select Specialization --</option>
+
+                  <optgroup label=" Non-Surgical (MD/DNB)">
+                    <option value="General Medicine">General Medicine</option>
+                    <option value="Pediatrics">Pediatrics</option>
+                    <option value="Dermatology">Dermatology</option>
+                    <option value="Psychiatry">Psychiatry</option>
+                    <option value="Radiology">Radiology</option>
+                    <option value="Pathology">Pathology</option>
+                    <option value="Anesthesiology">Anesthesiology</option>
+                    <option value="Pulmonology">Pulmonology</option>
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Endocrinology">Endocrinology</option>
+                    <option value="Neurology">Neurology</option>
+                    <option value="Gastroenterology">Gastroenterology</option>
+                    <option value="Nephrology">Nephrology</option>
+                    <option value="Hematology">Hematology</option>
+                  </optgroup>
+                  <optgroup label=" Surgical (MS/MCh)">
+                    <option value="General Surgery">General Surgery</option>
+                    <option value="Orthopedics">Orthopedics</option>
+                    <option value="ENT">ENT (Otorhinolaryngology)</option>
+                    <option value="Ophthalmology">Ophthalmology</option>
+                    <option value="Obstetrics & Gynecology">Obstetrics & Gynecology (OBG)</option>
+                    <option value="Urology">Urology</option>
+                    <option value="Neurosurgery">Neurosurgery</option>
+                    <option value="Cardiothoracic Surgery">Cardiothoracic Surgery</option>
+                    <option value="Plastic Surgery">Plastic Surgery</option>
+                  </optgroup>
+                  <optgroup label=" Alternative & Traditional Medicine">
+                    <option value="Ayurveda">Ayurveda</option>
+                    <option value="Homeopathy">Homeopathy</option>
+                    <option value="Unani">Unani</option>
+                    <option value="Naturopathy">Naturopathy</option>
+                  </optgroup> </Form.Select> </FloatingLabel>
+
               <FloatingLabel controlId="floatingDocAddress" label="Address" className="mb-3">
-                <Form.Control as="textarea" name="address" value={doctorForm.address} onChange={handleDoctorChange} style={{ height: '100px' }} placeholder="Enter address" />
+                <Form.Control as="textarea" name="address" onChange={handleDoctorChange} style={{ height: '100px' }} placeholder="Enter address" />
               </FloatingLabel>
 
               <Form.Group className="mb-3">
