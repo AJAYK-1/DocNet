@@ -59,6 +59,25 @@ const changeAvalibility = async(req,res) => {
     }
 }
 
+const doctorProfileEdit = async(req,res) => {
+    try{
+        const id = req.headers.id
+        const {docname,license,qualification,specialization,address} = req.body
+        const profileImage = req.file.filename
+        const doctorsProfile = await Doctor.findById(id)
+        doctorsProfile.docname = docname
+        doctorsProfile.license = license
+        doctorsProfile.qualification = qualification
+        doctorsProfile.specialization = specialization
+        doctorsProfile.address = address
+        doctorsProfile.profileImage = profileImage
+        await doctorsProfile.save()
+        res.json({msg: "Profile edited successfully", status: 200})
+    }catch(err) {
+        console.log(err)
+    }
+}
+
 
 const fetchAppointments = async (req, res) => {
     try {
@@ -122,6 +141,7 @@ module.exports = {
     DoctorRegister,
     viewLoggedDoctor,
     changeAvalibility,
+    doctorProfileEdit,
     fetchAppointments,
     addPrescription,
     viewPrescription

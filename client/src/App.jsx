@@ -30,7 +30,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* COMMON PAGES */}
-          <Route path='/home' element={<Home />} />
+          <Route path='/' element={<Home />} />
           <Route path='/login' element={<Login />} />
           <Route path='/about' element={<About/>} />
 

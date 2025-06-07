@@ -36,7 +36,7 @@ export default function ViewPrescription() {
                     Prescriptions
                 </h2>
                 {prescriptions.length === 0 ? (
-                    <p className="text-center">No prescriptions found.</p>
+                    <p className="text-center mt-5 fs-5 text-muted">No prescriptions found.</p>
                 ) : (
                     prescriptions.map((presc, prescIndex) => (
                         <Card className="mb-4 shadow" key={prescIndex}>
