@@ -5,7 +5,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import DoctorNavbar from './doctornavbar'
 import { FaHeartbeat } from 'react-icons/fa'
 
+
 export default function DoctorViewAppointment() {
+  
   const doctorstoken = localStorage.getItem('token')
   const decodedtoken = jwtDecode(doctorstoken)
 

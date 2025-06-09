@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import AXIOS from 'axios'
+import AdminNavbar from './adminnavbar'
+import Footer from '../footer'
 
 
 export default function AdminViewDoctors() {
@@ -17,6 +19,7 @@ export default function AdminViewDoctors() {
 
     return (
         <>
+        <AdminNavbar/>
             <h1>Doctors</h1>
             <table>
                 <thead>
@@ -38,6 +41,7 @@ export default function AdminViewDoctors() {
                     })}
                 </tbody>
             </table>
+            <Footer/>
         </>
     )
 }

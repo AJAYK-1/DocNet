@@ -35,7 +35,7 @@ export default function DoctorProfile() {
 
     useEffect(() => {
         AXIOS.get('http://localhost:9000/api/doctor/viewloggeddoctor', {
-            headers: { id: decoded.id },
+            headers: { id: decoded.id }
         })
             .then((res) => {
                 setDocData(res.data)

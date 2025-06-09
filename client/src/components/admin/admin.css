@@ -1,0 +1,39 @@
+.admin-sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    right: -250px; /* Hidden by default */
+    background-color: #343a40;
+    color: white;
+    z-index: 1050;
+    transition: right 0.3s ease-in-out;
+}
+
+.admin-sidebar.open {
+    right: 0; /* Slide in when open */
+}
+
+.admin-sidebar .nav-link {
+    color: white;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+.admin-sidebar .nav-link:hover {
+    background-color: #495057;
+    border-radius: 5px;
+}
+
+.admin-sidebar form {
+    padding-top: 20px;
+}
+
+.toggle-sidebar-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1100;
+    border-radius: 50%;
+    padding: 10px 14px;
+}

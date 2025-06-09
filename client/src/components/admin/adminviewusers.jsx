@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import AXIOS from 'axios'
+import AdminNavbar from './adminnavbar'
 
 
 export default function AdminViewUsers() {
@@ -17,6 +18,7 @@ export default function AdminViewUsers() {
 
     return (
         <>
+        <AdminNavbar/>
             <h1>Users</h1>
             <table>
                 <thead>
@@ -36,6 +38,7 @@ export default function AdminViewUsers() {
                     })}
                 </tbody>
             </table>
+            <footer/>
         </>
     )
 }

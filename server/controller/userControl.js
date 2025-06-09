@@ -109,6 +109,21 @@ const bookAppointment = async (req, res) => {
 }
 
 
+const fetchMyAppointments = async (req,res) => {
+    try {
+        const id = req.headers.id
+        console.log(id)
+        const myappointments = await Appointment.find({userId:id})
+        .populate("doctorId")
+        .populate("userId")
+        console.log(myappointments)
+        res.json(myappointments)
+    }catch(err) {
+        console.log(err)
+    }
+}
+
+
 const fetchMyPrescription = async (req, res) => {
     try {
         const userId = req.headers.id
@@ -137,5 +152,6 @@ module.exports = {
     viewDoctors,
     viewDoctorsProfile,
     bookAppointment,
+    fetchMyAppointments,
     fetchMyPrescription
 }

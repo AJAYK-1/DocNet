@@ -43,7 +43,7 @@ function App() {
           <Route path='/userhome' element={<Userhome />} />
           <Route path='/registration' element={<Registration />} />
           <Route path='/userprofile' element={<UserProfile />} />
-          <Route path='/appointment/:id' element={<Appointment />} />
+          <Route path='/appointment' element={<Appointment />} />
           <Route path='/getprescription' element={<GetMyPrescription/>} />
 
           {/* DOCTOR PAGES */}

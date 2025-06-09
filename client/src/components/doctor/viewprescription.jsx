@@ -17,13 +17,11 @@ export default function ViewPrescription() {
     useEffect(() => {
         axios.get("http://localhost:9000/api/doctor/viewprescription", {
             headers: { id: decodedtoken.id }
+        }).then((res) => {
+            setPrescriptions(res.data)
+        }).catch((err) => {
+            console.log(err)
         })
-            .then((res) => {
-                setPrescriptions(res.data)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
     }, [])
 
 
@@ -31,8 +29,8 @@ export default function ViewPrescription() {
         <>
             <DoctorNavbar />
             <Container className="mt-5">
-                <h2 className="text-center mb-4" style={{ fontFamily: "'Poppins', sans-serif", color: '#2c3e50',borderBottom: '2px solid #BDC3C7',fontSize:'2.2rem' }}>
-                    <FaNotesMedical style={{ marginRight: '10px',marginBottom: '10px', color: '#2980B9' }} />
+                <h2 className="text-center mb-4" style={{ fontFamily: "'Poppins', sans-serif", color: '#2c3e50', borderBottom: '2px solid #BDC3C7', fontSize: '2.2rem' }}>
+                    <FaNotesMedical style={{ marginRight: '10px', marginBottom: '10px', color: '#2980B9' }} />
                     Prescriptions
                 </h2>
                 {prescriptions.length === 0 ? (
