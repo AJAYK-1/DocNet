@@ -5,6 +5,7 @@ import DoctorNavbar from './doctornavbar'
 import { FaPills } from 'react-icons/fa';
 import { GiMedicines } from 'react-icons/gi';
 import { MdLocalPharmacy } from 'react-icons/md';
+import Footer from '../footer';
 
 
 export default function AddPrescription() {
@@ -122,6 +123,7 @@ export default function AddPrescription() {
                     </div>
                 </form>
             </div>
+            <Footer/>
         </>
     )
 }

@@ -22,7 +22,7 @@ export default function HomeNavbar() {
                             style={{ maxHeight: '100px' }}
                             navbarScroll
                         >
-                            <Nav.Link href="/home">Home</Nav.Link>
+                            <Nav.Link href="/">Home</Nav.Link>
                             <Nav.Link href="/about">About</Nav.Link>
                             <NavDropdown title="Account" id="navbarScrollingDropdown">
                                 <NavDropdown.Item href="/login">SignIn</NavDropdown.Item>

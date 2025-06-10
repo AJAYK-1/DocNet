@@ -44,6 +44,7 @@ export default function Appointment() {
   return (
     <>
       <UserNavbar />
+      <div style={{minHeight:'500px'}}>
       <div>
         <h2
           className="mb-4 mt-5 text-center d-flex justify-content-center align-items-center"
@@ -95,6 +96,7 @@ export default function Appointment() {
           ))}
         </div>
       )}
+      </div>
       <Footer />
     </>
   )

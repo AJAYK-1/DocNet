@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { FaAddressCard } from 'react-icons/fa';
 import Collapse from 'react-bootstrap/Collapse';
 import Modal from 'react-bootstrap/Modal';
+import Footer from '../footer'
 
 
 export default function DoctorProfile() {
@@ -306,6 +307,7 @@ export default function DoctorProfile() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            <Footer/>
         </>
     )
 }

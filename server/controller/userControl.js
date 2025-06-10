@@ -35,20 +35,22 @@ const userlogin = async (req, res) => {
         const LoggedDoctor = await Doctor.findOne({ email })
         console.log(LoggedDoctor)
         console.log(LoggedUser)
-        if (LoggedUser) {
+        if (LoggedUser && LoggedUser.userStatus == "Active") {
             if (LoggedUser.password == password) {
                 const token = jwt.sign({ id: LoggedUser._id }, "qwertyuio", { expiresIn: '1h' })
                 res.json({ msg: "Login Successfull...", status: 200, token: token })
             } else {
                 res.json({ msg: "Incorrect Email or Password...", status: 400 })
             }
-        } else if (LoggedDoctor) {
+        } else if (LoggedDoctor && LoggedDoctor.doctorStatus == "Active") {
             if (LoggedDoctor.password == password) {
                 const token = jwt.sign({ id: LoggedDoctor._id }, "docasdf", { expiresIn: "1h" })
                 res.json({ msg: "Doctor Login Successfull...", status: 201, token: token })
             } else {
                 res.json({ msg: "Incorrect Email or Password...", status: 400 })
             }
+        } else if (LoggedUser.userStatus == "Deactivated" && LoggedDoctor.doctorStatus == "Deactivated") {
+            res.json({ msg: "Your Account has been deactivated. Unable to login..." })
         }
     } catch (err) {
         console.log(err)
@@ -109,16 +111,16 @@ const bookAppointment = async (req, res) => {
 }
 
 
-const fetchMyAppointments = async (req,res) => {
+const fetchMyAppointments = async (req, res) => {
     try {
         const id = req.headers.id
         console.log(id)
-        const myappointments = await Appointment.find({userId:id})
-        .populate("doctorId")
-        .populate("userId")
+        const myappointments = await Appointment.find({ userId: id })
+            .populate("doctorId")
+            .populate("userId")
         console.log(myappointments)
         res.json(myappointments)
-    }catch(err) {
+    } catch (err) {
         console.log(err)
     }
 }

@@ -10,7 +10,7 @@ export default function Adminhome() {
   return (
     <>
       <AdminNavbar />
-      <Container className="my-5">
+      <Container className="my-5" style={{minHeight:'500px'}}>
         <h2 className="text-center mb-4">
           <i className="bi bi-speedometer2 me-2"></i>Admin Dashboard
         </h2>

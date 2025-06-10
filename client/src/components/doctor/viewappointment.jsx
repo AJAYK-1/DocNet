@@ -4,6 +4,7 @@ import { jwtDecode } from 'jwt-decode'
 import { useNavigate, useParams } from 'react-router-dom'
 import DoctorNavbar from './doctornavbar'
 import { FaHeartbeat } from 'react-icons/fa'
+import Footer from '../footer'
 
 
 export default function DoctorViewAppointment() {
@@ -87,6 +88,7 @@ export default function DoctorViewAppointment() {
           </div>
         )}
       </div>
+      <Footer/>
     </>
   )
 }
