@@ -1,30 +1,61 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Container, Row, Col, Button, Card } from 'react-bootstrap'
 import HomeNavbar from './homenavbar'
 import Footer from './footer'
 import { FaUserMd, FaNotesMedical, FaLaptopMedical } from 'react-icons/fa'
 import Carousel from 'react-bootstrap/Carousel';
+import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
 
 
 export default function Home() {
+
+    const firstDivRef = useRef()
+    const welcomeRef = useRef()
+    const statementRef = useRef()
+    const loginRef = useRef()
+    const registerRef = useRef()
+
+    useGSAP(() => {
+        gsap.fromTo(firstDivRef.current, {
+            y: 200, opacity: 0
+        }, { y: 0, delay: 1, opacity: 1, duration: 0.5 })
+
+        gsap.fromTo(welcomeRef.current, {
+            x: 500, opacity: 0
+        }, { x: 0, duration: 2, delay: 1, opacity: 1 })
+
+        gsap.fromTo(statementRef.current, {
+            x: -500, opacity: 0
+        }, { x: 0, delay: 1, opacity: 1, duration: 2 })
+
+        gsap.fromTo(loginRef.current, {
+            y: 200,
+        }, { y: 0, delay: 1, duration: 3 })
+
+        gsap.fromTo(registerRef.current, {
+            y: -700
+        }, { y: 0,delay:1, duration: 3 })
+    })
+
     return (
         <>
             <HomeNavbar />
 
-            <div style={{
+            <div ref={firstDivRef} style={{
                 background: 'linear-gradient(to right, #3498db, #2ecc71)',
                 color: '#fff',
                 padding: '80px 0',
                 textAlign: 'center'
             }}>
                 <Container>
-                    <h1 style={{ fontSize: '3rem', fontWeight: 'bold', fontFamily: 'Poppins' }}>Welcome to DocNet</h1>
-                    <p style={{ fontSize: '1.2rem', marginTop: '20px' }}>
+                    <h1 ref={welcomeRef} style={{ fontSize: '3rem', fontWeight: 'bold', fontFamily: 'Poppins' }}>Welcome to DocNet</h1>
+                    <p ref={statementRef} style={{ fontSize: '1.2rem', marginTop: '20px' }}>
                         Your all-in-one healthcare companion for doctors and patients.
                     </p>
                     <div className="mt-4">
-                        <Button variant="light" href="/login" className="me-3">Login</Button>
-                        <Button variant="outline-light" href="/registration">Register</Button>
+                        <Button ref={loginRef} variant="light" href="/login" className="me-3">Login</Button>
+                        <Button ref={registerRef} variant="outline-light" href="/registration">Register</Button>
                     </div>
                 </Container>
             </div>

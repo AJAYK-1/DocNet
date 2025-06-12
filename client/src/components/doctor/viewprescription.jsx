@@ -29,7 +29,7 @@ export default function ViewPrescription() {
     return (
         <>
             <DoctorNavbar />
-            <Container className="mt-5">
+            <Container className="mt-5" style={{minHeight:'500px'}}>
                 <h2 className="text-center mb-4" style={{ fontFamily: "'Poppins', sans-serif", color: '#2c3e50', borderBottom: '2px solid #BDC3C7', fontSize: '2.2rem' }}>
                     <FaNotesMedical style={{ marginRight: '10px', marginBottom: '10px', color: '#2980B9' }} />
                     Prescriptions

@@ -127,6 +127,17 @@ export default function UserHome() {
                     </h2>
                 </div>
 
+                <div className="col-md-4 mb-4">
+                    <Form className="d-flex">
+                        <Form.Control
+                            type="search"
+                            placeholder="Search"
+                            className="me-2 border-success"
+                            aria-label="Search"
+                        />
+                        <Button variant="outline-success">Search</Button>
+                    </Form>
+                </div>
 
                 <div className="row g-4">
                     {DocProfiles.map((doctor) => (
@@ -179,7 +190,7 @@ export default function UserHome() {
 
                                         <Form.Group controlId="floatingQualification" label="Patient's Gender" className="mb-3" required>
                                             <Form.Label className='text-muted'>Patient's Gender:</Form.Label>
-                                            <Form.Check type='radio' label='♂️ Male' name="patientGender" value={'Male'} onChange={handleChange} defaultChecked />
+                                            <Form.Check type='radio' label='♂️ Male' name="patientGender" value={'Male'} onChange={handleChange} />
                                             <Form.Check type='radio' label='♀️ Female' name="patientGender" value={'Female'} onChange={handleChange} />
                                         </Form.Group>
 
@@ -202,7 +213,6 @@ export default function UserHome() {
                     ))}
                 </div>
             </div>
-
             <Footer />
         </>
     );

@@ -1,5 +1,7 @@
 const User = require('../models/userModel')
 const Doctor = require('../models/doctorModel')
+const Appointment = require('../models/appointmentModel')
+const Prescription = require('../models/prescriptionModel')
 
 
 const AdminviewUsers = async (req, res) => {
@@ -54,4 +56,22 @@ const ActionOnDoctor = async (req, res) => {
 }
 
 
-module.exports = { AdminviewUsers, AdminviewDoctors, ActionOnUser, ActionOnDoctor }
+const Calculations = async(req,res) =>{
+    try{
+        const numberOfUsers = await User.find()
+        const numberOfDoctors = await Doctor.find()
+        const numberOfAppointments = await Appointment.find()
+        const numberOfPrescriptions = await Prescription.find()
+        console.log(numberOfUsers.length)
+        console.log(numberOfDoctors.length)
+        console.log(numberOfAppointments.length)
+        console.log(numberOfPrescriptions.length)
+        res.json({numberOfUsers,numberOfDoctors,numberOfAppointments,numberOfPrescriptions})
+
+    }catch(err) {
+        console.log(err)
+    }
+}
+
+
+module.exports = { AdminviewUsers, AdminviewDoctors, ActionOnUser, ActionOnDoctor,Calculations }

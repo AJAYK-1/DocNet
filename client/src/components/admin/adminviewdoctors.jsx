@@ -41,7 +41,7 @@ export default function AdminViewDoctors() {
     return (
         <>
             <AdminNavbar />
-            <div className="container mt-5 mb-5">
+            <div className="container mt-5 mb-5" style={{minHeight:'500px'}}>
                 <h2 className="text-center text-primary mb-4">Registered Doctors</h2>
 
                 <Form.Control

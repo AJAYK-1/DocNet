@@ -36,7 +36,7 @@ export default function DoctorViewAppointment() {
   return (
     <>
       <DoctorNavbar />
-      <div className="container mt-5">
+      <div className="container mt-5" style={{minHeight:'500px'}}>
         <h2
           className="mb-4 text-center d-flex justify-content-center align-items-center"
           style={{

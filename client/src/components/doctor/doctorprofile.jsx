@@ -128,6 +128,7 @@ export default function DoctorProfile() {
     return (
         <>
             <DoctorNavbar />
+            <div style={{minHeight:'550px'}}>
             <Container className="my-5">
                 <Row className="justify-content-center text-center">
                     <Col xs={12}>
@@ -224,6 +225,7 @@ export default function DoctorProfile() {
                     </Col>
                 </Row>
             </Container>
+            </div>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>✏️ Edit your profile</Modal.Title>

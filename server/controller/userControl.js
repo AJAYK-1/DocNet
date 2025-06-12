@@ -147,6 +147,24 @@ const fetchMyPrescription = async (req, res) => {
 }
 
 
+const fetchPrescriptionById = async (req, res) => {
+    try {
+        const id = req.headers.id
+        console.log(id)
+        const fetchedPrescription = await Prescription.findOne({ appointmentId: id })
+            .populate("appointmentId")
+        if (fetchedPrescription) {
+            res.json(fetchedPrescription)
+        } else {
+            res.json({ msg: "No Prescription found", status: 400 })
+        }
+
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
 module.exports = {
     registerUser,
     userlogin,
@@ -155,5 +173,6 @@ module.exports = {
     viewDoctorsProfile,
     bookAppointment,
     fetchMyAppointments,
-    fetchMyPrescription
+    fetchMyPrescription,
+    fetchPrescriptionById
 }

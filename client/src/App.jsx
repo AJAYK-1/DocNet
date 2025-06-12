@@ -1,7 +1,5 @@
 import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import './App.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Registration from './components/registration'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
