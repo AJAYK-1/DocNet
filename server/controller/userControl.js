@@ -99,8 +99,8 @@ const viewDoctorsProfile = async (req, res) => {
 const bookAppointment = async (req, res) => {
     try {
         console.log("req.body", req.body)
-        const { userId, doctorId, patientName, patientAge, patientGender, patientSymptoms } = req.body
-        const appointment = await Appointment({ userId, doctorId, patientName, patientAge, patientGender, patientSymptoms })
+        const { userId, doctorId, patientName, patientAge, patientGender, patientSymptoms, appointmentDate } = req.body
+        const appointment = await Appointment({ userId, doctorId, patientName, patientAge, patientGender, patientSymptoms, appointmentDate })
         // console.log(appointment)
         await appointment.save()
         res.json({ msg: "Appointment Booked successfully", status: 200 })

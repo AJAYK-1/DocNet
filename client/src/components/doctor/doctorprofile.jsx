@@ -9,6 +9,9 @@ import { FaAddressCard } from 'react-icons/fa';
 import Collapse from 'react-bootstrap/Collapse';
 import Modal from 'react-bootstrap/Modal';
 import Footer from '../footer'
+import { useGSAP } from '@gsap/react'
+import DatePicker, { DateObject } from "react-multi-date-picker"
+import "react-datepicker/dist/react-datepicker.css";
 
 
 export default function DoctorProfile() {
@@ -29,9 +32,8 @@ export default function DoctorProfile() {
     const [open, setOpen] = useState(false);
 
 
-    const cardRef = useRef(null)
-    const imageRef = useRef(null)
-    const headerRef = useRef(null)
+
+
 
 
     useEffect(() => {
@@ -40,6 +42,13 @@ export default function DoctorProfile() {
         })
             .then((res) => {
                 setDocData(res.data)
+                const unavailableDates = res.data.schedule
+                    .filter(entry => entry.availability === "Unavailable")
+                    .map(item => item.dates);
+
+                setMarkedDates(unavailableDates); // Used to highlight red dates
+                setSelectedDates(unavailableDates.map(d => new DateObject(d))); // Initialize selection in calendar
+
                 setProfileEdit({
                     docname: res.data.docname,
                     address: res.data.address,
@@ -53,7 +62,79 @@ export default function DoctorProfile() {
             })
     }, [])
 
-    useEffect(() => {
+
+
+    const handleChange = (e) => {
+        setProfileEdit({ ...ProfileEdit, [e.target.name]: e.target.value })
+    }
+
+    const handleImageChange = (e) => {
+        setDoctorImage(e.target.files[0])
+    }
+
+    const handleSaveChanges = (e) => {
+        e.preventDefault()
+
+        const newData = new FormData()
+        newData.append('docname', ProfileEdit.docname)
+        newData.append('license', ProfileEdit.license)
+        newData.append('qualification', ProfileEdit.qualification)
+        newData.append('specialization', ProfileEdit.specialization)
+        newData.append('address', ProfileEdit.address)
+        newData.append('profileImage', doctorImage)
+
+        handleClose()
+        AXIOS.put('http://localhost:9000/api/doctor/doctoreditprofile', newData, { headers: { id: decoded.id } })
+            .then((res) => {
+                window.location.reload()
+                alert(res.data.msg)
+            }).catch((err) => {
+                console.log(err)
+            })
+    }
+
+
+    const [showModal, setShowModal] = useState(false);
+    const [selectedDates, setSelectedDates] = useState([]);
+    const [markedDates, setMarkedDates] = useState([])
+
+    const handleOpen = () => setShowModal(true);
+    const handlecloseModal = () => setShowModal(false);
+
+    const handleDateChange = (dates) => {
+        setSelectedDates(dates);
+    }
+
+    const handleAvailability = (e) => {
+        e.preventDefault()
+        const formattedSchedule = selectedDates.map((date) => ({
+            dates: date.format("YYYY-MM-DD")
+        }));
+        console.log(formattedSchedule)
+        AXIOS.put('http://localhost:9000/api/doctor/changeavailability', { id: decoded.id, schedule: formattedSchedule }
+        ).then((res) => {
+            window.location.reload()
+            alert(res.data.msg)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+    console.log(markedDates)
+    console.log(selectedDates)
+
+    const navigate = useNavigate()
+
+    const handleLogout = (e) => {
+        localStorage.removeItem('token')
+        navigate("/login")
+    }
+
+
+    const cardRef = useRef(null)
+    const imageRef = useRef(null)
+    const headerRef = useRef(null)
+
+    useGSAP(() => {
 
         gsap.fromTo(
             headerRef.current,
@@ -74,157 +155,162 @@ export default function DoctorProfile() {
         )
     }, [])
 
-    const colour = DocData.availability == "Available" ? "success" : "danger"
-
-    const handleAvailability = (e) => {
-        e.preventDefault()
-        const statusChange = DocData.availability == "Available" ? "Unavailable" : "Available"
-        AXIOS.put('http://localhost:9000/api/doctor/changeavailability', { id: decoded.id, statusChange }
-        ).then((res) => {
-            window.location.reload()
-            console.log(DocData.availability)
-            alert(res.data.msg)
-        }).catch((err) => {
-            console.log(err)
-        })
-    }
-
-    const handleChange = (e) => {
-        setProfileEdit({ ...ProfileEdit, [e.target.name]: e.target.value })
-    }
-
-    const handleImageChange = (e) => {
-        setDoctorImage(e.target.files[0])
-    }
-
-    const handleSaveChanges = (e) => {
-        e.preventDefault()
-
-        const newData = new FormData()
-        newData.append('docname',ProfileEdit.docname)
-        newData.append('license',ProfileEdit.license)
-        newData.append('qualification', ProfileEdit.qualification)
-        newData.append('specialization',ProfileEdit.specialization)
-        newData.append('address', ProfileEdit.address)
-        newData.append('profileImage',doctorImage)
-        
-        handleClose()
-        AXIOS.put('http://localhost:9000/api/doctor/doctoreditprofile', newData, { headers: { id: decoded.id } })
-            .then((res) => {
-                window.location.reload()
-                alert(res.data.msg)
-            }).catch((err) => {
-                console.log(err)
-            })
-    }
-
-    const navigate = useNavigate()
-
-    const handleLogout = (e) => {
-        localStorage.removeItem('token')
-        navigate("/login")
-    }
-
     return (
         <>
             <DoctorNavbar />
-            <div style={{minHeight:'550px'}}>
-            <Container className="my-5">
-                <Row className="justify-content-center text-center">
-                    <Col xs={12}>
-                        <h1
-                            ref={headerRef}
-                            style={{
-                                fontFamily: "'Poppins', sans-serif",
-                                fontWeight: '700',
-                                color: '#34495E',
-                                marginBottom: '1rem',
-                            }}
+            <div style={{ minHeight: '550px' }}>
+                <Container className="my-5">
+                    <Row className="justify-content-center text-center">
+                        <Col xs={12}>
+                            <h1
+                                ref={headerRef}
+                                style={{
+                                    fontFamily: "'Poppins', sans-serif",
+                                    fontWeight: '700',
+                                    color: '#34495E',
+                                    marginBottom: '1rem',
+                                }}
+                            >
+                                <FaAddressCard size={32} style={{ marginBottom: '7px', marginRight: '10px', color: '#2980B9' }} />
+                                Profile
+                            </h1>
+                        </Col>
+                    </Row>
+
+                    <Row className="justify-content-center">
+                        <Col
+                            xs={12}
+                            md={6}
+                            lg={4}
+                            className="d-flex justify-content-center mb-4"
+                            ref={imageRef}
                         >
-                            <FaAddressCard size={32} style={{ marginBottom: '7px', marginRight: '10px', color: '#2980B9' }} />
-                            Profile
-                        </h1>
-                    </Col>
-                </Row>
+                            <Image
+                                src={`http://localhost:9000/uploads/${DocData.profileImage}`}
+                                roundedCircle
+                                height={280}
+                                width={280}
+                                style={{ objectFit: 'fill', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
+                                alt="Doctor Profile"
+                            />
+                        </Col>
 
-                <Row className="justify-content-center">
-                    <Col
-                        xs={12}
-                        md={6}
-                        lg={4}
-                        className="d-flex justify-content-center mb-4"
-                        ref={imageRef}
-                    >
-                        <Image
-                            src={`http://localhost:9000/uploads/${DocData.profileImage}`}
-                            roundedCircle
-                            height={280}
-                            width={280}
-                            style={{ objectFit: 'fill', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
-                            alt="Doctor Profile"
-                        />
-                    </Col>
+                        <Col xs={12} md={6} lg={5} ref={cardRef}>
+                            <Card
+                                className="shadow-lg"
+                                style={{ borderRadius: '15px', minHeight: '280px', backgroundColor: '#f8f9fa' }}
+                            >
+                                <Card.Body className="d-flex flex-column justify-content-center h-100 px-4">
+                                    <Card.Title
+                                        className="mb-3"
+                                        style={{ fontSize: '1.8rem', fontWeight: '600', color: '#2c3e50' }}
+                                    >
+                                        Dr. {DocData.docname}
+                                    </Card.Title>
 
-                    <Col xs={12} md={6} lg={5} ref={cardRef}>
-                        <Card
-                            className="shadow-lg"
-                            style={{ borderRadius: '15px', minHeight: '280px', backgroundColor: '#f8f9fa' }}
-                        >
-                            <Card.Body className="d-flex flex-column justify-content-center h-100 px-4">
-                                <Card.Title
-                                    className="mb-3"
-                                    style={{ fontSize: '1.8rem', fontWeight: '600', color: '#2c3e50' }}
-                                >
-                                    Dr. {DocData.docname}
-                                </Card.Title>
+                                    <Card.Text className="mb-2" style={{ fontSize: '1.1rem', color: '#34495E' }}>
+                                        <strong>Email:</strong> {DocData.email || 'N/A'}
+                                    </Card.Text>
 
-                                <Card.Text className="mb-2" style={{ fontSize: '1.1rem', color: '#34495E' }}>
-                                    <strong>Email:</strong> {DocData.email || 'N/A'}
-                                </Card.Text>
+                                    <Card.Text className="mb-2" style={{ fontSize: '1.1rem', color: '#34495E' }}>
+                                        <strong>Medical License:</strong> {DocData.license || 'N/A'}
+                                    </Card.Text>
 
-                                <Card.Text className="mb-2" style={{ fontSize: '1.1rem', color: '#34495E' }}>
-                                    <strong>Medical License:</strong> {DocData.license || 'N/A'}
-                                </Card.Text>
+                                    <Card.Text className="mb-2" style={{ fontSize: '1.1rem', color: '#34495E' }}>
+                                        <strong>Educational Qualification:</strong> {DocData.qualification || 'N/A'}
+                                    </Card.Text>
 
-                                <Card.Text className="mb-2" style={{ fontSize: '1.1rem', color: '#34495E' }}>
-                                    <strong>Educational Qualification:</strong> {DocData.qualification || 'N/A'}
-                                </Card.Text>
+                                    <Card.Text className="mb-2" style={{ fontSize: '1.1rem', color: '#34495E' }}>
+                                        <strong>Specialization:</strong> {DocData.specialization || 'N/A'}
+                                    </Card.Text>
 
-                                <Card.Text className="mb-2" style={{ fontSize: '1.1rem', color: '#34495E' }}>
-                                    <strong>Specialization:</strong> {DocData.specialization || 'N/A'}
-                                </Card.Text>
+                                    <Card.Text className="mb-4" style={{ fontSize: '1.1rem', color: '#34495E' }}>
+                                        <strong>Address:</strong> {DocData.address || 'N/A'}
+                                    </Card.Text>
 
-                                <Card.Text className="mb-4" style={{ fontSize: '1.1rem', color: '#34495E' }}>
-                                    <strong>Address:</strong> {DocData.address || 'N/A'}
-                                </Card.Text>
+                                    <Button variant="success" size="md" style={{ fontWeight: '600' }} onClick={handleOpen}>
+                                        Your Schedule
+                                    </Button>
+                                    {showModal && (
+                                        <div className="modal show fade d-block" tabIndex="-1" role="dialog" style={{ minHeight: '700px' }}>
+                                            <div className="modal-dialog modal-dialog-top" role="document">
+                                                <div className="modal-content">
 
-                                <Button variant={colour} size="md" style={{ fontWeight: '600' }} onMouseEnter={() => setOpen(!open)} onMouseLeave={() => setOpen(!open)} onClick={handleAvailability}>
-                                    {DocData.availability == "Available" ? "You are Available for Appointments" : "You are Unavailable for Appointments"}
-                                </Button>
-                                <div style={{ minHeight: '0px' }}>
-                                    <Collapse in={open} dimension="width">
-                                        <div id="example-collapse-text">
-                                            <Card body style={{ width: '400px' }}>
-                                                ⚠️ Clicking this will change your availability status.
-                                                If you are available now clicking it will make you unavailable.
-                                            </Card>
+                                                    <div className="modal-header">
+                                                        <h5 className="modal-title">Set your schedule</h5>
+                                                        <button type="button" className="btn-close" onClick={handlecloseModal}></button>
+                                                    </div>
+                                                    {/* Display selected dates */}
+                                                    <div style={{ marginTop: "10px", marginLeft: '20px', marginRight: '20px' }}>
+                                                        <Card.Text className="mb-4" style={{ fontSize: '1.1rem', color: '#34495E' }}>
+                                                            <strong>You will not recieve appointments on selected days.</strong>
+                                                            {/* <ul>
+                                                                {selectedDates.map((date, index) => (
+                                                                    <li key={index}>{date}</li>
+                                                                ))}
+                                                            </ul> */}
+                                                        </Card.Text>
+                                                    </div>
+
+                                                    <div className="modal-body d-flex justify-content-center">
+                                                        <DatePicker style={{minWidth:'400px'}}
+                                                            multiple
+                                                            value={selectedDates}
+                                                            onChange={handleDateChange}
+                                                            format="YYYY-MM-DD"
+                                                            minDate={new Date()}
+                                                            highlightToday
+                                                            onlyCalendar
+                                                            inline
+                                                            sort
+                                                            mapDays={({ date }) => {
+                                                                const dateStr = date.format("YYYY-MM-DD")
+                                                                const isUnavailable = markedDates.includes(dateStr)
+                                                                return {
+                                                                    style: isUnavailable
+                                                                        ? { backgroundColor: "#3498db", color: "white", borderRadius: "50%" }
+                                                                        : {}
+                                                                };
+                                                            }}
+                                                        />
+                                                    </div>
+
+                                                    <div className="modal-footer">
+                                                        <button className="btn btn-secondary" onClick={handlecloseModal}>
+                                                            Cancel
+                                                        </button>
+                                                        <button className="btn btn-success" onClick={handleAvailability} onMouseEnter={() => setOpen(!open)} onMouseLeave={() => setOpen(!open)}>
+                                                            Set Dates
+                                                        </button>
+                                                        {/* <div style={{ minHeight: '0px' }}>
+                                                            <Collapse in={open} dimension="height">
+                                                                <div id="example-collapse-text">
+                                                                    <Card body style={{ width: '400px' }}>
+                                                                        ⚠️ You will not recieve any appointments on selected dates.
+                                                                    </Card>
+                                                                </div>
+                                                            </Collapse>
+                                                        </div> */}
+                                                    </div>
+
+                                                </div>
+                                            </div>
                                         </div>
-                                    </Collapse>
-                                </div>
+                                    )}
 
-                                <div className="d-flex gap-3 justify-content-center mt-3">
-                                    <Button variant="outline-warning" size="md" style={{ fontWeight: '600' }} onClick={handleShow}>
-                                        📝 Edit Profile
-                                    </Button>
-                                    <Button variant="outline-danger" size="md" style={{ fontWeight: '600' }} onClick={handleLogout}>
-                                        📤 Logout
-                                    </Button>
-                                </div>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                </Row>
-            </Container>
+                                    <div className="d-flex gap-3 justify-content-center mt-3">
+                                        <Button variant="outline-warning" size="md" style={{ fontWeight: '600' }} onClick={handleShow}>
+                                            📝 Edit Profile
+                                        </Button>
+                                        <Button variant="outline-danger" size="md" style={{ fontWeight: '600' }} onClick={handleLogout}>
+                                            📤 Logout
+                                        </Button>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Container>
             </div>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -309,7 +395,7 @@ export default function DoctorProfile() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Footer/>
+            <Footer />
         </>
     )
 }

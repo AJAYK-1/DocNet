@@ -79,7 +79,8 @@ export default function Appointment() {
                   <div className="card-body d-flex flex-column">
                     <h5 className="card-title text-danger">
                       Your Appointment to Dr. {appointment.doctorId?.docname || 'N/A'}
-                    </h5>
+                    </h5> 
+                    <h5 className='card-subtitle text-primary'>{appointment.appointmentDate}</h5>
                     <p className="card-text mb-1">
                       <strong>Patient Name:</strong> {appointment.patientName}
                     </p>
@@ -108,7 +109,7 @@ export default function Appointment() {
                 >
                   <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                      Prescription for {appointment.patientName}
+                      Your Prescription 
                     </Modal.Title>
                   </Modal.Header>
                   <Modal.Body>

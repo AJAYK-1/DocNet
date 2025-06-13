@@ -47,17 +47,34 @@ const viewLoggedDoctor = async (req, res) => {
 
 const changeAvalibility = async(req,res) => {
     try {
-        const {id,statusChange} = req.body
-        console.log(statusChange)
+        const {id,schedule} = req.body
+        console.log(schedule)
         const LoggedDoctor = await Doctor.findById(id)
-        console.log(LoggedDoctor)
-        LoggedDoctor.availability = statusChange
+        schedule.forEach(entry => {
+            const existingEntryIndex = LoggedDoctor.schedule.findIndex(
+                s => s.dates === entry.dates
+            );
+
+            if (existingEntryIndex !== -1) {
+                // Entry exists — toggle the availability
+                const currentAvailability = LoggedDoctor.schedule[existingEntryIndex].availability;
+                LoggedDoctor.schedule[existingEntryIndex].availability =
+                    currentAvailability === "Available" ? "Unavailable" : "Available";
+            } else {
+                // Entry doesn't exist — add it as new
+                LoggedDoctor.schedule.push({
+                    dates: entry.dates,
+                    availability: "Unavailable"
+                });
+            }
+        });
         await LoggedDoctor.save()
         res.json({msg: "Availability status changed", status : 200})
     } catch(err) {
         console.log(err)
     }
 }
+
 
 const doctorProfileEdit = async(req,res) => {
     try{

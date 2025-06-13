@@ -6,7 +6,8 @@ const appointmentSchema = new mongoose.Schema({
     patientName: { type: String },
     patientAge: { type: String },
     patientGender: { type: String },
-    patientSymptoms: { type: String }
+    patientSymptoms: { type: String },
+    appointmentDate: {type: String }
 }, { timestamps: true })
 
 const Appointment = mongoose.model("Appointment_tbl", appointmentSchema)

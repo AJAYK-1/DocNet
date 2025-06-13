@@ -10,7 +10,12 @@ const doctorSchema = new mongoose.Schema({
     qualification: { type: String },
     specialization: { type: String },
     profileImage: { type: String },
-    availability: { type: String, default: "Available" },
+    schedule: [
+        {
+            dates: { type: String },
+            availability: { type: String, default: "Uavailable" }
+        }
+    ],
     doctorStatus: { type: String, default: "Active" },
 }, { timestamps: true })
 
