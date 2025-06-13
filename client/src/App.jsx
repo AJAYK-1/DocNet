@@ -18,6 +18,7 @@ import GetMyPrescription from './components/user/getprescription'
 import DoctorProfile from './components/doctor/doctorprofile'
 import AdminViewDoctors from './components/admin/adminviewdoctors'
 import About from './components/about';
+import AppointmentHistory from './components/doctor/appointmenthistory';
 
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
           <Route path='/viewappointment' element={<DoctorViewAppointment />} />
           <Route path='/addprescription/:id' element={<AddPrescription />} />
           <Route path='/viewprescription' element={<ViewPrescription/>} />
+          <Route path='/appointmenthistory' element={<AppointmentHistory/>} />
 
         </Routes>
       </BrowserRouter>

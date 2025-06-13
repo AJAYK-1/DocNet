@@ -8,6 +8,8 @@ import Container from 'react-bootstrap/Container'
 import Card from 'react-bootstrap/Card'
 import HomeNavbar from './homenavbar'
 import Footer from './footer'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function Login() {
@@ -31,19 +33,21 @@ export default function Login() {
     } else {
       AXIOS.post('http://localhost:9000/api/user/login', UserData)
         .then((res) => {
-          console.log(res.data.token)
-          alert(res.data.msg)
           if (res.data.status === 200) {
+            toast.success(res.data.msg)
             localStorage.setItem('token', res.data.token)
             navigate('/userhome')
           } else if (res.data.status === 201) {
+            toast.success(res.data.msg)
             localStorage.setItem('token', res.data.token)
             navigate('/doctorhome')
+          } else {
+            toast.error(res.data.msg)
           }
         })
         .catch((error) => {
           console.log(error)
-          alert('Login failed...')
+          toast.error('Login failed...')
         })
     }
   }
@@ -51,6 +55,7 @@ export default function Login() {
   return (
     <>
       <HomeNavbar />
+      <ToastContainer position="top-center" autoClose={3000} />
       <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
         <Card style={{ width: '100%', maxWidth: '450px', padding: '30px', borderRadius: '15px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
           <h2 className="text-center mb-4" style={{ fontFamily: "'Poppins', sans-serif", color: '#2c3e50' }}>Login</h2>

@@ -11,7 +11,7 @@ const registerUser = async (req, res) => {
 
         const ExistingUser = await User.findOne({ email })
         if (ExistingUser) {
-            res.json({ msg: "Regisration failed... User already exist..." })
+            res.json({ msg: "Regisration failed... User already exist...", status: 400 })
         }
         else {
             const userdata = await User({
@@ -20,10 +20,11 @@ const registerUser = async (req, res) => {
                 password
             })
             await userdata.save()
-            res.json({ msg: "Data Registered Successfully..." })
+            res.json({ msg: "Data Registered Successfully...", status: 200 })
         }
     } catch (err) {
         console.log(err)
+        res.json({ msg: "Registration Error...", status: 404 })
     }
 }
 
@@ -50,7 +51,7 @@ const userlogin = async (req, res) => {
                 res.json({ msg: "Incorrect Email or Password...", status: 400 })
             }
         } else if (LoggedUser.userStatus == "Deactivated" && LoggedDoctor.doctorStatus == "Deactivated") {
-            res.json({ msg: "Your Account has been deactivated. Unable to login..." })
+            res.json({ msg: "Your Account has been deactivated. Unable to login...", status: 404 })
         }
     } catch (err) {
         console.log(err)

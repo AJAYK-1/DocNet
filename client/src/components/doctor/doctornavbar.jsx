@@ -24,12 +24,18 @@ export default function DoctorNavbar() {
                     <Navbar.Toggle aria-controls="navbarScroll" />
                     <Navbar.Collapse id="navbarScroll">
                         <Nav
-                            className="me-auto my-2 my-lg-0"
-                            style={{ maxHeight: '100px' }}
+                            className="ms-auto my-2 my-lg-0"
+                            style={{ maxHeight: '100px',maxWidth:'100%' }}
                             navbarScroll
                         >
                             <Nav.Link href="/doctorhome">Home</Nav.Link>
-                            <Nav.Link href="/viewappointment">Appointments</Nav.Link>
+                            <NavDropdown title="Appointments" id="navbarScrollingDropdown">
+                                <NavDropdown.Item href="/viewappointment">New</NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item href="/appointmenthistory">
+                                    History
+                                </NavDropdown.Item>
+                            </NavDropdown>
                             <Nav.Link href="/viewprescription">Presciptions</Nav.Link>
                             <NavDropdown title="Account" id="navbarScrollingDropdown">
                                 <NavDropdown.Item href="/doctorprofile">My Profile</NavDropdown.Item>
@@ -39,15 +45,7 @@ export default function DoctorNavbar() {
                                 </NavDropdown.Item>
                             </NavDropdown>
                         </Nav>
-                        <Form className="d-flex">
-                            <Form.Control
-                                type="search"
-                                placeholder="Search"
-                                className="me-2"
-                                aria-label="Search"
-                            />
-                            <Button variant="outline-success">Search</Button>
-                        </Form>
+                        
                     </Navbar.Collapse>
                 </Container>
             </Navbar>

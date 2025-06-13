@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import AXIOS from 'axios';
 import HomeNavbar from './homenavbar';
 import Footer from './footer';
+import { toast } from 'react-toastify';
 
 export default function CombinedRegistration() {
   const [userForm, setUserForm] = useState({
@@ -34,12 +35,16 @@ export default function CombinedRegistration() {
     e.preventDefault();
     AXIOS.post("http://localhost:9000/api/user/registeruser", userForm)
       .then((res) => {
-        alert(res.data.msg);
-        setUserForm({ username: '', email: '', password: '' });
-        navigate('/login');
+        if (res.data.status == 200) {
+          toast.success(res.data.msg);
+          setUserForm({ username: '', email: '', password: '' });
+          navigate('/login');
+        } else if (res.data.status == 400) {
+          toast.error(res.data.msg)
+        }
       }).catch((err) => {
         console.log(err);
-        alert("User Registration Error");
+        toast.error(res.data.msg);
       });
   };
 
@@ -68,13 +73,17 @@ export default function CombinedRegistration() {
       headers: { "Content-Type": "multipart/form-data" }
     })
       .then((res) => {
-        alert("Doctor Registered Successfully");
-        setDoctorForm({ docname: '', email: '', password: '', address: '', license: '', qualification: '', specialization: '' });
-        setDoctorImage(null);
-        navigate('/login');
+        if (res.data.status == 200) {
+          toast.success("Doctor Registered Successfully");
+          setDoctorForm({ docname: '', email: '', password: '', address: '', license: '', qualification: '', specialization: '' });
+          setDoctorImage(null);
+          navigate('/login');
+        } else if (res.data.status == 400) {
+          toast.error(res.data.msg)
+        }
       }).catch((err) => {
         console.log(err);
-        alert("Doctor Registration Error");
+        toast.error(res.data.msg);
       });
   };
 
@@ -99,11 +108,11 @@ export default function CombinedRegistration() {
             <Form onSubmit={handleUserSubmit}>
 
               <FloatingLabel controlId="floatingUserName" label="Your Name" className="mb-3">
-                <Form.Control type="text" name="username" value={userForm.username} onChange={handleUserChange} placeholder="Enter your name" />
+                <Form.Control type="text" name="username" value={userForm.username} onChange={handleUserChange} placeholder="Enter your name" required />
               </FloatingLabel>
 
               <FloatingLabel controlId="floatingEmail" label="Email" className="mb-3">
-                <Form.Control type="email" name="email" value={userForm.email} onChange={handleUserChange} placeholder="Enter email" />
+                <Form.Control type="email" name="email" value={userForm.email} onChange={handleUserChange} placeholder="Enter email" required />
                 <Form.Text className="text-muted">
                   We'll never share your email with anyone else.
                 </Form.Text>
@@ -111,7 +120,7 @@ export default function CombinedRegistration() {
 
 
               <FloatingLabel controlId="floatingPassword" label="Password" className="mb-3">
-                <Form.Control type="password" name="password" value={userForm.password} onChange={handleUserChange} placeholder="Password" />
+                <Form.Control type="password" name="password" value={userForm.password} onChange={handleUserChange} placeholder="Password" required />
               </FloatingLabel>
 
               <Form.Group className="mb-3">
@@ -133,26 +142,26 @@ export default function CombinedRegistration() {
             <Form onSubmit={handleDoctorSubmit}>
 
               <FloatingLabel controlId="floatingDocName" label="Doctor Name" className="mb-3">
-                <Form.Control type="text" name="docname" onChange={handleDoctorChange} placeholder="Enter name" />
+                <Form.Control type="text" name="docname" onChange={handleDoctorChange} placeholder="Enter name" required />
               </FloatingLabel>
 
               <FloatingLabel controlId="floatingDocEmail" label="Email address" className="mb-3">
-                <Form.Control type="email" name="email" onChange={handleDoctorChange} placeholder="Enter email" />
+                <Form.Control type="email" name="email" onChange={handleDoctorChange} placeholder="Enter email" required />
                 <Form.Text className="text-muted">
                   We'll never share your email with anyone else.
                 </Form.Text>
               </FloatingLabel>
 
               <FloatingLabel controlId="floatingDocPassword" label="Password" className="mb-3">
-                <Form.Control type="password" name="password" onChange={handleDoctorChange} placeholder="Password" />
+                <Form.Control type="password" name="password" onChange={handleDoctorChange} placeholder="Password" required />
               </FloatingLabel>
 
               <FloatingLabel controlId="floatingLicense" label="Medical License Number" className="mb-3">
-                <Form.Control type="text" name="license" onChange={handleDoctorChange} placeholder="Enter Medical License Number" />
+                <Form.Control type="text" name="license" onChange={handleDoctorChange} placeholder="Enter Medical License Number" required />
               </FloatingLabel>
 
               <FloatingLabel controlId="floatingQualification" label="Educational Qualification" className="mb-3">
-                <Form.Control type="text" name="qualification" onChange={handleDoctorChange} placeholder="Enter Educational Qualification" />
+                <Form.Control type="text" name="qualification" onChange={handleDoctorChange} placeholder="Enter Educational Qualification" required />
               </FloatingLabel>
 
               <FloatingLabel controlId="floatingSpecialization" label="Specialization" className="mb-3">
@@ -194,7 +203,7 @@ export default function CombinedRegistration() {
                   </optgroup> </Form.Select> </FloatingLabel>
 
               <FloatingLabel controlId="floatingDocAddress" label="Address" className="mb-3">
-                <Form.Control as="textarea" name="address" onChange={handleDoctorChange} style={{ height: '100px' }} placeholder="Enter address" />
+                <Form.Control as="textarea" name="address" onChange={handleDoctorChange} style={{ height: '100px' }} placeholder="Enter address" required />
               </FloatingLabel>
 
               <Form.Group className="mb-3">

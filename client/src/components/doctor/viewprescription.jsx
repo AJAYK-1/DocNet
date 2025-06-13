@@ -4,7 +4,7 @@ import { jwtDecode } from 'jwt-decode'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import DoctorNavbar from './doctornavbar'
 import { Card, Container, Row, Col } from 'react-bootstrap'
-import { FaNotesMedical, FaUser, FaPills } from 'react-icons/fa'
+import { FaNotesMedical, FaUser, FaPills,FaRegCommentDots } from 'react-icons/fa'
 import Footer from '../footer'
 
 
@@ -55,12 +55,26 @@ export default function ViewPrescription() {
                                                     </Card.Title>
                                                     <Card.Text>
                                                         <strong>Quantity:</strong> {item.quantity}<br />
-                                                        <strong>Dosage:</strong> {item.dosage}
+                                                        <strong>Dosage:</strong> {item.dosage} <br />
                                                     </Card.Text>
                                                 </Card.Body>
                                             </Card>
                                         </Col>
                                     ))}
+                                    <Col md={4} sm={6} xs={12} >
+                                            <Card className="h-100 border-success border-4">
+                                                <Card.Body>
+                                                    <Card.Title className="text-primary">
+                                                        <FaRegCommentDots className="me-2 text-dark mb-1" />
+                                                        <strong>Mention:</strong> 
+                                                    </Card.Title>
+                                                    <Card.Text>
+                                                        <strong>{presc.mention}</strong> 
+                                                        
+                                                    </Card.Text>
+                                                </Card.Body>
+                                            </Card>
+                                        </Col>
                                 </Row>
                             </Card.Body>
                         </Card>

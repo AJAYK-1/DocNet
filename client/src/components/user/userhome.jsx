@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import AXIOS from 'axios';
 import UserNavbar from './usernavbar';
 import Footer from '../footer';
-import { Form, FloatingLabel, Modal, Card, Button } from 'react-bootstrap';
+import { Form, FloatingLabel, Modal, Card, Button, Toast } from 'react-bootstrap';
 import { BsGeoAltFill, BsCalendarCheck, BsPersonWorkspace, BsPersonCircle, BsFileEarmarkText } from "react-icons/bs";
 import { FaHeartbeat } from 'react-icons/fa';
 import { jwtDecode } from 'jwt-decode';
 import DatePicker, { DateObject } from 'react-multi-date-picker';
+import { toast } from 'react-toastify';
+
 
 export default function UserHome() {
     const [DocProfiles, setDocProfiles] = useState([]);
@@ -73,10 +75,11 @@ export default function UserHome() {
             appointmentDate: appointDate
         })
             .then((res) => {
-                alert(res.data.msg);
+                toast.success(res.data)
                 handleClose();
             }).catch((err) => {
                 console.log(err);
+                toast.error(err)
             });
     };
 

@@ -9,7 +9,8 @@ const prescriptionSchema = new mongoose.Schema({
             quantity: { type: String },
             dosage: { type: String }
         }
-    ]
+    ],
+    mention: {type:String}
 }, { timestamps: true })
 
 const Prescription = mongoose.model("Prescription_tbl", prescriptionSchema)

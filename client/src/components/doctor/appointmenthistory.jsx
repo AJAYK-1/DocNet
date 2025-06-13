@@ -1,12 +1,12 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { jwtDecode } from 'jwt-decode'
-import { useNavigate } from 'react-router-dom'
 import DoctorNavbar from './doctornavbar'
-import { FaHeartbeat } from 'react-icons/fa'
+import { FaFirstAid} from 'react-icons/fa'
 import Footer from '../footer'
 
-export default function DoctorViewAppointment() {
+
+export default function AppointmentHistory() {
   const doctorstoken = localStorage.getItem('token')
   const decodedtoken = jwtDecode(doctorstoken)
 
@@ -14,7 +14,6 @@ export default function DoctorViewAppointment() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filteredAppointments, setFilteredAppointments] = useState([])
 
-  const navigate = useNavigate()
 
  useEffect(() => {
   axios
@@ -23,7 +22,7 @@ export default function DoctorViewAppointment() {
     })
     .then((res) => {
       const pendingAppointments = res.data.filter(
-        (a) => a.appointmentStatus === 'Pending'
+        (a) => a.appointmentStatus === 'Complete'
       );
       const sorted = pendingAppointments.sort(
         (a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate)
@@ -47,9 +46,6 @@ export default function DoctorViewAppointment() {
     setFilteredAppointments(filtered)
   }, [searchTerm, Appointments])
 
-  const handleButton = (id) => {
-    navigate(`/addprescription/${id}`)
-  }
 
   return (
     <>
@@ -67,12 +63,12 @@ export default function DoctorViewAppointment() {
             textShadow: '10px 5px 1px rgba(0,0,0,0.1)'
           }}
         >
-          <FaHeartbeat style={{
+          <FaFirstAid style={{
             marginRight: '10px',
-            color: '#E74C3C',
+            color: 'rgb(17, 129, 2)',
             filter: 'drop-shadow(10px 2px 2px rgba(0,0,0,0.3))'
           }} />
-          Your Appointments
+          Your Appointment History
         </h2>
 
         {/* Search Input */}
@@ -97,8 +93,8 @@ export default function DoctorViewAppointment() {
                 <div className="card shadow-sm h-100">
                   <div className="card-body d-flex flex-column">
                     <div className="d-flex justify-content-between align-items-center mb-2">
-                      <h5 className="card-title text-danger m-0">
-                        An appointment from {appointment.userId?.username || 'N/A'}
+                      <h5 className="card-title text-success m-0">
+                        Appointment from {appointment.userId?.username || 'N/A'}
                       </h5>
                       <h6 className="text-primary m-0" style={{ whiteSpace: 'nowrap' }}>
                         {appointment.appointmentDate}
@@ -117,12 +113,7 @@ export default function DoctorViewAppointment() {
                     <p className="card-text mb-3">
                       <strong>Symptoms:</strong> {appointment.patientSymptoms}
                     </p>
-                    <button
-                      className="btn btn-outline-info mt-auto"
-                      onClick={() => handleButton(appointment._id)}
-                    >
-                      💊 Prescribe Medicines
-                    </button>
+                    
                   </div>
                 </div>
               </div>
