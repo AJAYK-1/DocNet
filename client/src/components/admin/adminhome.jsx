@@ -11,7 +11,6 @@ import {
   PieChart, Pie, Cell, Legend
 } from 'recharts'
 
-
 export default function Adminhome() {
   const navigate = useNavigate()
   const [Calculations, setCalculations] = useState([])
@@ -30,26 +29,21 @@ export default function Adminhome() {
       })
   }, [])
 
-  const chartData = [
-    { name: 'Users', value: Calculations.numberOfUsers || 0 },
-    { name: 'Doctors', value: Calculations.numberOfDoctors || 0 },
-    { name: 'Appointments', value: Calculations.numberOfAppointments || 0 },
-    { name: 'Prescriptions', value: Calculations.numberOfPrescriptions || 0 },
-  ]
-
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <AdminNavbar />
-      <h2 className="text-center mb-4" style={{ borderBottom: '2px solid #BDC3C7', paddingBottom: '0.2rem' }}>
-        <i className="bi bi-speedometer2 me-2"></i>Admin Dashboard
-      </h2>
-      <div style={{ minHeight: '500px', background: 'grey', borderRadius: '30px', padding: '80px 0px', margin: '50px' }}>
-        <Container className="my-5">
 
-          <Container className="my-5">
-            <h2 className="text-center mb-4 " style={{ borderBottom: '2px solid #BDC3C7' }}>
-              <i className="bi bi-speedometer2 me-2"></i>MANAGEMENT SECTION
-            </h2>
+      <div style={{ flex: 1, backgroundColor: '#f8f9fa', padding: '20px' }}>
+        <Container fluid>
+          <h2 className="text-center mb-4" style={{ borderBottom: '2px solid #BDC3C7', paddingBottom: '0.2rem' }}>
+            <i className="bi bi-speedometer2 me-2"></i>Admin Dashboard
+          </h2>
+
+          {/* Management Section */}
+          <Container className="mb-4">
+            <h4 className="text-center mb-4" style={{ borderBottom: '2px solid #BDC3C7' }}>
+              <i className="bi bi-tools me-2"></i>Management Section
+            </h4>
             <Row className="g-4 justify-content-center">
               <Col md={5}>
                 <Card className="text-center shadow-sm border-primary">
@@ -77,20 +71,14 @@ export default function Adminhome() {
               </Col>
             </Row>
           </Container>
-        </Container>
 
-        {/* Chart + Stats Section */}
-        <Container className="my-5">
-          <h2 className="text-center mb-4" style={{ borderBottom: '2px solid #BDC3C7' }}>
-            <i className="bi bi-bar-chart-fill me-2"></i>System Overview
-          </h2>
-          <Row>
-            {/* Left: Charts */}
+          {/* Charts + Stat Cards Section */}
+          <Row className="align-items-start g-4">
             <Col md={7}>
-              {/* Chart 1: Users vs Doctors */}
-              <div className="mb-4" style={{ boxShadow: '5px 5px 5px', borderRadius: '30px', background: 'white' }}>
-                <h5 className="text-center mb-5 mt-2" style={{}}>Users vs Doctors</h5>
-                <ResponsiveContainer width="100%" height={350}>
+              {/* Bar Chart: Users vs Doctors */}
+              <Card className="p-3 shadow-sm mb-4">
+                <h5 className="text-center mb-3">Users vs Doctors</h5>
+                <ResponsiveContainer width="100%" height={300}>
                   <BarChart
                     data={[
                       { name: 'Users', value: Calculations.numberOfUsers || 0 },
@@ -103,17 +91,17 @@ export default function Adminhome() {
                     <YAxis allowDecimals={false} />
                     <Tooltip />
                     <Bar dataKey="value" barSize={40}>
-                      <Cell fill="#28a745" /> {/* Green for Users */}
-                      <Cell fill="#17a2b8" /> {/* Info Blue for Doctors */}
+                      <Cell fill="#28a745" />
+                      <Cell fill="#17a2b8" />
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
-              </div>
+              </Card>
 
-              {/* Chart 2: Appointments vs Prescriptions */}
-              <div className="mb-4" style={{ boxShadow: '5px 5px 5px', borderRadius: '20px', background: 'white' }}>
-                <h5 className="text-center mb-4 mt-4" style={{ borderBottom: '2px solid rgb(21, 116, 179)' }}>Appointments vs Prescriptions</h5>
-                <ResponsiveContainer width="100%" height={300}>
+              {/* Pie Chart: Appointments vs Prescriptions */}
+              <Card className="p-3 shadow-sm">
+                <h5 className="text-center mb-3">Appointments vs Prescriptions</h5>
+                <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
                     <Pie
                       data={[
@@ -124,7 +112,7 @@ export default function Adminhome() {
                       nameKey="name"
                       cx="50%"
                       cy="50%"
-                      outerRadius={100}
+                      outerRadius={80}
                       label
                     >
                       <Cell fill="#007bff" />
@@ -134,70 +122,58 @@ export default function Adminhome() {
                     <Legend verticalAlign="bottom" height={36} />
                   </PieChart>
                 </ResponsiveContainer>
-              </div>
+              </Card>
             </Col>
 
-            {/* Right: Stat Cards */}
-            <div
-  className="mb-4"
-  style={{
-    boxShadow: '5px 5px 5px rgba(0,0,0,0.1)',
-    borderRadius: '20px',
-    background: 'white',
-    padding: '30px',
-    width: '400px',
-    marginLeft: 'auto' // Aligns to the right
-  }}
->
-  <Row className="gy-4">
-    <Col md={12}>
-      <Card className="text-center shadow-sm border-info border-5" style={{ fontSize: '14px' }}>
-        <Card.Body>
-          <FontAwesomeIcon className="fa-2x mb-2 text-info" icon={faUsers} />
-          <Card.Title>Total Users</Card.Title>
-          <Card.Text style={{ fontSize: '22px' }}>{Calculations.numberOfUsers}</Card.Text>
-        </Card.Body>
-      </Card>
-    </Col>
+            {/* Stat Cards */}
+            <Col md={5}>
+              <Row className="gy-4">
+                <Col xs={12}>
+                  <Card className="text-center shadow-sm border-info border-4">
+                    <Card.Body>
+                      <FontAwesomeIcon className="fa-2x mb-2 text-info" icon={faUsers} />
+                      <Card.Title>Total Users</Card.Title>
+                      <Card.Text style={{ fontSize: '22px' }}>{Calculations.numberOfUsers}</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
 
-    <Col md={12}>
-      <Card className="text-center shadow-sm border-danger border-5" style={{ fontSize: '14px' }}>
-        <Card.Body>
-          <FontAwesomeIcon className="fa-2x mb-2 text-danger" icon={faUserDoctor} />
-          <Card.Title>Total Doctors</Card.Title>
-          <Card.Text style={{ fontSize: '22px' }}>{Calculations.numberOfDoctors}</Card.Text>
-        </Card.Body>
-      </Card>
-    </Col>
+                <Col xs={12}>
+                  <Card className="text-center shadow-sm border-danger border-4">
+                    <Card.Body>
+                      <FontAwesomeIcon className="fa-2x mb-2 text-danger" icon={faUserDoctor} />
+                      <Card.Title>Total Doctors</Card.Title>
+                      <Card.Text style={{ fontSize: '22px' }}>{Calculations.numberOfDoctors}</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
 
-    <Col md={12}>
-      <Card className="text-center shadow-sm border-warning border-5" style={{ fontSize: '14px' }}>
-        <Card.Body>
-          <FontAwesomeIcon className="fa-2x mb-2 text-warning" icon={faCalendarCheck} />
-          <Card.Title>Total Appointments</Card.Title>
-          <Card.Text style={{ fontSize: '22px' }}>{Calculations.numberOfAppointments}</Card.Text>
-        </Card.Body>
-      </Card>
-    </Col>
+                <Col xs={12}>
+                  <Card className="text-center shadow-sm border-warning border-4">
+                    <Card.Body>
+                      <FontAwesomeIcon className="fa-2x mb-2 text-warning" icon={faCalendarCheck} />
+                      <Card.Title>Total Appointments</Card.Title>
+                      <Card.Text style={{ fontSize: '22px' }}>{Calculations.numberOfAppointments}</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
 
-    <Col md={12}>
-      <Card className="text-center shadow-sm border-success border-5" style={{ fontSize: '14px' }}>
-        <Card.Body>
-          <FontAwesomeIcon className="fa-2x mb-2 text-success" icon={faPrescriptionBottleMedical} />
-          <Card.Title>Total Prescriptions</Card.Title>
-          <Card.Text style={{ fontSize: '22px' }}>{Calculations.numberOfPrescriptions}</Card.Text>
-        </Card.Body>
-      </Card>
-    </Col>
-  </Row>
-</div>
-
+                <Col xs={12}>
+                  <Card className="text-center shadow-sm border-success border-4">
+                    <Card.Body>
+                      <FontAwesomeIcon className="fa-2x mb-2 text-success" icon={faPrescriptionBottleMedical} />
+                      <Card.Title>Total Prescriptions</Card.Title>
+                      <Card.Text style={{ fontSize: '22px' }}>{Calculations.numberOfPrescriptions}</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+            </Col>
           </Row>
-
         </Container>
-
       </div>
+
       <Footer />
-    </>
+    </div>
   )
 }

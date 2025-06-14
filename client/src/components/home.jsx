@@ -1,11 +1,10 @@
 import React, { useRef } from 'react'
-import { Container, Row, Col, Button, Card } from 'react-bootstrap'
+import { Container, Row, Col, Button, Card, Carousel } from 'react-bootstrap'
 import HomeNavbar from './homenavbar'
 import Footer from './footer'
 import { FaUserMd, FaNotesMedical, FaLaptopMedical } from 'react-icons/fa'
-import Carousel from 'react-bootstrap/Carousel';
-import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
+import { HomePageHeroSection } from './gsapAnimation'
 
 
 export default function Home() {
@@ -17,26 +16,8 @@ export default function Home() {
     const registerRef = useRef()
 
     useGSAP(() => {
-        gsap.fromTo(firstDivRef.current, {
-            y: 200, opacity: 0
-        }, { y: 0, delay: 1, opacity: 1, duration: 0.5 })
-
-        gsap.fromTo(welcomeRef.current, {
-            x: 500, opacity: 0
-        }, { x: 0, duration: 2, delay: 1, opacity: 1 })
-
-        gsap.fromTo(statementRef.current, {
-            x: -500, opacity: 0
-        }, { x: 0, delay: 1, opacity: 1, duration: 2 })
-
-        gsap.fromTo(loginRef.current, {
-            y: 200,
-        }, { y: 0, delay: 1, duration: 3 })
-
-        gsap.fromTo(registerRef.current, {
-            y: -700
-        }, { y: 0,delay:1, duration: 3 })
-    })
+        HomePageHeroSection({ firstDivRef, welcomeRef, statementRef, loginRef, registerRef })
+    },[])
 
     return (
         <>

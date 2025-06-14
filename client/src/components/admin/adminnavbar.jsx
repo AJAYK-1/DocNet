@@ -16,7 +16,7 @@ export default function AdminNavbar() {
 
     return (
         <>
-            <Navbar expand={false} bg="dark" variant="dark" className="mb-3">
+            <Navbar expand={false} sticky="top" bg="dark" variant="dark" className="mb-3">
                 <Container fluid>
                     <Navbar.Brand href="#" className="fw-bold text-light">DocNet</Navbar.Brand>
                     <Navbar.Toggle aria-controls="offcanvasNavbar-expand-false" />

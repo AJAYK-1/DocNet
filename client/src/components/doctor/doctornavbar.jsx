@@ -18,7 +18,7 @@ export default function DoctorNavbar() {
     }
     return (
         <>
-            <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
+            <Navbar expand="lg" sticky="top" className="bg-body-tertiary" data-bs-theme="dark">
                 <Container fluid>
                     <Navbar.Brand href="#">DocNet</Navbar.Brand>
                     <Navbar.Toggle aria-controls="navbarScroll" />

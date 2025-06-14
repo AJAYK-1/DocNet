@@ -15,7 +15,7 @@ export default function UserNavbar() {
     return (
         <>
             <ToastContainer position="top-right" autoClose={3000} />
-            <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
+            <Navbar expand="lg" sticky="top" className="bg-body-tertiary" data-bs-theme="dark">
                 <Container fluid>
                     <Navbar.Brand href="#">DocNet</Navbar.Brand>
                     <Navbar.Toggle aria-controls="navbarScroll" />

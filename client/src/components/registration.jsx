@@ -6,6 +6,7 @@ import HomeNavbar from './homenavbar';
 import Footer from './footer';
 import { toast } from 'react-toastify';
 
+
 export default function CombinedRegistration() {
   const [userForm, setUserForm] = useState({
     username: '',
