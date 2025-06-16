@@ -5,7 +5,7 @@ import Footer from './footer'
 import { FaUserMd, FaNotesMedical, FaLaptopMedical } from 'react-icons/fa'
 import { useGSAP } from '@gsap/react'
 import { HomePageContentSection, HomePageHeroSection } from './gsapAnimation'
-import '../App.css'
+import './App.css'
 
 
 export default function Home() {

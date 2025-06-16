@@ -5,7 +5,7 @@ import { Button, Form, FloatingLabel, Container, Card } from 'react-bootstrap';
 import HomeNavbar from './homenavbar'
 import Footer from './footer'
 import { toast } from 'react-toastify';
-import '../App.css'
+import './App.css'
 
 
 export default function Login() {

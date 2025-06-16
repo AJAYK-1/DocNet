@@ -5,6 +5,7 @@ import DoctorNavbar from './doctornavbar'
 import { MdLocalPharmacy } from 'react-icons/md'
 import { Form, FloatingLabel } from 'react-bootstrap'
 import Footer from '../footer'
+import { toast } from 'react-toastify'
 
 export default function AddPrescription() {
     const [rows, setRows] = useState([{ medicine: '', quantity: '', dosage: '' }])
@@ -41,11 +42,16 @@ export default function AddPrescription() {
                 {
                     headers: { id: params.id }
                 }
-            )
-            console.log(res.data)
-            navigate('/viewprescription')
+            ).then((res) => {
+                if (res.data.status == 200) {
+                    console.log(res.data)
+                    toast.success(res.data.msg)
+                    setTimeout(() => navigate('/viewprescription'), 2000);
+                }
+            })
         } catch (err) {
             console.log(err)
+            toast.error(err)
         }
     }
 
@@ -56,7 +62,7 @@ export default function AddPrescription() {
     return (
         <>
             <DoctorNavbar />
-            <div className="container mt-5" style={{ minHeight: '500px' }}>
+            <div className="container mt-5" style={{ minHeight: '600px', padding: '40px' }}>
                 <h2
                     className="text-center mb-4 fw-bold text-dark border-bottom pb-2"
                     style={{
@@ -83,9 +89,9 @@ export default function AddPrescription() {
                             <tbody>
                                 {rows.map((row, index) => (
                                     <tr key={index}>
-                                        <td><input type="text" className="form-control" name="medicine" value={row.medicine} onChange={(e) => handleChange(index, e)} required /></td>
-                                        <td><input type="text" className="form-control" name="quantity" value={row.quantity} onChange={(e) => handleChange(index, e)} required /></td>
-                                        <td><input type="text" className="form-control" name="dosage" value={row.dosage} onChange={(e) => handleChange(index, e)} required /></td>
+                                        <td><input type="text" className="form-control" name="medicine" value={row.medicine} onChange={(e) => handleChange(index, e)} placeholder='Enter Medicine name...' required /></td>
+                                        <td><input type="text" className="form-control" name="quantity" value={row.quantity} onChange={(e) => handleChange(index, e)} placeholder='Enter Quantity...' required /></td>
+                                        <td><input type="text" className="form-control" name="dosage" value={row.dosage} onChange={(e) => handleChange(index, e)} placeholder='Enter Dosage...' required /></td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -103,7 +109,7 @@ export default function AddPrescription() {
                                 name="mention"
                                 value={mention}
                                 onChange={handleMentionChange}
-                                style={{ height: '70px' }}
+                                style={{ height: '70px', background: 'rgba(204, 238, 241, 0.46)' }}
                                 placeholder="Enter mention"
                             />
                         </FloatingLabel>

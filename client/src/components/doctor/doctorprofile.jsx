@@ -12,6 +12,7 @@ import Footer from '../footer'
 import { useGSAP } from '@gsap/react'
 import DatePicker, { DateObject } from "react-multi-date-picker"
 import "react-datepicker/dist/react-datepicker.css";
+import { toast } from 'react-toastify'
 
 
 export default function DoctorProfile() {
@@ -30,10 +31,6 @@ export default function DoctorProfile() {
     });
     const [doctorImage, setDoctorImage] = useState(null);
     const [open, setOpen] = useState(false);
-
-
-
-
 
 
     useEffect(() => {
@@ -86,10 +83,15 @@ export default function DoctorProfile() {
         handleClose()
         AXIOS.put('http://localhost:9000/api/doctor/doctoreditprofile', newData, { headers: { id: decoded.id } })
             .then((res) => {
-                window.location.reload()
-                alert(res.data.msg)
+                if(res.data.status == 200) {
+                    toast.success(res.data.msg)
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 2000);
+                }
             }).catch((err) => {
                 console.log(err)
+                toast.error(err)
             })
     }
 
@@ -114,7 +116,7 @@ export default function DoctorProfile() {
         AXIOS.put('http://localhost:9000/api/doctor/changeavailability', { id: decoded.id, schedule: formattedSchedule }
         ).then((res) => {
             window.location.reload()
-            alert(res.data.msg)
+            toast.success(res.data.msg)
         }).catch((err) => {
             console.log(err)
         })
@@ -282,15 +284,7 @@ export default function DoctorProfile() {
                                                         <button className="btn btn-success" onClick={handleAvailability} onMouseEnter={() => setOpen(!open)} onMouseLeave={() => setOpen(!open)}>
                                                             Set Dates
                                                         </button>
-                                                        {/* <div style={{ minHeight: '0px' }}>
-                                                            <Collapse in={open} dimension="height">
-                                                                <div id="example-collapse-text">
-                                                                    <Card body style={{ width: '400px' }}>
-                                                                        ⚠️ You will not recieve any appointments on selected dates.
-                                                                    </Card>
-                                                                </div>
-                                                            </Collapse>
-                                                        </div> */}
+                                                        
                                                     </div>
 
                                                 </div>
@@ -316,7 +310,7 @@ export default function DoctorProfile() {
                 <Modal.Header closeButton>
                     <Modal.Title>✏️ Edit your profile</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body style={{background:'rgba(143, 211, 229, 0.33)'}}>
                     <Form>
                         <FloatingLabel controlId="floatingDocName" label="Doctor Name" className="mb-3">
                             <Form.Control type="text" name="docname" value={ProfileEdit.docname} onChange={handleChange} placeholder="Enter name" />

@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import DoctorNavbar from './doctornavbar'
-import { FaFirstAid} from 'react-icons/fa'
+import { FaFirstAid } from 'react-icons/fa'
 import Footer from '../footer'
 
 
@@ -15,25 +15,25 @@ export default function AppointmentHistory() {
   const [filteredAppointments, setFilteredAppointments] = useState([])
 
 
- useEffect(() => {
-  axios
-    .get('http://localhost:9000/api/doctor/fetchappointments', {
-      headers: { id: decodedtoken.id },
-    })
-    .then((res) => {
-      const pendingAppointments = res.data.filter(
-        (a) => a.appointmentStatus === 'Complete'
-      );
-      const sorted = pendingAppointments.sort(
-        (a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate)
-      );
-      setAppointments(sorted);
-      setFilteredAppointments(sorted);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}, []);
+  useEffect(() => {
+    axios
+      .get('http://localhost:9000/api/doctor/fetchappointments', {
+        headers: { id: decodedtoken.id },
+      })
+      .then((res) => {
+        const pendingAppointments = res.data.filter(
+          (a) => a.appointmentStatus === 'Complete'
+        );
+        const sorted = pendingAppointments.sort(
+          (a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate)
+        );
+        setAppointments(sorted);
+        setFilteredAppointments(sorted);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function AppointmentHistory() {
   return (
     <>
       <DoctorNavbar />
-      <div className="container mt-5" style={{ minHeight: '500px' }}>
+      <div className="container mt-5" style={{ minHeight: '550px',padding: '40px' }}>
         <h2
           className="mb-4 text-center d-flex justify-content-center align-items-center"
           style={{
@@ -76,6 +76,7 @@ export default function AppointmentHistory() {
           <input
             type="text"
             className="form-control w-50 border-secondary"
+            style={{ background: 'rgb(215, 250, 252)', borderRadius: '20px' }}
             placeholder="Search by username, patient name, or date"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -113,7 +114,7 @@ export default function AppointmentHistory() {
                     <p className="card-text mb-3">
                       <strong>Symptoms:</strong> {appointment.patientSymptoms}
                     </p>
-                    
+
                   </div>
                 </div>
               </div>

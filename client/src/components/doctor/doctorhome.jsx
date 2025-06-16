@@ -1,15 +1,51 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
+import axios from 'axios'
+import { jwtDecode } from 'jwt-decode'
 import DoctorNavbar from './doctornavbar'
 import { Container, Row, Col, Card, Button } from 'react-bootstrap'
 import { FaCalendarCheck, FaPrescriptionBottleAlt, FaUserMd } from 'react-icons/fa'
 import Footer from '../footer'
+import { toast } from 'react-toastify'
 
 
 export default function Doctorhome() {
+
+  const doctorstoken = localStorage.getItem('token')
+  const decodedtoken = jwtDecode(doctorstoken)
+
+  const notified = useRef(false)
+
+  useEffect(() => {
+
+    if (notified.current) return
+
+    axios
+      .get('http://localhost:9000/api/doctor/fetchappointments', {
+        headers: { id: decodedtoken.id },
+      })
+      .then((res) => {
+        const pendingAppointments = res.data.filter(
+          (a) => a.appointmentStatus === "Pending"
+        );
+
+        if (pendingAppointments.length > 0) {
+          toast.info(`🩺 You have ${pendingAppointments.length} pending appointment(s).`, {
+            position: 'top-center',
+            autoClose: 3000,
+          });
+          notified.current = true;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+
   return (
     <>
       <DoctorNavbar />
-      <div style={{ minHeight: '550px' }}>
+      <div style={{ minHeight: '600px' }}>
 
         {/* Hero Welcome Section */}
         <div style={{

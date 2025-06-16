@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import AXIOS from 'axios';
 import UserNavbar from './usernavbar';
 import Footer from '../footer';
-import { Form, FloatingLabel, Modal, Card, Button, Toast } from 'react-bootstrap';
+import { Form, FloatingLabel, Modal, Card, Button, Container, Row, Col } from 'react-bootstrap';
 import { BsGeoAltFill, BsCalendarCheck, BsPersonWorkspace, BsPersonCircle, BsFileEarmarkText } from "react-icons/bs";
-import { FaHeartbeat } from 'react-icons/fa';
+import { FaHeartbeat, FaSearch } from 'react-icons/fa';
 import { jwtDecode } from 'jwt-decode';
 import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { toast } from 'react-toastify';
+import { useGSAP } from '@gsap/react';
+import { UserSection } from '../gsapAnimation';
+import '../App.css'
+import { useNavigate } from 'react-router-dom';
 
 
 export default function UserHome() {
@@ -25,6 +29,8 @@ export default function UserHome() {
         username: '',
         email: ''
     });
+    const [searchTerm, setSearchTerm] = useState("");
+
 
     const token = localStorage.getItem('token');
     const decoded = jwtDecode(token);
@@ -43,6 +49,22 @@ export default function UserHome() {
             }).catch((err) => {
                 console.log(err);
             });
+
+        AXIOS.get(`http://localhost:9000/api/user/fetchmyappointments`, { headers: { id: decoded.id } })
+            .then((res) => {
+                const pendingAppointments = res.data.filter(
+                    (a) => a.appointmentStatus === "Complete"
+                );
+                if (pendingAppointments.length > 0) {
+                    console.log('2timens')
+                    toast.info(`Your appointment is complete`, {
+                        position: 'top-center',
+                        autoClose: 1000,
+                    }); 
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
     }, []);
 
     const handleChange = (e) => {
@@ -62,6 +84,8 @@ export default function UserHome() {
         handleShow();
     };
 
+    const navigate = useNavigate()
+
     const handleAppointment = async (docId) => {
         const appointDate = selectedDates.format("YYYY-MM-D")
         console.log(appointDate)
@@ -75,24 +99,65 @@ export default function UserHome() {
             appointmentDate: appointDate
         })
             .then((res) => {
-                toast.success(res.data)
-                handleClose();
+
+                if (res.data.status == 200) {
+                    toast.success(res.data.msg)
+                    setTimeout(() => navigate('/appointment'), 3000);
+                } else {
+                    toast.error(res.data.msg)
+                }
             }).catch((err) => {
                 console.log(err);
                 toast.error(err)
             });
     };
 
+    useGSAP(() => {
+
+        if (UserData.username) {
+            UserSection()
+        }
+
+    }, [UserData.username])
+
     return (
         <>
             <UserNavbar />
-            <div className="container mt-4">
-                <h1 className="mb-4 text-center">Welcome {UserData.username}</h1>
 
-                <div className="row justify-content-center mb-4">
+            <div className="hero-section">
+                <div className="hero-overlay"></div>
+                <h1 className=" mb-4 text-center">
+                    <span className='welcome-part'>Welcome </span>
+                    <span className='user-name'>{UserData.username}</span>
+                </h1>
+            </div>
+            <div style={{ padding: '20px' }}>
+                <div className="health-quote-section py-5">
+                    <Container>
+                        <Row className="align-items-center">
+                            <Col md={6} className="text-left">
+                                <h1 className="health-quote-text">
+                                    Healthcare, Simplified. <br /> Book Appointments in Minutes.
+                                </h1>
+                            </Col>
+                            <Col md={6} className="text-center">
+                                <img
+                                    src="https://cdn-icons-png.flaticon.com/512/5703/5703412.png"
+                                    alt="Healthcare"
+                                    className="img-fluid health-image"
+                                    style={{ maxWidth: '80%' }}
+                                />
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
+                <div className="stat-card-background row justify-content-center text-center mb-4 mt-5" style={{ padding: '20px' }}>
+                    <h1 className="health-quote-text mb-4">
+                        Just one click to see...
+                    </h1>
                     {/* Cards */}
                     <div className="col-md-4">
-                        <div className="card text-center shadow-sm border-0 h-100">
+                        <div className="info-card card text-center shadow-sm border-0 h-100">
                             <div className="card-body">
                                 <BsPersonCircle size={50} className="mb-3 text-primary" />
                                 <h5 className="card-title">Your Profile</h5>
@@ -102,7 +167,7 @@ export default function UserHome() {
                         </div>
                     </div>
                     <div className="col-md-4">
-                        <div className="card text-center shadow-sm border-0 h-100">
+                        <div className="info-card card text-center shadow-sm border-0 h-100">
                             <div className="card-body">
                                 <BsCalendarCheck size={50} className="mb-3 text-success" />
                                 <h5 className="card-title">Your Appointments</h5>
@@ -112,7 +177,7 @@ export default function UserHome() {
                         </div>
                     </div>
                     <div className="col-md-4">
-                        <div className="card text-center shadow-sm border-0 h-100">
+                        <div className="info-card card text-center shadow-sm border-0 h-100">
                             <div className="card-body">
                                 <BsFileEarmarkText size={50} className="mb-3 text-secondary" />
                                 <h5 className="card-title">Your Prescription</h5>
@@ -128,8 +193,26 @@ export default function UserHome() {
                     Find the best doctors
                 </h2>
 
-                <div className="row g-4">
-                    {DocProfiles.map((doctor) => (
+                <div className="row g-4" style={{ background: 'rgba(219, 227, 236, 0.41)', borderRadius: '10px', padding: '10px' }}>
+                    <div className="position-relative mb-4"  >
+                        <Form.Control
+                            type="text"
+                            placeholder="Search doctors by name, specialization or address..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="ps-5"
+                            style={{ background: 'rgba(170, 231, 246, 0.58)', borderRadius: '20px', maxWidth: '150vh' }}
+                        />
+                        <FaSearch className="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" />
+                    </div>
+                    {DocProfiles.filter((doctor) => {
+                        const query = searchTerm.toLowerCase();
+                        return (
+                            doctor.docname.toLowerCase().includes(query) ||
+                            doctor.specialization.toLowerCase().includes(query) ||
+                            doctor.address.toLowerCase().includes(query)
+                        );
+                    }).map((doctor) => (
                         <div className="col-md-4" key={doctor._id}>
                             <Card className="h-100 shadow-sm border-0">
                                 <Card.Img
@@ -168,7 +251,7 @@ export default function UserHome() {
                         <Modal.Header closeButton>
                             <Modal.Title>✏️ Fill the Patient's Details please</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body>
+                        <Modal.Body style={{ background: 'rgba(149, 197, 229, 0.29)' }}>
 
                             <FloatingLabel controlId="floatingPatientName" label="Patient's Name" className="mb-3">
                                 <Form.Control type="text" name="patientName" onChange={handleChange} placeholder="Enter name" required />
@@ -188,7 +271,7 @@ export default function UserHome() {
                                 <Form.Control as="textarea" name="patientSymptoms" onChange={handleChange} style={{ height: '100px' }} required />
                             </FloatingLabel>
 
-                            <Form.Label className='text-muted'>Select Appointment date:</Form.Label>
+                            <Form.Label className='text-muted'>Select Appointment date: </Form.Label>
                             <DatePicker
                                 disable={(selectedDoctor.schedule || [])
                                     .filter(entry => entry.availability === "Unavailable")

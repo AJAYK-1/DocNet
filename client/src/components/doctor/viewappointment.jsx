@@ -54,7 +54,7 @@ export default function DoctorViewAppointment() {
   return (
     <>
       <DoctorNavbar />
-      <div className="container mt-5" style={{ minHeight: '500px' }}>
+      <div className="container mt-5" style={{ minHeight: '550px', padding: '40px' }}>
         <h2
           className="mb-4 text-center d-flex justify-content-center align-items-center"
           style={{
@@ -79,7 +79,8 @@ export default function DoctorViewAppointment() {
         <div className="mb-4 d-flex justify-content-center ">
           <input
             type="text"
-            className="form-control w-50 border-secondary"
+            className="form-control w-50 "
+            style={{background: 'rgb(215, 250, 252)', borderRadius: '20px'}}
             placeholder="Search by username, patient name, or date"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}

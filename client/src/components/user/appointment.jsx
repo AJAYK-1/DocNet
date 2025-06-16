@@ -52,7 +52,7 @@ export default function Appointment() {
   return (
     <>
       <UserNavbar />
-      <div style={{ minHeight: '500px', paddingLeft: '40px', paddingRight: '40px' }}>
+      <div style={{ minHeight: '550px', padding: '40px' }}>
         <div>
           <h2
             className="mb-4 mt-5 text-center d-flex justify-content-center align-items-center"
