@@ -1,26 +1,21 @@
 import { useGSAP } from '@gsap/react';
-import React, { useRef } from 'react'
-import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React from 'react'
+import { Container, Nav, Navbar } from 'react-bootstrap';
 import { HomeNavbarAnimation } from './gsapAnimation';
 
 
 export default function HomeNavbar() {
 
-    const homeNavRef = useRef()
-    const navElementsRef = useRef([])
-    navElementsRef.current = []
+    
 
     useGSAP(() => {
-        HomeNavbarAnimation({ homeNavRef, navElementsRef })
-    },[])
+        HomeNavbarAnimation()
+    }, [])
 
     return (
         <>
-            <ToastContainer position="top-center" autoClose={3000} />
 
-            <Navbar ref={homeNavRef} expand="lg" sticky="top" className="bg-body-tertiary" data-bs-theme="dark">
+            <Navbar expand="lg" sticky="top" className="navbar bg-body-tertiary" data-bs-theme="dark">
                 <Container fluid>
                     <Navbar.Brand href="#">DocNet</Navbar.Brand>
                     <Navbar.Toggle aria-controls="navbarScroll" />
@@ -30,14 +25,9 @@ export default function HomeNavbar() {
                             style={{ maxHeight: '100px' }}
                             navbarScroll
                         >
-                            <Nav.Link ref={(ob)=>ob && navElementsRef.current.push(ob)} href="/">Home</Nav.Link>
-                            <NavDropdown ref={(ob)=>ob && navElementsRef.current.push(ob)} title="Account" id="navbarScrollingDropdown">
-                                <NavDropdown.Item href="/login">SignIn</NavDropdown.Item>
-                                <NavDropdown.Item href="/registration">
-                                    Registration
-                                </NavDropdown.Item>
-                            </NavDropdown>
-                            <Nav.Link ref={(ob)=>ob && navElementsRef.current.push(ob)} href="/about">About</Nav.Link>
+                            <Nav.Link className='navbar-contents' href="/">Home</Nav.Link>
+                            <Nav.Link className='navbar-contents' href="/login">SignIn</Nav.Link>
+                            <Nav.Link className='navbar-contents' href="/about">About</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

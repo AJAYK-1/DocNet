@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import {FaInstagram,FaTwitter,FaLinkedin,FaGithub,FaEnvelope,FaGlobe,} from 'react-icons/fa';
+import { FaInstagram, FaTwitter, FaLinkedin, FaGithub, FaEnvelope, FaGlobe, } from 'react-icons/fa';
+import { ToastContainer } from 'react-toastify';
 
 
 export default function Footer() {
@@ -10,7 +11,6 @@ export default function Footer() {
         backgroundColor: '#2c3e50',
         color: '#ecf0f1',
         padding: '50px 0',
-        marginTop: '50px',
       }}
     >
       <Container>
@@ -84,6 +84,7 @@ export default function Footer() {
           </Col>
         </Row>
       </Container>
+      <ToastContainer position="top-center" autoClose={1000} />
     </footer>
   );
 }

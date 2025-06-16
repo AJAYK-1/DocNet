@@ -50,7 +50,7 @@ const userlogin = async (req, res) => {
             } else {
                 res.json({ msg: "Incorrect Email or Password...", status: 400 })
             }
-        } else if (LoggedUser.userStatus == "Deactivated" && LoggedDoctor.doctorStatus == "Deactivated") {
+        } else {
             res.json({ msg: "Your Account has been deactivated. Unable to login...", status: 404 })
         }
     } catch (err) {

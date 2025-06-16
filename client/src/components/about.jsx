@@ -3,21 +3,22 @@ import { Container, Row, Col, Card } from 'react-bootstrap'
 import { FaHeartbeat, FaLaptopMedical, FaShieldAlt } from 'react-icons/fa'
 import HomeNavbar from './homenavbar'
 import Footer from './footer'
+import { useGSAP } from '@gsap/react'
+import { HomePageHeroSection } from './gsapAnimation'
 
 
 export default function About() {
+
+    useGSAP(()=> {
+        HomePageHeroSection()
+    })
     return (
         <>
             <HomeNavbar />
 
             {/* Header Section */}
-            <div style={{
-                background: 'linear-gradient(to right, #2ecc71, #3498db)',
-                color: '#fff',
-                padding: '60px 0',
-                textAlign: 'center'
-            }}>
-                <h1 style={{ fontSize: '3rem', fontWeight: 'bold', fontFamily: 'Poppins' }}>
+            <div className='hero-section' >
+                <h1 className='hero-title' style={{ fontSize: '3rem', fontWeight: 'bold', fontFamily: 'Poppins' }}>
                     About DocNet
                 </h1>
                 <p style={{ fontSize: '1.2rem', maxWidth: '800px', margin: '20px auto' }}>
