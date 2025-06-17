@@ -41,13 +41,14 @@ export default function AdminViewDoctors() {
     return (
         <>
             <AdminNavbar />
-            <div className="container mt-5 mb-5" style={{minHeight:'500px'}}>
+            <div className="container mt-5 mb-5" style={{ minHeight: '500px' }}>
                 <h2 className="text-center text-primary mb-4">Registered Doctors</h2>
 
                 <Form.Control
                     type="text"
                     placeholder="Search by name, specialization, or email..."
                     className="mb-3"
+                    style={{ borderRadius: '20px', background: 'linear-gradient(170deg,rgb(244, 244, 244),rgb(152, 255, 245))' }}
                     onChange={handleSearchChange}
                 />
 

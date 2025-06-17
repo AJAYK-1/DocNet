@@ -2,6 +2,7 @@ const User = require('../models/userModel')
 const Doctor = require('../models/doctorModel')
 const Appointment = require('../models/appointmentModel')
 const Prescription = require('../models/prescriptionModel')
+const Feedback = require('../models/feedbackModel')
 const jwt = require('jsonwebtoken')
 
 
@@ -138,7 +139,8 @@ const fetchMyPrescription = async (req, res) => {
             .map(check => ({
                 docname: check.appointmentId.doctorId.docname,
                 patientName: check.appointmentId.patientName,
-                prescription: check.prescription
+                prescription: check.prescription,
+                mention: check.mention
             }))
         console.log(fetchedprescription)
         res.json(fetchedprescription)
@@ -166,6 +168,30 @@ const fetchPrescriptionById = async (req, res) => {
 }
 
 
+const viewFeedbacks = async (req, res) => {
+    try {
+        const allFeedbacks = await Feedback.find().populate("userId")
+        console.log(allFeedbacks)
+        res.json(allFeedbacks)
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
+const submitFeedback = async (req, res) => {
+    try {
+        const { userId, feedback, rating } = req.body
+        console.log(userId)
+        const newFeedback = await Feedback({ userId, feedback, rating })
+        await newFeedback.save()
+        res.json({ msg: "Feedback submission successfull...", status: 200 })
+    } catch (err) {
+        res.json({ msg: "Feeback Submisson error...", status: 400 })
+    }
+}
+
+
 module.exports = {
     registerUser,
     userlogin,
@@ -175,5 +201,7 @@ module.exports = {
     bookAppointment,
     fetchMyAppointments,
     fetchMyPrescription,
-    fetchPrescriptionById
+    fetchPrescriptionById,
+    submitFeedback,
+    viewFeedbacks
 }

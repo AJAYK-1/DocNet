@@ -1,0 +1,84 @@
+.see-all-container {
+    min-height: 550px;
+}
+
+.see-all-heading {
+    font-family: 'Poppins', sans-serif;
+    color: #2c3e50;
+    font-size: 2.2rem;
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.doctor-section-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 20px;
+    padding-left: 60px;
+}
+
+/* Blurred background image */
+.doctor-section-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-image: url("https://wallpaperaccess.com/full/1189426.jpg");
+    background-size: cover;
+    background-position: center;
+    filter: blur(5px);
+    z-index: 0;
+}
+
+/* Content above the blurred background */
+.doctor-card-wrapper {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.6);
+    /* Optional translucent background for clarity */
+    border-radius: 10px;
+    padding: 20px;
+}
+
+
+.search-bar {
+    border-radius: 20px;
+    max-width: 150vh;
+    padding-left: 2rem;
+    padding-right: 1rem;
+    z-index: 1;
+}
+
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    color: gray;
+}
+
+.doctor-card {
+    max-width: 300px;
+    box-shadow: #000 10px 10px 10px;
+    transform: scale(1);
+    transition: transform 0.5s ease;
+}
+
+.doctor-card:hover {
+    transform: scale(1.03);
+}
+
+.doctor-img {
+    height: 250px;
+    object-fit: cover;
+}
+
+.modal-body-bg {
+    background: rgba(149, 197, 229, 0.29);
+}

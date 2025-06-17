@@ -26,6 +26,7 @@ export default function UserNavbar() {
                             navbarScroll
                         >
                             <Nav.Link href="/userhome">Home</Nav.Link>
+                            <Nav.Link href="/seealldoctors">Find Doctors</Nav.Link>
                             <Nav.Link href="/appointment">My Appointments</Nav.Link>
                             <Nav.Link href="/getprescription">Presciptions</Nav.Link>
                             <NavDropdown title="Account" id="navbarScrollingDropdown">
@@ -35,6 +36,7 @@ export default function UserNavbar() {
                                     Logout
                                 </NavDropdown.Item>
                             </NavDropdown>
+                            <Nav.Link href="/userfeedback">Feedbacks</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

@@ -19,6 +19,8 @@ import DoctorProfile from './components/doctor/doctorprofile'
 import AdminViewDoctors from './components/admin/adminviewdoctors'
 import About from './components/about';
 import AppointmentHistory from './components/doctor/appointmenthistory';
+import UserFeedback from './components/user/userfeedback';
+import SeeAllDoctors from './components/user/seealldoctors';
 
 
 function App() {
@@ -44,6 +46,8 @@ function App() {
           <Route path='/userprofile' element={<UserProfile />} />
           <Route path='/appointment' element={<Appointment />} />
           <Route path='/getprescription' element={<GetMyPrescription />} />
+          <Route path='/seealldoctors' element={<SeeAllDoctors />} />
+          <Route path='/userfeedback' element={<UserFeedback />} />
 
           {/* DOCTOR PAGES */}
           <Route path='/doctorhome' element={<Doctorhome />} />

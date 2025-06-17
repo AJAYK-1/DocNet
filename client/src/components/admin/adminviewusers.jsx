@@ -53,6 +53,7 @@ export default function AdminViewUsers() {
                     type="text"
                     placeholder="Search by name or email..."
                     className="mb-3"
+                    style={{ borderRadius: '20px', background: 'linear-gradient(170deg,rgb(244, 244, 244),rgb(160, 254, 149))' }}
                     onChange={handleSearchChange}
                 />
 

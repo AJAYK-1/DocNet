@@ -42,6 +42,7 @@ export default function GetMyPrescription() {
                                     <Card.Body>
                                         <Card.Title className="text-primary">Dr. {presc.docname}</Card.Title>
                                         <Card.Subtitle className="mb-2 text-muted">Patient: {presc.patientName}</Card.Subtitle>
+                                        <Card.Subtitle className="mb-2 text-muted">Doctor's Mention: {presc.mention}</Card.Subtitle>
                                         <hr />
                                         <h6 className="mb-3">Medicines Prescribed:</h6>
                                         <ListGroup variant="flush">

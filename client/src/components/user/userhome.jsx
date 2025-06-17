@@ -4,7 +4,7 @@ import UserNavbar from './usernavbar';
 import Footer from '../footer';
 import { Form, FloatingLabel, Modal, Card, Button, Container, Row, Col } from 'react-bootstrap';
 import { BsGeoAltFill, BsCalendarCheck, BsPersonWorkspace, BsPersonCircle, BsFileEarmarkText } from "react-icons/bs";
-import { FaHeartbeat, FaSearch } from 'react-icons/fa';
+import { FaArrowRight, FaHeartbeat, FaSearch } from 'react-icons/fa';
 import { jwtDecode } from 'jwt-decode';
 import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { toast } from 'react-toastify';
@@ -60,7 +60,7 @@ export default function UserHome() {
                     toast.info(`Your appointment is complete`, {
                         position: 'top-center',
                         autoClose: 1000,
-                    }); 
+                    });
                 }
             }).catch((err) => {
                 console.log(err)
@@ -212,7 +212,7 @@ export default function UserHome() {
                             doctor.specialization.toLowerCase().includes(query) ||
                             doctor.address.toLowerCase().includes(query)
                         );
-                    }).map((doctor) => (
+                    }).slice(0, 2).map((doctor) => (
                         <div className="col-md-4" key={doctor._id}>
                             <Card className="h-100 shadow-sm border-0">
                                 <Card.Img
@@ -241,7 +241,14 @@ export default function UserHome() {
                             </Card>
                         </div>
                     ))}
+                    {/* Show More Button */}
+                    <div className="col-md-4 text-center" style={{marginTop: '200px'}}>
+                        <Button variant="info" onClick={() => navigate('/seealldoctors')} style={{borderRadius:'20px'}}>
+                            See more doctors <FaArrowRight className="ms-2" />
+                        </Button>
+                    </div>
                 </div>
+
             </div>
 
             {/* Modal for selected doctor */}
