@@ -10,6 +10,8 @@ import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import './userStyling.css';
+import { useGSAP } from '@gsap/react';
+import { HomePageContentSection } from '../gsapAnimation';
 
 
 export default function SeeAllDoctors() {
@@ -81,6 +83,8 @@ export default function SeeAllDoctors() {
       });
   };
 
+
+
   return (
     <>
       <UserNavbar />
@@ -109,7 +113,7 @@ export default function SeeAllDoctors() {
             );
           }).map((doctor) => (
             <div className="col-md-3" key={doctor._id}>
-              <Card className="h-100 shadow-sm border-0 doctor-card">
+              <Card id='info-card' className="h-100 shadow-sm border-0 doctor-card">
                 <Card.Img
                   variant="top"
                   src={`http://localhost:9000/uploads/${doctor.profileImage}`}

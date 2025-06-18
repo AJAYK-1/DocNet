@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
-import { Container, Card, Form, Button, FloatingLabel } from 'react-bootstrap';
-import { FaStar } from 'react-icons/fa';
+import { Container, Card, Form, Button, FloatingLabel, Modal } from 'react-bootstrap';
+import { FaComment, FaStar, FaUser } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import UserNavbar from './usernavbar';
 import Footer from '../footer';
 import { data } from 'react-router-dom';
+
 
 export default function UserFeedback() {
   const token = localStorage.getItem("token");
@@ -24,6 +25,11 @@ export default function UserFeedback() {
       })
   }, [])
 
+  const [show, setShow] = useState(false)
+  const handleShow = () => { setShow(true) }
+  const handleClose = () => { setShow(false) }
+  const [starRating, setstarRating] = useState(null)
+  const [Hover, setHover] = useState(null)
   const [Writefeed, setWritefeed] = useState({
     feedback: '',
     rating: ''
@@ -35,65 +41,111 @@ export default function UserFeedback() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    axios.post('http://localhost:9000/api/user/write-feedback',{
+    Writefeed.rating = starRating
+    console.log(Writefeed)
+    handleClose()
+    axios.post('http://localhost:9000/api/user/write-feedback', {
       userId: decoded.id,
       ...Writefeed
     })
-    .then((res) => {
-      console.log(res.data)
-      if(res.data.status == 200) {
-      toast.success(res.data.msg)
+      .then((res) => {
+        console.log(res.data)
+        if (res.data.status == 200) {
+          toast.success(res.data.msg)
 
-      }else{
-        toast.error(res.data.msg)
-      }
-    }).catch((err) => {
-      console.log(err)
-      toast.error(err)
-    })
+        } else {
+          toast.error(res.data.msg)
+        }
+      }).catch((err) => {
+        console.log(err)
+        toast.error(err)
+      })
   }
 
   return (
     <>
       <UserNavbar />
       <div className="see-all-container">
-        <div className="write-your-feedback">
-          <Form onSubmit={handleSubmit}>
-            <FloatingLabel label='Write your feedback'>
-              <Form.Control type='textarea' name='feedback' onChange={handleChange} required />
-            </FloatingLabel>
-            <FloatingLabel label='Rating'>
-              <Form.Control type='number' name='rating' onChange={handleChange} required />
-            </FloatingLabel>
-            <Button type='submit'>Submit</Button>
-          </Form>
-        </div>
+        <h1 className='see-all-heading'>💭What other users said</h1>
         <div className="all-feedbacks">
-          {Feedback.length == 0 ? (
+          {Feedback.length === 0 ? (
             <p>No Feedbacks yet...</p>
           ) : (
-            <table>
-              <thead>
-                <tr>
-                  <th>User:</th>
-                  <th>Feedback</th>
-                  <th>Rating</th>
-                </tr>
-              </thead>
-              <tbody>
+            <>
+              <div className="feedback-card-container">
+
                 {Feedback.map((feed) => (
-                  <tr key={feed._id}>
-                    <td>{feed.userId.username}</td>
-                    <td>{feed.feedback}</td>
-                    <td>{feed.rating}</td>
-                  </tr>
+                  <div key={feed._id} className="feedback-card">
+                    <h5 className="user-name"> <FaUser className='user-icon' /> {feed.userId.username} says...</h5>
+                    <p className="feedback-text"> {feed.feedback}</p>
+                    <div className="rating-stars">
+                      {[...Array(5)].map((_, index) => (
+                        <FaStar
+                          className='star-rating'
+                          key={index}
+                          color={index < feed.rating ? "#f39c12" : "#dcdcdc"}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 ))}
-
-              </tbody>
-            </table>
+              </div>
+            </>
           )}
-
         </div>
+        <div className='click-to-add-feedback' onClick={handleShow}>
+          <FaComment />
+        </div>
+        <Modal show={show} onHide={handleClose}>
+          <Form onSubmit={handleSubmit}>
+            <Modal.Header closeButton>
+              <Modal.Title>💬 Write your feedback</Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body className="write-your-feedback">
+              <FloatingLabel label='Write your feedback'>
+                <Form.Control
+                  as='textarea'
+                  className='feedback-column mb-4'
+                  name='feedback'
+                  onChange={handleChange}
+                  style={{ height: '100px' }}
+                  required
+                />
+              </FloatingLabel>
+
+              <Form.Label className='mb-2'>Your Rating:</Form.Label>
+              <div>
+                {[...Array(5)].map((_, i) => {
+                  const starNumber = i + 1;
+                  return (
+                    <span key={i}>
+                      <input
+                        type="radio"
+                        className='input-star'
+                        name='rating'
+                        value={starNumber}
+                      />
+                      <FaStar
+                        className='star-rating'
+                        onClick={() => setstarRating(starNumber)}
+                        onMouseEnter={() => setHover(starNumber)}
+                        onMouseLeave={() => setHover(null)}
+                        color={starNumber <= (Hover || starRating) ? "#ffc107" : "rgb(198, 199, 199)"}
+                      />
+                    </span>
+                  );
+                })}
+              </div>
+            </Modal.Body>
+
+
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>Close</Button>
+              <Button variant="primary" type='submit'>Submit</Button>
+            </Modal.Footer>
+          </Form>
+        </Modal>
 
       </div>
       <Footer />

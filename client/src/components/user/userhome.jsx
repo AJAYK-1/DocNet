@@ -9,7 +9,7 @@ import { jwtDecode } from 'jwt-decode';
 import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { toast } from 'react-toastify';
 import { useGSAP } from '@gsap/react';
-import { UserSection } from '../gsapAnimation';
+import { HomePageContentSection, UserSection } from '../gsapAnimation';
 import '../App.css'
 import { useNavigate } from 'react-router-dom';
 
@@ -117,6 +117,7 @@ export default function UserHome() {
         if (UserData.username) {
             UserSection()
         }
+        HomePageContentSection()
 
     }, [UserData.username])
 
@@ -214,7 +215,7 @@ export default function UserHome() {
                         );
                     }).slice(0, 2).map((doctor) => (
                         <div className="col-md-4" key={doctor._id}>
-                            <Card className="h-100 shadow-sm border-0">
+                            <Card id='info-card' className="h-100 shadow-sm border-0">
                                 <Card.Img
                                     variant="top"
                                     src={`http://localhost:9000/uploads/${doctor.profileImage}`}
@@ -243,7 +244,7 @@ export default function UserHome() {
                     ))}
                     {/* Show More Button */}
                     <div className="col-md-4 text-center" style={{marginTop: '200px'}}>
-                        <Button variant="info" onClick={() => navigate('/seealldoctors')} style={{borderRadius:'20px'}}>
+                        <Button id='info-card' variant="info" onClick={() => navigate('/seealldoctors')} style={{borderRadius:'20px'}}>
                             See more doctors <FaArrowRight className="ms-2" />
                         </Button>
                     </div>

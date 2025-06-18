@@ -21,6 +21,7 @@ import About from './components/about';
 import AppointmentHistory from './components/doctor/appointmenthistory';
 import UserFeedback from './components/user/userfeedback';
 import SeeAllDoctors from './components/user/seealldoctors';
+import DoctorSeeFeedback from './components/doctor/doctorfeedback';
 
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
           <Route path='/addprescription/:id' element={<AddPrescription />} />
           <Route path='/viewprescription' element={<ViewPrescription />} />
           <Route path='/appointmenthistory' element={<AppointmentHistory />} />
+          <Route path='/doctorfeedback' element={<DoctorSeeFeedback/>} />
 
         </Routes>
       </BrowserRouter>

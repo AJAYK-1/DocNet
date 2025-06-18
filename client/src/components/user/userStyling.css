@@ -3,7 +3,7 @@
 }
 
 .see-all-heading {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif, sans-serif;
     color: #2c3e50;
     font-size: 2.2rem;
     text-align: center;
@@ -81,4 +81,55 @@
 
 .modal-body-bg {
     background: rgba(149, 197, 229, 0.29);
+}
+
+.feedback-card-container{
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 50px;
+}
+
+.feedback-card {
+    margin: 40px;
+    box-shadow: #a1b9d1 2px 2px 2px 2px;
+    border-radius: 1cm;
+    padding: 20px;
+    width: 400px;
+
+}
+
+.write-your-feedback {
+    background: linear-gradient(45deg, #a6f3f7, #f7cece, #98e1fa);
+    padding: 20px;
+}
+
+.click-to-add-feedback {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    top:30%;
+    font-size: 35px;
+    padding: auto;
+    text-align: center;
+    position: fixed;
+    right: 20px;
+    color: rgb(255, 255, 255);
+    background-color: #008ffd;
+    box-shadow: #00000082 2px 2px 2px 2px ;
+    cursor: pointer;
+}
+
+.input-star {
+    display: none;
+}
+
+.star-rating {
+    font-size: 45px;
+    cursor: pointer;
+    transition: color 200ms;
+}
+
+.user-icon {
+    margin-bottom: 5px;
+    color: #080bc3;
 }
