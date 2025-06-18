@@ -8,7 +8,7 @@
 - 📅 Doctor availability scheduling and appointment booking
 - 🧑‍⚕️ User and doctor dashboards
 - 📊 Admin panel for managing users, doctors, and appointments
-- 🌐 Responsive UI with Bootstrap and React
+- 🌐 Responsive UI with Bootstrap, gsap and React
 
 ## 🛠 Tech Stack
 
