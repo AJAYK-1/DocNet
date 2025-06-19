@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import AXIOS from 'axios';
 import UserNavbar from './usernavbar';
 import Footer from '../footer';
-import { Form, FloatingLabel, Modal, Card, Button, Container, Row, Col } from 'react-bootstrap';
+import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import { BsGeoAltFill, BsCalendarCheck, BsPersonWorkspace, BsPersonCircle, BsFileEarmarkText } from "react-icons/bs";
-import { FaArrowRight, FaHeartbeat, FaSearch } from 'react-icons/fa';
+import { FaArrowRight, FaHeartbeat } from 'react-icons/fa';
 import { jwtDecode } from 'jwt-decode';
-import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { toast } from 'react-toastify';
 import { useGSAP } from '@gsap/react';
 import { HomePageContentSection, UserSection } from '../gsapAnimation';
@@ -15,21 +14,12 @@ import { useNavigate } from 'react-router-dom';
 
 
 export default function UserHome() {
+
     const [DocProfiles, setDocProfiles] = useState([]);
-    const [show, setShow] = useState(false);
-    const [selectedDates, setSelectedDates] = useState();
-    const [selectedDoctor, setSelectedDoctor] = useState(null);
-    const [PatientDetails, setPatientDetails] = useState({
-        patientName: '',
-        patientAge: '',
-        patientGender: '',
-        patientSymptoms: ''
-    });
     const [UserData, setUserData] = useState({
         username: '',
         email: ''
     });
-    const [searchTerm, setSearchTerm] = useState("");
 
 
     const token = localStorage.getItem('token');
@@ -67,58 +57,13 @@ export default function UserHome() {
             })
     }, []);
 
-    const handleChange = (e) => {
-        setPatientDetails({ ...PatientDetails, [e.target.name]: e.target.value });
-    };
-
-
-    const handleShow = () => setShow(true);
-    const handleClose = () => {
-        setShow(false);
-        setSelectedDoctor(null);
-        setSelectedDates();
-    };
-
-    const handleSubmit = (doctor) => {
-        setSelectedDoctor(doctor);
-        handleShow();
-    };
-
     const navigate = useNavigate()
 
-    const handleAppointment = async (docId) => {
-        const appointDate = selectedDates.format("YYYY-MM-D")
-        console.log(appointDate)
-        AXIOS.post('http://localhost:9000/api/user/bookappointment', {
-            userId: decoded.id,
-            doctorId: docId,
-            patientName: PatientDetails.patientName,
-            patientAge: PatientDetails.patientAge,
-            patientGender: PatientDetails.patientGender,
-            patientSymptoms: PatientDetails.patientSymptoms,
-            appointmentDate: appointDate
-        })
-            .then((res) => {
-
-                if (res.data.status == 200) {
-                    toast.success(res.data.msg)
-                    setTimeout(() => navigate('/appointment'), 3000);
-                } else {
-                    toast.error(res.data.msg)
-                }
-            }).catch((err) => {
-                console.log(err);
-                toast.error(err)
-            });
-    };
-
     useGSAP(() => {
-
         if (UserData.username) {
             UserSection()
         }
         HomePageContentSection()
-
     }, [UserData.username])
 
     return (
@@ -195,25 +140,8 @@ export default function UserHome() {
                 </h2>
 
                 <div className="row g-4" style={{ background: 'rgba(219, 227, 236, 0.41)', borderRadius: '10px', padding: '10px' }}>
-                    <div className="position-relative mb-4"  >
-                        <Form.Control
-                            type="text"
-                            placeholder="Search doctors by name, specialization or address..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="ps-5"
-                            style={{ background: 'rgba(170, 231, 246, 0.58)', borderRadius: '20px', maxWidth: '150vh' }}
-                        />
-                        <FaSearch className="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" />
-                    </div>
-                    {DocProfiles.filter((doctor) => {
-                        const query = searchTerm.toLowerCase();
-                        return (
-                            doctor.docname.toLowerCase().includes(query) ||
-                            doctor.specialization.toLowerCase().includes(query) ||
-                            doctor.address.toLowerCase().includes(query)
-                        );
-                    }).slice(0, 2).map((doctor) => (
+
+                    {DocProfiles.slice(0, 2).map((doctor) => (
                         <div className="col-md-4" key={doctor._id}>
                             <Card id='info-card' className="h-100 shadow-sm border-0">
                                 <Card.Img
@@ -235,85 +163,19 @@ export default function UserHome() {
                                         <BsGeoAltFill className="me-2 text-success" />
                                         {doctor.address}
                                     </Card.Text>
-                                    <Button variant="info" className="w-100 mt-2" onClick={() => handleSubmit(doctor)}>
-                                        Book an Appointment
-                                    </Button>
+
                                 </Card.Body>
                             </Card>
                         </div>
                     ))}
                     {/* Show More Button */}
-                    <div className="col-md-4 text-center" style={{marginTop: '200px'}}>
-                        <Button id='info-card' variant="info" onClick={() => navigate('/seealldoctors')} style={{borderRadius:'20px'}}>
+                    <div className="col-md-4 text-center" style={{ marginTop: '200px' }}>
+                        <Button id='info-card' variant="info" onClick={() => navigate('/seealldoctors')} style={{ borderRadius: '20px' }}>
                             See more doctors <FaArrowRight className="ms-2" />
                         </Button>
                     </div>
                 </div>
-
             </div>
-
-            {/* Modal for selected doctor */}
-            {selectedDoctor && (
-                <Modal show={show} onHide={handleClose}>
-                    <Form onSubmit={() => handleAppointment(selectedDoctor._id)}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>✏️ Fill the Patient's Details please</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body style={{ background: 'rgba(149, 197, 229, 0.29)' }}>
-
-                            <FloatingLabel controlId="floatingPatientName" label="Patient's Name" className="mb-3">
-                                <Form.Control type="text" name="patientName" onChange={handleChange} placeholder="Enter name" required />
-                            </FloatingLabel>
-
-                            <FloatingLabel controlId="floatingPatientAge" label="Patient's Age" className="mb-3">
-                                <Form.Control type="number" name="patientAge" onChange={handleChange} placeholder="Enter age" required />
-                            </FloatingLabel>
-
-                            <Form.Group className="mb-3">
-                                <Form.Label className='text-muted'>Patient's Gender:</Form.Label>
-                                <Form.Check type='radio' label='♂️ Male' name="patientGender" value={'Male'} onChange={handleChange} required />
-                                <Form.Check type='radio' label='♀️ Female' name="patientGender" value={'Female'} onChange={handleChange} />
-                            </Form.Group>
-
-                            <FloatingLabel controlId="floatingDocAddress" label="Patient's Symptoms" className="mb-3">
-                                <Form.Control as="textarea" name="patientSymptoms" onChange={handleChange} style={{ height: '100px' }} required />
-                            </FloatingLabel>
-
-                            <Form.Label className='text-muted'>Select Appointment date: </Form.Label>
-                            <DatePicker
-                                disable={(selectedDoctor.schedule || [])
-                                    .filter(entry => entry.availability === "Unavailable")
-                                    .map(item => new DateObject(item.dates))
-                                }
-                                onChange={(date) => setSelectedDates(date)}
-                                value={selectedDates}
-                                format="YYYY-MM-DD"
-                                minDate={new Date()}
-                                multiple={false}
-                                highlightToday
-                                onlyCalendar
-                                inline
-                                mapDays={({ date }) => {
-                                    const isUnavailable = (selectedDoctor.schedule || []).some(
-                                        entry => entry.availability === "Unavailable" && entry.dates === date.format("YYYY-MM-DD")
-                                    );
-                                    return {
-                                        disabled: isUnavailable,
-                                        style: isUnavailable
-                                            ? { backgroundColor: "#e74c3c", color: "white", borderRadius: "50%" }
-                                            : {}
-                                    };
-                                }}
-                                required />
-                            <Form.Label className='text-muted'>⚠️ You cannot select the date on which the doctor is unavailable for appointments.</Form.Label>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={handleClose}>Close</Button>
-                            <Button variant="primary" type='submit' >Confirm Booking</Button>
-                        </Modal.Footer>
-                    </Form>
-                </Modal>
-            )}
 
             <Footer />
         </>

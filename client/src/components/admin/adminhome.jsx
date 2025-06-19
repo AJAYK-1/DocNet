@@ -11,6 +11,8 @@ import {
 } from 'recharts'
 
 export default function Adminhome() {
+
+  
   const navigate = useNavigate()
   const [Calculations, setCalculations] = useState([])
 

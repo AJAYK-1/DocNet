@@ -4,6 +4,9 @@ const Appointment = require('../models/appointmentModel')
 const Prescription = require('../models/prescriptionModel')
 const Feedback = require('../models/feedbackModel')
 const jwt = require('jsonwebtoken')
+require('dotenv').config()
+const Razorpay = require('razorpay')
+const crypto = require('crypto')
 
 
 const registerUser = async (req, res) => {
@@ -33,26 +36,31 @@ const registerUser = async (req, res) => {
 const userlogin = async (req, res) => {
     try {
         const { email, password } = req.body
-        const LoggedUser = await User.findOne({ email })
-        const LoggedDoctor = await Doctor.findOne({ email })
-        console.log(LoggedDoctor)
-        console.log(LoggedUser)
-        if (LoggedUser && LoggedUser.userStatus == "Active") {
-            if (LoggedUser.password == password) {
-                const token = jwt.sign({ id: LoggedUser._id }, "qwertyuio", { expiresIn: '1h' })
-                res.json({ msg: "Login Successfull...", status: 200, token: token })
-            } else {
-                res.json({ msg: "Incorrect Email or Password...", status: 400 })
-            }
-        } else if (LoggedDoctor && LoggedDoctor.doctorStatus == "Active") {
-            if (LoggedDoctor.password == password) {
-                const token = jwt.sign({ id: LoggedDoctor._id }, "docasdf", { expiresIn: "1h" })
-                res.json({ msg: "Doctor Login Successfull...", status: 201, token: token })
-            } else {
-                res.json({ msg: "Incorrect Email or Password...", status: 400 })
-            }
+        if (email === 'admin@gmail.com' && password === 'admin') {
+            const token = jwt.sign({ id: "admin" }, "thisisAdmin", { expiresIn: '1h' })
+            res.json({ msg: "Logging in as Admin...", status: 202, token: token })
         } else {
-            res.json({ msg: "Your Account has been deactivated. Unable to login...", status: 404 })
+            const LoggedUser = await User.findOne({ email })
+            const LoggedDoctor = await Doctor.findOne({ email })
+            console.log(LoggedDoctor)
+            console.log(LoggedUser)
+            if (LoggedUser && LoggedUser.userStatus == "Active") {
+                if (LoggedUser.password == password) {
+                    const token = jwt.sign({ id: LoggedUser._id }, "qwertyuio", { expiresIn: '1h' })
+                    res.json({ msg: "Login Successfull...", status: 200, token: token })
+                } else {
+                    res.json({ msg: "Incorrect Email or Password...", status: 400 })
+                }
+            } else if (LoggedDoctor && LoggedDoctor.doctorStatus == "Active") {
+                if (LoggedDoctor.password == password) {
+                    const token = jwt.sign({ id: LoggedDoctor._id }, "docasdf", { expiresIn: "1h" })
+                    res.json({ msg: "Doctor Login Successfull...", status: 201, token: token })
+                } else {
+                    res.json({ msg: "Incorrect Email or Password...", status: 400 })
+                }
+            } else if ((LoggedDoctor && LoggedDoctor.doctorStatus == "Deactivated") || (LoggedUser && LoggedUser.userStatus == "Deactivated")) {
+                res.json({ msg: "Your Account has been deactivated. Unable to login...", status: 404 })
+            }
         }
     } catch (err) {
         console.log(err)
@@ -192,6 +200,43 @@ const submitFeedback = async (req, res) => {
 }
 
 
+const Payment = async (req,res) => {
+    try{
+        const razorPay = new Razorpay({
+            key_id: process.env.RAZORPAY_KEY_ID,
+            key_secret: process.env.RAZORPAY_SECRET,
+        })
+
+        const options = req.body
+        const order = await razorPay.orders.create(options)
+
+        if(!order) {
+            return res.json({msg: "Error", status: 500})
+        }
+        res.json(order)
+
+    } catch(err) {
+        res.json(err)
+    }
+}
+
+const ValidatePayment = async (req,res) => {
+    try {
+        const { razorpay_order_id, razorpay_payment_id, razorpay_signature} = req.body
+        const sha = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET)
+        sha.update(`${razorpay_order_id}|${razorpay_payment_id}`)
+        const digest = sha.digest("hex")
+        if(digest !== razorpay_signature) {
+            return res.json({ msg: "Transaction failed!", status:400})
+        }
+        res.json({ msg: "Transaction Successfull!", orderId: razorpay_order_id, paymentId: razorpay_payment_id, status:200})
+
+    }catch(err) {
+        console.log(err)
+    }
+}
+
+
 module.exports = {
     registerUser,
     userlogin,
@@ -203,5 +248,7 @@ module.exports = {
     fetchMyPrescription,
     fetchPrescriptionById,
     submitFeedback,
-    viewFeedbacks
+    viewFeedbacks,
+    Payment,
+    ValidatePayment
 }

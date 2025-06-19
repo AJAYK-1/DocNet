@@ -2,7 +2,6 @@ const express = require('express')
 const App = express()
 const cors = require('cors')
 const DataBaseConnect = require('./middleware/dbconnection')
-const upload = require('./middleware/multerConfig')
 
 
 App.use(cors())
@@ -23,10 +22,9 @@ const RouterAdmin = require('./routes/adminRouter')
 App.use('/api/admin',RouterAdmin)
 
 
-// App.use('/api',upload)
 App.use('/uploads',express.static('uploads'))
 
 
-App.listen(9000, () => {
+App.listen(process.env.PORT, () => {
     console.log("Server Running Successfully...😊")
 })

@@ -22,29 +22,31 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (UserData.email === 'admin@gmail.com' && UserData.password === 'admin') {
-      toast.success('Logging in as ADMIN...')
-      setTimeout(() => navigate('/adminhome'), 2000)
-    } else {
-      AXIOS.post('http://localhost:9000/api/user/login', UserData)
-        .then((res) => {
-          if (res.data.status == 200) {
-            toast.success(res.data.msg)
-            localStorage.setItem('token', res.data.token)
-            setTimeout(() => navigate('/userhome'), 2000)
-          } else if (res.data.status == 201) {
-            toast.success(res.data.msg)
-            localStorage.setItem('token', res.data.token)
-            setTimeout(() => navigate('/doctorhome'), 2000)
-          } else {
-            toast.error(res.data.msg)
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          toast.error('Login failed...')
-        })
-    }
+
+    AXIOS.post('http://localhost:9000/api/user/login', UserData)
+      .then((res) => {
+        if (res.data.status == 202) {
+          toast.success(res.data.msg)
+          localStorage.setItem('token', res.data.token)
+          setTimeout(() => navigate('/adminhome'), 2000)
+        }
+        else if (res.data.status == 200) {
+          toast.success(res.data.msg)
+          localStorage.setItem('token', res.data.token)
+          setTimeout(() => navigate('/userhome'), 2000)
+        } else if (res.data.status == 201) {
+          toast.success(res.data.msg)
+          localStorage.setItem('token', res.data.token)
+          setTimeout(() => navigate('/doctorhome'), 2000)
+        } else {
+          toast.error(res.data.msg)
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+        toast.error('Login failed...')
+      })
+
   }
 
   return (

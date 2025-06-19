@@ -1,6 +1,6 @@
 const express = require('express')
 const RouterUser = express.Router()
-const { registerUser, userlogin, viewLoggedUser, viewDoctors, viewDoctorsProfile, bookAppointment, fetchMyPrescription, fetchMyAppointments, fetchPrescriptionById, viewFeedbacks, submitFeedback } = require('../controller/userControl')
+const { registerUser, userlogin, viewLoggedUser, viewDoctors, viewDoctorsProfile, bookAppointment, fetchMyPrescription, fetchMyAppointments, fetchPrescriptionById, viewFeedbacks, submitFeedback, Payment, ValidatePayment } = require('../controller/userControl')
 
 
 RouterUser.post('/registeruser', registerUser)
@@ -14,6 +14,8 @@ RouterUser.get('/fetchmyprescription', fetchMyPrescription)
 RouterUser.get('/fetch-prescription-byId', fetchPrescriptionById)
 RouterUser.post('/write-feedback', submitFeedback)
 RouterUser.get('/seefeedbacks', viewFeedbacks)
+RouterUser.post('/payment',Payment)
+RouterUser.post('/validate-payment',ValidatePayment)
 
 
 module.exports = RouterUser

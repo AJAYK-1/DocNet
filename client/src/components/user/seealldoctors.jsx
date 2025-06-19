@@ -10,8 +10,7 @@ import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import './userStyling.css';
-import { useGSAP } from '@gsap/react';
-import { HomePageContentSection } from '../gsapAnimation';
+import axios from 'axios';
 
 
 export default function SeeAllDoctors() {
@@ -34,6 +33,7 @@ export default function SeeAllDoctors() {
   const token = localStorage.getItem('token');
   const decoded = jwtDecode(token);
   const navigate = useNavigate();
+
 
   useEffect(() => {
     AXIOS.get("http://localhost:9000/api/user/viewdoctors")
@@ -62,12 +62,11 @@ export default function SeeAllDoctors() {
   };
 
   const handleAppointment = async (docId) => {
-    const appointDate = selectedDates.format("YYYY-MM-D");
     AXIOS.post('http://localhost:9000/api/user/bookappointment', {
       userId: decoded.id,
       doctorId: docId,
       ...PatientDetails,
-      appointmentDate: appointDate
+      appointmentDate: selectedDates.format('YYYY-MM-DD')
     })
       .then((res) => {
         if (res.data.status === 200) {
@@ -82,6 +81,72 @@ export default function SeeAllDoctors() {
         toast.error("Booking failed.");
       });
   };
+
+  const handlePayment = async (docId) => {
+    axios.post('http://localhost:9000/api/user/payment',
+      {
+        amount: 500,
+        currency: "INR",
+        receipt: "qazwsx1"
+      },
+      { headers: { "Content-Type": "application/json" } })
+      .then((res) => {
+        const order = res.data
+
+        const options = {
+          "key": "rzp_test_EfKCk5AzTQYG9B", // Enter the Key ID generated from the Dashboard
+          amount: 500, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          currency: "INR",
+          "name": "DocNet", //your business name
+          "description": "Test Transaction",
+          "image": "https://example.com/your_logo",
+          "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+          "handler": async function (response) {
+            axios.post("http://localhost:9000/api/user/validate-payment",
+              response, { headers: { "Content-Type": "application/json" } }
+            )
+              .then((res) => {
+                if (res.data.status == 200) {
+                  toast.success(res.data.msg)
+                  handleAppointment(docId)
+                } else {
+                  toast.error(res.data.msg)
+                }
+
+              }).catch((err) => {
+                console.log(err)
+                toast.error("Payment Error...")
+              })
+
+          },
+          "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+            "name": "Ajay Kumar", //your customer's name
+            "email": "ajaykumar@gmail.com",
+            "contact": "9000090000"  //Provide the customer's phone number for better conversion rates 
+          },
+          "notes": {
+            "address": "Razorpay Corporate Office"
+          },
+          "theme": {
+            "color": "#3399cc"
+          }
+        };
+        const rzp1 = new window.Razorpay(options);
+        rzp1.on('payment.failed', function (response) {
+          alert(response.error.code);
+          alert(response.error.description);
+          alert(response.error.source);
+          alert(response.error.step);
+          alert(response.error.reason);
+          alert(response.error.metadata.order_id);
+          alert(response.error.metadata.payment_id);
+        });
+        rzp1.open()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
 
 
@@ -147,7 +212,7 @@ export default function SeeAllDoctors() {
         <Modal show={show} onHide={handleClose}>
           <Form onSubmit={(e) => {
             e.preventDefault();
-            handleAppointment(selectedDoctor._id);
+            handlePayment(selectedDoctor._id)
           }}>
             <Modal.Header closeButton>
               <Modal.Title>✏️ Fill the Patient's Details please</Modal.Title>
@@ -190,8 +255,8 @@ export default function SeeAllDoctors() {
                   };
                 }}
                 required
-              />
-              <Form.Text className='text-muted'>
+              /> <br />
+              <Form.Text className='text-muted mt-1'>
                 ⚠️ You cannot select a date on which the doctor is unavailable.
               </Form.Text>
             </Modal.Body>
