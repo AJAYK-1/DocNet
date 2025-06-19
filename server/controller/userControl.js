@@ -200,8 +200,8 @@ const submitFeedback = async (req, res) => {
 }
 
 
-const Payment = async (req,res) => {
-    try{
+const Payment = async (req, res) => {
+    try {
         const razorPay = new Razorpay({
             key_id: process.env.RAZORPAY_KEY_ID,
             key_secret: process.env.RAZORPAY_SECRET,
@@ -210,28 +210,28 @@ const Payment = async (req,res) => {
         const options = req.body
         const order = await razorPay.orders.create(options)
 
-        if(!order) {
-            return res.json({msg: "Error", status: 500})
+        if (!order) {
+            return res.json({ msg: "Error", status: 500 })
         }
         res.json(order)
 
-    } catch(err) {
+    } catch (err) {
         res.json(err)
     }
 }
 
-const ValidatePayment = async (req,res) => {
+const ValidatePayment = async (req, res) => {
     try {
-        const { razorpay_order_id, razorpay_payment_id, razorpay_signature} = req.body
+        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body
         const sha = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET)
         sha.update(`${razorpay_order_id}|${razorpay_payment_id}`)
         const digest = sha.digest("hex")
-        if(digest !== razorpay_signature) {
-            return res.json({ msg: "Transaction failed!", status:400})
+        if (digest !== razorpay_signature) {
+            return res.json({ msg: "Transaction failed!", status: 400 })
         }
-        res.json({ msg: "Transaction Successfull!", orderId: razorpay_order_id, paymentId: razorpay_payment_id, status:200})
+        res.json({ msg: "Transaction Successfull!", orderId: razorpay_order_id, paymentId: razorpay_payment_id, status: 200 })
 
-    }catch(err) {
+    } catch (err) {
         console.log(err)
     }
 }

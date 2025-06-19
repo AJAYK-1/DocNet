@@ -83,19 +83,20 @@ export default function SeeAllDoctors() {
   };
 
   const handlePayment = async (docId) => {
+
     axios.post('http://localhost:9000/api/user/payment',
       {
-        amount: 500,
+        amount: 1000,
         currency: "INR",
         receipt: "qazwsx1"
       },
       { headers: { "Content-Type": "application/json" } })
       .then((res) => {
         const order = res.data
-
+        const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID
         const options = {
-          "key": "rzp_test_EfKCk5AzTQYG9B", // Enter the Key ID generated from the Dashboard
-          amount: 500, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          "key": keyId, // Enter the Key ID generated from the Dashboard
+          amount: 1000, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
           currency: "INR",
           "name": "DocNet", //your business name
           "description": "Test Transaction",
@@ -121,7 +122,7 @@ export default function SeeAllDoctors() {
           },
           "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
             "name": "Ajay Kumar", //your customer's name
-            "email": "ajaykumar@gmail.com",
+            "email": "ajaykumar10@gmail.com",
             "contact": "9000090000"  //Provide the customer's phone number for better conversion rates 
           },
           "notes": {
