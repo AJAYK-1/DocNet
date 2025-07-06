@@ -1,27 +1,33 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
-import Registration from './components/registration'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Login from './components/login'
-import Adminhome from './components/admin/adminhome'
-import Userhome from "./components/user/userhome";
-import Doctorhome from "./components/doctor/doctorhome"
-import AdminViewUsers from './components/admin/adminviewusers'
-import Home from './components/home'
-import UserProfile from './components/user/userprofile'
-import Appointment from './components/user/appointment'
-import DoctorViewAppointment from './components/doctor/viewappointment'
-import AddPrescription from './components/doctor/addprescription'
-import ViewPrescription from './components/doctor/viewprescription'
-import GetMyPrescription from './components/user/getprescription'
-import DoctorProfile from './components/doctor/doctorprofile'
-import AdminViewDoctors from './components/admin/adminviewdoctors'
-import About from './components/about';
-import AppointmentHistory from './components/doctor/appointmenthistory';
-import UserFeedback from './components/user/userfeedback';
-import SeeAllDoctors from './components/user/seealldoctors';
-import DoctorSeeFeedback from './components/doctor/doctorfeedback';
+import { Routes, Route } from 'react-router-dom'
+import React, { Suspense } from 'react';
+import Loadinggif from './assets/loading.gif'
+
+const Home = React.lazy(() => import('./components/home'))
+const Login = React.lazy(() => import('./components/login'))
+const RegistrationPage = React.lazy(() => import('./components/registration'))
+const About = React.lazy(() => import('./components/about'))
+
+const Adminhome = React.lazy(() => import('./components/admin/adminhome'))
+const AdminViewUsers = React.lazy(() => import('./components/admin/adminviewusers'))
+const AdminViewDoctors = React.lazy(() => import('./components/admin/adminviewdoctors'))
+
+const Userhome = React.lazy(() => import("./components/user/userhome"))
+const UserProfile= React.lazy(() => import('./components/user/userprofile'))
+const Appointment= React.lazy(() => import('./components/user/appointment'))
+const GetMyPrescription= React.lazy(() => import('./components/user/getprescription'))
+const SeeAllDoctors = React.lazy(() => import('./components/user/seealldoctors'))
+const UserFeedback = React.lazy(() => import('./components/user/userfeedback'))
+
+const Doctorhome = React.lazy(() => import("./components/doctor/doctorhome"))
+const DoctorProfile= React.lazy(() => import('./components/doctor/doctorprofile'))
+const DoctorViewAppointment = React.lazy(() => import('./components/doctor/viewappointment'))
+const AddPrescription = React.lazy(() => import('./components/doctor/addprescription'))
+const ViewPrescription = React.lazy(() => import('./components/doctor/viewprescription'))
+const AppointmentHistory = React.lazy(() => import('./components/doctor/appointmenthistory'))
+const DoctorSeeFeedback = React.lazy(() => import('./components/doctor/doctorfeedback'))
 
 
 function App() {
@@ -29,11 +35,13 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
+      <Suspense fallback={<div style={{display:'flex', alignItems:'center', justifyContent:'center', height:'800px',width:'100%'}}><img src={Loadinggif} alt="Loading..." style={{}} /></div>}>
         <Routes>
+
           {/* COMMON PAGES */}
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<Login />} />
+          <Route path='/registration' element={<RegistrationPage />} />
           <Route path='/about' element={<About />} />
 
           {/* ADMIN PAGES */}
@@ -43,7 +51,6 @@ function App() {
 
           {/* USER PAGES */}
           <Route path='/userhome' element={<Userhome />} />
-          <Route path='/registration' element={<Registration />} />
           <Route path='/userprofile' element={<UserProfile />} />
           <Route path='/appointment' element={<Appointment />} />
           <Route path='/getprescription' element={<GetMyPrescription />} />
@@ -60,7 +67,7 @@ function App() {
           <Route path='/doctorfeedback' element={<DoctorSeeFeedback />} />
 
         </Routes>
-      </BrowserRouter>
+      </Suspense>
       <ToastContainer position="top-center" newestOnTop={false}
         closeOnClick
         pauseOnHover

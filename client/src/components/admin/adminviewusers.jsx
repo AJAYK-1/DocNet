@@ -10,7 +10,7 @@ export default function AdminViewUsers() {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        AXIOS.get("http://localhost:9000/api/admin/adminviewusers")
+        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/admin/adminviewusers`)
             .then((res) => {
                 setUsers(res.data);
             })
@@ -21,7 +21,7 @@ export default function AdminViewUsers() {
 
     const handleAction = (id, userStatus) => {
         const userStatusChange = userStatus === "Active" ? "Deactivated" : "Active";
-        AXIOS.put("http://localhost:9000/api/admin/action-on-user", { id, userStatusChange })
+        AXIOS.put(`${import.meta.env.VITE_HOST_URL}/api/admin/action-on-user`, { id, userStatusChange })
             .then((res) => {
                 setUsers(prev =>
                     prev.map(user =>

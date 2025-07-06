@@ -18,7 +18,7 @@ export default function UserProfile() {
     });
 
     useEffect(() => {
-        AXIOS.get("http://localhost:9000/api/user/viewloggeduser", {
+        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, {
             headers: { id: decoded.id }
         })
             .then((res) => {

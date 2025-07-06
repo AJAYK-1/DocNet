@@ -6,7 +6,7 @@ import { FaComment, FaStar, FaUser } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import UserNavbar from './usernavbar';
 import Footer from '../footer';
-import { data } from 'react-router-dom';
+import './userStyling.css'
 
 
 export default function UserFeedback() {
@@ -16,7 +16,7 @@ export default function UserFeedback() {
   const [Feedback, setFeedback] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:9000/api/user/seefeedbacks')
+    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/seefeedbacks`)
       .then((res) => {
         console.log(res.data)
         setFeedback(res.data)
@@ -44,7 +44,7 @@ export default function UserFeedback() {
     Writefeed.rating = starRating
     console.log(Writefeed)
     handleClose()
-    axios.post('http://localhost:9000/api/user/write-feedback', {
+    axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/write-feedback`, {
       userId: decoded.id,
       ...Writefeed
     })

@@ -23,7 +23,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    AXIOS.post('http://localhost:9000/api/user/login', UserData)
+    AXIOS.post(`${import.meta.env.VITE_HOST_URL}/api/user/login`, UserData)
       .then((res) => {
         if (res.data.status == 202) {
           toast.success(res.data.msg)

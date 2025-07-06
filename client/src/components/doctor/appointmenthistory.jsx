@@ -17,7 +17,7 @@ export default function AppointmentHistory() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:9000/api/doctor/fetchappointments', {
+      .get(`${import.meta.env.VITE_HOST_URL}/api/doctor/fetchappointments`, {
         headers: { id: decodedtoken.id },
       })
       .then((res) => {

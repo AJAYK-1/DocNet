@@ -13,7 +13,7 @@ export const HomeNavbarAnimation = () => {
     gsap.fromTo(
         ".navbar-contents",
         { x: -200, opacity: 0 },
-        { x: 0, opacity: 1, delay: 0.6, stagger: { each: 0.6, from: "end" } })
+        { x: 0, opacity: 1, delay: 0.6, stagger: { each: 0.3, from: "end" } })
 
 }
 

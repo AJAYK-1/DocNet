@@ -16,7 +16,7 @@ export default function ViewPrescription() {
     const decodedtoken = jwtDecode(fetchtoken)
 
     useEffect(() => {
-        axios.get("http://localhost:9000/api/doctor/viewprescription", {
+        axios.get(`${import.meta.env.VITE_HOST_URL}/api/doctor/viewprescription`, {
             headers: { id: decodedtoken.id }
         }).then((res) => {
             setPrescriptions(res.data)

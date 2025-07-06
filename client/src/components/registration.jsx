@@ -35,7 +35,7 @@ export default function CombinedRegistration() {
 
   const handleUserSubmit = async (e) => {
     e.preventDefault();
-    AXIOS.post("http://localhost:9000/api/user/registeruser", userForm)
+    AXIOS.post(`${import.meta.env.VITE_HOST_URL}/api/user/registeruser`, userForm)
       .then((res) => {
         if (res.data.status == 200) {
           toast.success(res.data.msg);
@@ -71,7 +71,7 @@ export default function CombinedRegistration() {
     formData.append('specialization', doctorForm.specialization)
     formData.append('profileImage', doctorImage)
 
-    AXIOS.post("http://localhost:9000/api/doctor/doctorregistration", formData, {
+    AXIOS.post(`${import.meta.env.VITE_HOST_URL}/api/doctor/doctorregistration`, formData, {
       headers: { "Content-Type": "multipart/form-data" }
     })
       .then((res) => {

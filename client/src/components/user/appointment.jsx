@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useParams } from 'react-router-dom'
 import { jwtDecode } from 'jwt-decode'
 import UserNavbar from './usernavbar'
 import Footer from '../footer'
 import { FaHeartbeat } from 'react-icons/fa'
-import { Container, Row, Col, Card, ListGroup, Modal, Button } from 'react-bootstrap';
+import { Row, Col, Card, ListGroup, Modal, Button } from 'react-bootstrap';
 
 
 export default function Appointment() {
@@ -21,14 +20,14 @@ export default function Appointment() {
 
   useEffect(() => {
 
-    axios.get(`http://localhost:9000/api/user/viewloggeduser`, { headers: { id: decoded.id } })
+    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { id: decoded.id } })
       .then((res) => {
         console.log(res.data)
       }).catch((err) => {
         console.log(err)
       })
 
-    axios.get(`http://localhost:9000/api/user/fetchmyappointments`, { headers: { id: decoded.id } })
+    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetchmyappointments`, { headers: { id: decoded.id } })
       .then((res) => {
         setAppointments(res.data)
         console.log(res.data)
@@ -40,7 +39,7 @@ export default function Appointment() {
   const handleButton = (id) => {
     setModalShow(true)
     const appId = id
-    axios.get('http://localhost:9000/api/user/fetch-prescription-byId', { headers: { id: appId } })
+    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetch-prescription-byId`, { headers: { id: appId } })
       .then((res) => {
         setPrescription(res.data)
         console.log(res.data)

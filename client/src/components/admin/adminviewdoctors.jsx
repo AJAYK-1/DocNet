@@ -11,14 +11,14 @@ export default function AdminViewDoctors() {
 
 
     useEffect(() => {
-        AXIOS.get("http://localhost:9000/api/admin/adminviewdoctors")
+        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/admin/adminviewdoctors`)
             .then((res) => setDoctors(res.data))
             .catch((err) => console.log(err));
     }, []);
 
     const handleAction = (id, doctorStatus) => {
         const doctorStatusChange = doctorStatus === "Active" ? "Deactivated" : "Active";
-        AXIOS.put("http://localhost:9000/api/admin/action-on-doctor", { id, doctorStatusChange })
+        AXIOS.put(`${import.meta.env.VITE_HOST_URL}/api/admin/action-on-doctor`, { id, doctorStatusChange })
             .then((res) => {
                 window.location.reload()
                 console.log(res.data)

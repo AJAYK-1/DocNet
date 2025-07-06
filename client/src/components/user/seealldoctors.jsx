@@ -36,11 +36,11 @@ export default function SeeAllDoctors() {
 
 
   useEffect(() => {
-    AXIOS.get("http://localhost:9000/api/user/viewdoctors")
+    AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewdoctors`)
       .then(res => setDocProfiles(res.data))
       .catch(err => console.log(err));
 
-    AXIOS.get("http://localhost:9000/api/user/viewloggeduser", { headers: { id: decoded.id } })
+    AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { id: decoded.id } })
       .then(res => setUserData(res.data))
       .catch(err => console.log(err));
   }, []);
@@ -62,7 +62,7 @@ export default function SeeAllDoctors() {
   };
 
   const handleAppointment = async (docId) => {
-    AXIOS.post('http://localhost:9000/api/user/bookappointment', {
+    AXIOS.post(`${import.meta.env.VITE_HOST_URL}/api/user/bookappointment`, {
       userId: decoded.id,
       doctorId: docId,
       ...PatientDetails,
@@ -84,7 +84,7 @@ export default function SeeAllDoctors() {
 
   const handlePayment = async (docId) => {
 
-    axios.post('http://localhost:9000/api/user/payment',
+    axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/payment`,
       {
         amount: 1000,
         currency: "INR",
@@ -103,7 +103,7 @@ export default function SeeAllDoctors() {
           "image": "https://example.com/your_logo",
           "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
           "handler": async function (response) {
-            axios.post("http://localhost:9000/api/user/validate-payment",
+            axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/validate-payment`,
               response, { headers: { "Content-Type": "application/json" } }
             )
               .then((res) => {

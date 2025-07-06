@@ -6,7 +6,6 @@ import { Container, Row, Col, Image, Card, Button, Form, FloatingLabel } from 'r
 import { gsap } from 'gsap'
 import { useNavigate } from 'react-router-dom'
 import { FaAddressCard } from 'react-icons/fa';
-import Collapse from 'react-bootstrap/Collapse';
 import Modal from 'react-bootstrap/Modal';
 import Footer from '../footer'
 import { useGSAP } from '@gsap/react'
@@ -81,7 +80,7 @@ export default function DoctorProfile() {
         newData.append('profileImage', doctorImage)
 
         handleClose()
-        AXIOS.put('http://localhost:9000/api/doctor/doctoreditprofile', newData, { headers: { id: decoded.id } })
+        AXIOS.put(`${import.meta.env.VITE_HOST_URL}/api/doctor/doctoreditprofile`, newData, { headers: { id: decoded.id } })
             .then((res) => {
                 if(res.data.status == 200) {
                     toast.success(res.data.msg)
@@ -113,7 +112,7 @@ export default function DoctorProfile() {
             dates: date.format("YYYY-MM-DD")
         }));
         console.log(formattedSchedule)
-        AXIOS.put('http://localhost:9000/api/doctor/changeavailability', { id: decoded.id, schedule: formattedSchedule }
+        AXIOS.put(`${import.meta.env.VITE_HOST_URL}/api/doctor/changeavailability`, { id: decoded.id, schedule: formattedSchedule }
         ).then((res) => {
             window.location.reload()
             toast.success(res.data.msg)
@@ -188,7 +187,7 @@ export default function DoctorProfile() {
                             ref={imageRef}
                         >
                             <Image
-                                src={`http://localhost:9000/uploads/${DocData.profileImage}`}
+                                src={`${import.meta.env.VITE_HOST_URL}/uploads/${DocData.profileImage}`}
                                 roundedCircle
                                 height={280}
                                 width={280}

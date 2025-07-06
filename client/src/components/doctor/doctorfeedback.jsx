@@ -6,6 +6,7 @@ import { FaComment, FaStar, FaUser } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import Footer from '../footer';
 import DoctorNavbar from './doctornavbar';
+import './doctorStyle.css'
 
 
 export default function DoctorSeeFeedback() {
@@ -13,7 +14,7 @@ export default function DoctorSeeFeedback() {
   const [Feedback, setFeedback] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:9000/api/user/seefeedbacks')
+    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/seefeedbacks`)
       .then((res) => {
         console.log(res.data)
         setFeedback(res.data)

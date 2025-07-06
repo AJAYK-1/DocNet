@@ -15,7 +15,7 @@ export default function GetMyPrescription() {
 
     useEffect(() => {
         axios
-            .get("http://localhost:9000/api/user/fetchmyprescription", {
+            .get(`${import.meta.env.VITE_HOST_URL}/api/user/fetchmyprescription`, {
                 headers: { id: decodedtoken.id }
             })
             .then((res) => {

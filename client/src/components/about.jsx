@@ -5,7 +5,7 @@ import HomeNavbar from './homenavbar'
 import Footer from './footer'
 import { useGSAP } from '@gsap/react'
 import { HomePageHeroSection } from './gsapAnimation'
-
+import './App.css'
 
 export default function About() {
 

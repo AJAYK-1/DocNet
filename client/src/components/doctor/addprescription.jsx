@@ -34,7 +34,7 @@ export default function AddPrescription() {
 
         try {
             const res = await axios.post(
-                'http://localhost:9000/api/doctor/yourprescription',
+                `${import.meta.env.VITE_HOST_URL}/api/doctor/yourprescription`,
                 {
                     prescriptionsData: rows,
                     mention: mention

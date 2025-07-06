@@ -26,21 +26,21 @@ export default function UserHome() {
     const decoded = jwtDecode(token);
 
     useEffect(() => {
-        AXIOS.get("http://localhost:9000/api/user/viewdoctors")
+        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewdoctors`)
             .then((res) => {
                 setDocProfiles(res.data);
             }).catch((err) => {
                 console.log(err);
             });
 
-        AXIOS.get("http://localhost:9000/api/user/viewloggeduser", { headers: { id: decoded.id } })
+        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { id: decoded.id } })
             .then((res) => {
                 setUserData(res.data);
             }).catch((err) => {
                 console.log(err);
             });
 
-        AXIOS.get(`http://localhost:9000/api/user/fetchmyappointments`, { headers: { id: decoded.id } })
+        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetchmyappointments`, { headers: { id: decoded.id } })
             .then((res) => {
                 const pendingAppointments = res.data.filter(
                     (a) => a.appointmentStatus === "Complete"

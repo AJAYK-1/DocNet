@@ -17,7 +17,7 @@ export default function Adminhome() {
   const [Calculations, setCalculations] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:9000/api/admin/admingetappointments')
+    axios.get(`${import.meta.env.VITE_HOST_URL}/api/admin/admingetappointments`)
       .then((res) => {
         setCalculations({
           numberOfUsers: res.data.numberOfUsers.length,
