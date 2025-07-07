@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const Razorpay = require('razorpay')
 const crypto = require('crypto')
+const { sendaMail } = require('../middleware/nodeMailer')
 
 
 const registerUser = async (req, res) => {
@@ -69,6 +70,18 @@ const userlogin = async (req, res) => {
 }
 
 
+const loginWithOTP = async (req, res) => {
+    try {
+        const { email } = req.body
+        sendaMail(email, "Login OTP", "Your OTP for login is 12345", "")
+        res.json({ msg: "Email send successfully...", status: 200 })
+    } catch (err) {
+        console.log(err)
+        res.json({ msg: "User not found...", status: 404 })
+    }
+}
+
+
 const viewLoggedUser = async (req, res) => {
     try {
         const id = req.headers.id
@@ -111,7 +124,6 @@ const bookAppointment = async (req, res) => {
         console.log("req.body", req.body)
         const { userId, doctorId, patientName, patientAge, patientGender, patientSymptoms, appointmentDate } = req.body
         const appointment = await Appointment({ userId, doctorId, patientName, patientAge, patientGender, patientSymptoms, appointmentDate })
-        // console.log(appointment)
         await appointment.save()
         res.json({ msg: "Appointment Booked successfully", status: 200 })
     } catch (err) {
@@ -240,6 +252,7 @@ const ValidatePayment = async (req, res) => {
 module.exports = {
     registerUser,
     userlogin,
+    loginWithOTP,
     viewLoggedUser,
     viewDoctors,
     viewDoctorsProfile,

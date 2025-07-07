@@ -15,14 +15,14 @@ const AdminViewUsers = React.lazy(() => import('./components/admin/adminviewuser
 const AdminViewDoctors = React.lazy(() => import('./components/admin/adminviewdoctors'))
 
 const Userhome = React.lazy(() => import("./components/user/userhome"))
-const UserProfile= React.lazy(() => import('./components/user/userprofile'))
-const Appointment= React.lazy(() => import('./components/user/appointment'))
-const GetMyPrescription= React.lazy(() => import('./components/user/getprescription'))
+const UserProfile = React.lazy(() => import('./components/user/userprofile'))
+const Appointment = React.lazy(() => import('./components/user/appointment'))
+const GetMyPrescription = React.lazy(() => import('./components/user/getprescription'))
 const SeeAllDoctors = React.lazy(() => import('./components/user/seealldoctors'))
 const UserFeedback = React.lazy(() => import('./components/user/userfeedback'))
 
 const Doctorhome = React.lazy(() => import("./components/doctor/doctorhome"))
-const DoctorProfile= React.lazy(() => import('./components/doctor/doctorprofile'))
+const DoctorProfile = React.lazy(() => import('./components/doctor/doctorprofile'))
 const DoctorViewAppointment = React.lazy(() => import('./components/doctor/viewappointment'))
 const AddPrescription = React.lazy(() => import('./components/doctor/addprescription'))
 const ViewPrescription = React.lazy(() => import('./components/doctor/viewprescription'))
@@ -32,10 +32,12 @@ const DoctorSeeFeedback = React.lazy(() => import('./components/doctor/doctorfee
 
 function App() {
 
-
   return (
     <>
-      <Suspense fallback={<div style={{display:'flex', alignItems:'center', justifyContent:'center', height:'800px',width:'100%'}}><img src={Loadinggif} alt="Loading..." style={{}} /></div>}>
+      <Suspense fallback={
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '800px', width: '100%' }}>
+          <img src={Loadinggif} alt="Loading..." style={{}} />
+        </div>}>
         <Routes>
 
           {/* COMMON PAGES */}
@@ -75,5 +77,6 @@ function App() {
     </>
   )
 }
+
 
 export default App

@@ -1,10 +1,11 @@
 const express = require('express')
 const RouterUser = express.Router()
-const { registerUser, userlogin, viewLoggedUser, viewDoctors, viewDoctorsProfile, bookAppointment, fetchMyPrescription, fetchMyAppointments, fetchPrescriptionById, viewFeedbacks, submitFeedback, Payment, ValidatePayment } = require('../controller/userControl')
+const { registerUser, userlogin, viewLoggedUser, viewDoctors, viewDoctorsProfile, bookAppointment, fetchMyPrescription, fetchMyAppointments, fetchPrescriptionById, viewFeedbacks, submitFeedback, Payment, ValidatePayment, loginWithOTP } = require('../controller/userControl')
 
 
 RouterUser.post('/registeruser', registerUser)
 RouterUser.post('/login', userlogin)
+RouterUser.post('/loginwithOTP',loginWithOTP)
 RouterUser.get('/viewloggeduser', viewLoggedUser)
 RouterUser.get('/viewdoctors', viewDoctors)
 RouterUser.get('/viewdoctorprofile/:id', viewDoctorsProfile)
