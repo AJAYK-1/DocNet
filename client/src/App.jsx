@@ -3,7 +3,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { Routes, Route } from 'react-router-dom'
 import React, { Suspense } from 'react';
-import Loadinggif from './assets/loading.gif'
+import Lottie from 'lottie-react'
+import Loading from './assets/Loading.json'
+
 
 const Home = React.lazy(() => import('./components/home'))
 const Login = React.lazy(() => import('./components/login'))
@@ -36,7 +38,10 @@ function App() {
     <>
       <Suspense fallback={
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '800px', width: '100%' }}>
-          <img src={Loadinggif} alt="Loading..." style={{}} />
+          {/* <img src={Loadinggif} alt="Loading..." /> */}
+          <Lottie animationData={Loading}/>
+           <br />
+          <h2>Loading...</h2>
         </div>}>
         <Routes>
 

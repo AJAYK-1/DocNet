@@ -17,6 +17,8 @@ const doctorSchema = new mongoose.Schema({
         }
     ],
     doctorStatus: { type: String, default: "Active" },
+    otp: { type: Number },
+    otpExpiry: { type: Date }
 }, { timestamps: true })
 
 const Doctor = mongoose.model("Doctor_tbl", doctorSchema)

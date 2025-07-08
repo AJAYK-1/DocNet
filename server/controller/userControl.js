@@ -38,29 +38,45 @@ const userlogin = async (req, res) => {
     try {
         const { email, password } = req.body
         if (email === 'admin@gmail.com' && password === 'admin') {
-            const token = jwt.sign({ id: "admin" }, "thisisAdmin", { expiresIn: '1h' })
+            const token = jwt.sign({ id: "admin" }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
             res.json({ msg: "Logging in as Admin...", status: 202, token: token })
         } else {
-            const LoggedUser = await User.findOne({ email })
-            const LoggedDoctor = await Doctor.findOne({ email })
-            console.log(LoggedDoctor)
-            console.log(LoggedUser)
-            if (LoggedUser && LoggedUser.userStatus == "Active") {
-                if (LoggedUser.password == password) {
-                    const token = jwt.sign({ id: LoggedUser._id }, "qwertyuio", { expiresIn: '1h' })
-                    res.json({ msg: "Login Successfull...", status: 200, token: token })
-                } else {
-                    res.json({ msg: "Incorrect Email or Password...", status: 400 })
+
+
+            let ValidUser = await User.findOne({ email })
+            let userType = 'user'
+
+            if (!ValidUser) {
+                ValidUser = await Doctor.findOne({ email })
+                userType = 'doctor'
+            }
+            if (!ValidUser) {
+                res.json({ msg: "User not found", status: 400 })
+            } else {
+                if (userType == 'user') {
+                    if (ValidUser.password == password) {
+                        if (ValidUser.userStatus != 'Active') {
+                            res.json({ msg: "Your account is deactivated.", status: 400 })
+                        } else {
+                            const token = jwt.sign({ id: ValidUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
+                            res.json({ msg: "Login successfull...", status: 200, token: token })
+                        }
+                    } else {
+                        res.json({ msg: "Incorrect Email or Password...", status: 400 })
+                    }
                 }
-            } else if (LoggedDoctor && LoggedDoctor.doctorStatus == "Active") {
-                if (LoggedDoctor.password == password) {
-                    const token = jwt.sign({ id: LoggedDoctor._id }, "docasdf", { expiresIn: "1h" })
-                    res.json({ msg: "Doctor Login Successfull...", status: 201, token: token })
-                } else {
-                    res.json({ msg: "Incorrect Email or Password...", status: 400 })
+                if (userType = 'doctor') {
+                    if (ValidUser.password = password) {
+                        if (ValidUser.doctorStatus != 'Active') {
+                            res.json({ msg: "Your account has been deactivated.", status: 400 })
+                        } else {
+                            const token = jwt.sign({ id: ValidUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
+                            res.json({ msg: "Login successfull...", status: 201, token: token })
+                        }
+                    } else {
+                        res.json({ msg: "Incorrect Email or Password...", status: 400 })
+                    }
                 }
-            } else if ((LoggedDoctor && LoggedDoctor.doctorStatus == "Deactivated") || (LoggedUser && LoggedUser.userStatus == "Deactivated")) {
-                res.json({ msg: "Your Account has been deactivated. Unable to login...", status: 404 })
             }
         }
     } catch (err) {
@@ -70,11 +86,60 @@ const userlogin = async (req, res) => {
 }
 
 
-const loginWithOTP = async (req, res) => {
+const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
+
+
+const sendOTP = async (req, res) => {
     try {
         const { email } = req.body
-        sendaMail(email, "Login OTP", "Your OTP for login is 12345", "")
-        res.json({ msg: "Email send successfully...", status: 200 })
+        let userExist = await User.findOne({ email })
+        if (!userExist) {
+            userExist = await Doctor.findOne({ email })
+        }
+        if (!userExist) {
+            res.json({ msg: "Incorrect Email address...", status: 400 })
+        } else {
+            loginotp = generateOTP()
+            expiry = Date.now() + 5 * 60 * 1000
+            sendaMail(email, "OTP to Login to DocNet", `Your OTP for login is ${loginotp}. It is valid for only 5 minutes.`, "")
+            userExist.otp = loginotp
+            userExist.otpExpiry = expiry
+            await userExist.save()
+            res.json({ msg: "OTP send to your Email address...", status: 200 })
+        }
+    } catch (err) {
+        console.log(err)
+        res.json({ msg: "User not found...", status: 404 })
+    }
+}
+
+
+const loginWithOTP = async (req, res) => {
+    try {
+        const { email, otp } = req.body
+        let userExist = await User.findOne({ email })
+        let userType = 'user'
+
+        if (!userExist) {
+            userExist = await Doctor.findOne({ email })
+            userType = 'doctor'
+        }
+        if (!userExist) {
+            res.json({ msg: "User not found", status: 400 })
+        } else if (userExist.otpExpiry < Date.now()) {
+            res.json({ msg: "OTP expired or invalid.", status: 400 })
+        } else {
+            if (userExist.otp == otp) {
+                const token = jwt.sign({ id: userExist._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
+                if (userType == 'user') {
+                    res.json({ msg: "Login successfull", status: 200, token: token })
+                } else if (userType == 'doctor') {
+                    res.json({ msg: "Login successfull...", status: 201, token: token })
+                }
+            } else {
+                res.json({ msg: "Incorrect OTP", status: 400 })
+            }
+        }
     } catch (err) {
         console.log(err)
         res.json({ msg: "User not found...", status: 404 })
@@ -252,6 +317,7 @@ const ValidatePayment = async (req, res) => {
 module.exports = {
     registerUser,
     userlogin,
+    sendOTP,
     loginWithOTP,
     viewLoggedUser,
     viewDoctors,
