@@ -26,5 +26,5 @@ App.use('/uploads',express.static('uploads'))
 
 
 App.listen(process.env.PORT, () => {
-    console.log("Server Running Successfully...😊")
+    console.log(`Server Running Successfully on PORT: ${process.env.PORT}...😊`)
 })

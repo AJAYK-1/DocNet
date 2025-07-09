@@ -4,74 +4,72 @@ const Appointment = require('../models/appointmentModel')
 const Prescription = require('../models/prescriptionModel')
 
 
+// view all users...
 const AdminviewUsers = async (req, res) => {
     try {
         const allUsers = await User.find({})
-        console.log(allUsers)
-        res.json(allUsers)
+        res.json({ msg: 'All users fetched...', data: allUsers, status: 200 })
     } catch (err) {
         console.log(err)
+        res.json({ msg: "An Error Occured...", status: 404 })
     }
 }
 
 
+// View all doctors...
 const AdminviewDoctors = async (req, res) => {
     try {
         const allDoctors = await Doctor.find({})
-        console.log(allDoctors)
-        res.json(allDoctors)
+        res.json({ msg: 'All doctors fetched...', data: allDoctors, status: 200 })
     } catch (err) {
         console.log(err)
+        res.json({ msg: "An Error Occured...", status: 404 })
     }
 }
 
-
+// Activate or Deactivate users accounts...
 const ActionOnUser = async (req, res) => {
     try {
         const { id, userStatusChange } = req.body
-        console.log(id, userStatusChange)
         const thatUser = await User.findById(id)
-        console.log(thatUser)
-        thatUser.userStatus = userStatusChange
+        thatUser.accountStatus = userStatusChange
         await thatUser.save()
-        res.json({ msg: "User status changed", status: 200 })
+        res.json({ msg: "User's account status changed", status: 200 })
     } catch (err) {
         console.log(err)
+        res.json({ msg: "An Error Occured...", status: 404 })
     }
 }
 
 
+// Activate or Deactivate doctor accounts...
 const ActionOnDoctor = async (req, res) => {
     try {
         const { id, doctorStatusChange } = req.body
-        console.log(id, doctorStatusChange)
         const thatDoctor = await Doctor.findById(id)
-        console.log(thatDoctor)
-        thatDoctor.doctorStatus = doctorStatusChange
+        thatDoctor.accountStatus = doctorStatusChange
         await thatDoctor.save()
-        res.json({ msg: "Doctor status changed", status: 200 })
+        res.json({ msg: "Doctor's account status changed", status: 200 })
     } catch (err) {
         console.log(err)
+        res.json({ msg: "An Error Occured...", status: 404 })
     }
 }
 
 
-const Calculations = async(req,res) =>{
-    try{
+// Data for charts on dashboard...
+const Calculations = async (req, res) => {
+    try {
         const numberOfUsers = await User.find()
         const numberOfDoctors = await Doctor.find()
         const numberOfAppointments = await Appointment.find()
         const numberOfPrescriptions = await Prescription.find()
-        console.log(numberOfUsers.length)
-        console.log(numberOfDoctors.length)
-        console.log(numberOfAppointments.length)
-        console.log(numberOfPrescriptions.length)
-        res.json({numberOfUsers,numberOfDoctors,numberOfAppointments,numberOfPrescriptions})
-
-    }catch(err) {
+        res.json({ numberOfUsers, numberOfDoctors, numberOfAppointments, numberOfPrescriptions })
+    } catch (err) {
         console.log(err)
+        res.json({ msg: "An Error Occured...", status: 404 })
     }
 }
 
 
-module.exports = { AdminviewUsers, AdminviewDoctors, ActionOnUser, ActionOnDoctor,Calculations }
+module.exports = { AdminviewUsers, AdminviewDoctors, ActionOnUser, ActionOnDoctor, Calculations }

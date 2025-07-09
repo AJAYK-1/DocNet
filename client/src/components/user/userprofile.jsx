@@ -22,8 +22,7 @@ export default function UserProfile() {
             headers: { id: decoded.id }
         })
             .then((res) => {
-                setUserData(res.data);
-                console.log(res.data);
+                setUserData(res.data.data);
             })
             .catch((err) => {
                 console.log(err);

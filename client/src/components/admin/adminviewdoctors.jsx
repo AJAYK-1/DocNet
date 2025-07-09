@@ -12,16 +12,15 @@ export default function AdminViewDoctors() {
 
     useEffect(() => {
         AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/admin/adminviewdoctors`)
-            .then((res) => setDoctors(res.data))
+            .then((res) => setDoctors(res.data.data))
             .catch((err) => console.log(err));
     }, []);
 
-    const handleAction = (id, doctorStatus) => {
-        const doctorStatusChange = doctorStatus === "Active" ? "Deactivated" : "Active";
+    const handleAction = (id, accountStatus) => {
+        const doctorStatusChange = accountStatus === "Active" ? "Deactivated" : "Active";
         AXIOS.put(`${import.meta.env.VITE_HOST_URL}/api/admin/action-on-doctor`, { id, doctorStatusChange })
             .then((res) => {
                 window.location.reload()
-                console.log(res.data)
             })
             .catch((err) => {
                 console.log(err);
@@ -85,17 +84,17 @@ export default function AdminViewDoctors() {
                                     <td>{doctor.address}</td>
                                     <td>{doctor.email}</td>
                                     <td>
-                                        <span className={`badge ${doctor.doctorStatus == 'Active' ? 'bg-success' : 'bg-secondary'}`}>
-                                            {doctor.doctorStatus == "Active" ? 'Active' : 'Deactivated'}
+                                        <span className={`badge ${doctor.accountStatus == 'Active' ? 'bg-success' : 'bg-secondary'}`}>
+                                            {doctor.accountStatus == "Active" ? 'Active' : 'Deactivated'}
                                         </span>
                                     </td>
                                     <td className="text-center">
                                         <Button
                                             className="btn btn-sm"
-                                            variant={doctor.doctorStatus === "Active" ? "danger" : "success"}
-                                            onClick={() => handleAction(doctor._id, doctor.doctorStatus)}
+                                            variant={doctor.accountStatus === "Active" ? "danger" : "success"}
+                                            onClick={() => handleAction(doctor._id, doctor.accountStatus)}
                                         >
-                                            {doctor.doctorStatus === "Active" ? "Deactivate" : "Activate"}
+                                            {doctor.accountStatus === "Active" ? "Deactivate" : "Activate"}
                                         </Button>
                                     </td>
                                 </tr>

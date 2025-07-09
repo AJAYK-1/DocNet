@@ -19,7 +19,7 @@ export default function ViewPrescription() {
         axios.get(`${import.meta.env.VITE_HOST_URL}/api/doctor/viewprescription`, {
             headers: { id: decodedtoken.id }
         }).then((res) => {
-            setPrescriptions(res.data)
+            setPrescriptions(res.data.data)
         }).catch((err) => {
             console.log(err)
         })

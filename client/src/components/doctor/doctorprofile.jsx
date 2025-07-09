@@ -37,8 +37,9 @@ export default function DoctorProfile() {
             headers: { id: decoded.id }
         })
             .then((res) => {
-                setDocData(res.data)
-                const unavailableDates = res.data.schedule
+                setDocData(res.data.data)
+                console.log(res.data.data.docname)
+                const unavailableDates = res.data.data.schedule
                     .filter(entry => entry.availability === "Unavailable")
                     .map(item => item.dates);
 
@@ -46,11 +47,11 @@ export default function DoctorProfile() {
                 setSelectedDates(unavailableDates.map(d => new DateObject(d))); // Initialize selection in calendar
 
                 setProfileEdit({
-                    docname: res.data.docname,
-                    address: res.data.address,
-                    license: res.data.license,
-                    qualification: res.data.qualification,
-                    specialization: res.data.specialization
+                    docname: res.data.data.docname,
+                    address: res.data.data.address,
+                    license: res.data.data.license,
+                    qualification: res.data.data.qualification,
+                    specialization: res.data.data.specialization
                 })
             })
             .catch((err) => {

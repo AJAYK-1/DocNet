@@ -28,25 +28,24 @@ export default function UserHome() {
     useEffect(() => {
         AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewdoctors`)
             .then((res) => {
-                setDocProfiles(res.data);
+                setDocProfiles(res.data.data);
             }).catch((err) => {
                 console.log(err);
             });
 
         AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { id: decoded.id } })
             .then((res) => {
-                setUserData(res.data);
+                setUserData(res.data.data);
             }).catch((err) => {
                 console.log(err);
             });
 
         AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetchmyappointments`, { headers: { id: decoded.id } })
             .then((res) => {
-                const pendingAppointments = res.data.filter(
+                const pendingAppointments = res.data.data.filter(
                     (a) => a.appointmentStatus === "Complete"
                 );
                 if (pendingAppointments.length > 0) {
-                    console.log('2timens')
                     toast.info(`Your appointment is complete`, {
                         position: 'top-center',
                         autoClose: 1000,
@@ -146,7 +145,7 @@ export default function UserHome() {
                             <Card id='info-card' className="h-100 shadow-sm border-0">
                                 <Card.Img
                                     variant="top"
-                                    src={`http://localhost:9000/uploads/${doctor.profileImage}`}
+                                    src={`${import.meta.env.VITE_HOST_URL}/uploads/${doctor.profileImage}`}
                                     style={{ height: "250px", objectFit: "cover" }}
                                 />
                                 <Card.Body>

@@ -2,28 +2,34 @@ const Doctor = require('../models/doctorModel')
 const Appointment = require('../models/appointmentModel')
 const Prescription = require('../models/prescriptionModel')
 const path = require('path')
+const fs = require('fs')
+const argon2 = require('argon2')
+const { sendaMail } = require('../middleware/nodeMailer')
+const { WelcomeMailDoctor } = require('../emails/welcomeDoctor')
 
 
+// Registration for doctors...
 const DoctorRegister = async (req, res) => {
     try {
         const { docname, email, password, address, license, qualification, specialization } = req.body
-        console.log(req.file)
-        console.log(req.body)
         const profileImage = req.file.filename
         const ExistingDoctor = await Doctor.findOne({ email })
         if (ExistingDoctor) {
             res.json({ msg: "Account already exists...", status: 400 })
         } else {
+            const hashedPassword = await argon2.hash(password)
             const DoctorData = await Doctor({
                 docname,
                 email,
-                password,
+                password: hashedPassword,
                 address,
                 license,
                 qualification,
                 specialization,
                 profileImage
             })
+            const personalMail = await WelcomeMailDoctor(docname)
+            sendaMail(email, "🎉 Welcome to DocNet – Your Health, Simplified!", "", personalMail)
             await DoctorData.save()
             res.json({ msg: "Registration Successfull...", status: 200 })
         }
@@ -34,28 +40,28 @@ const DoctorRegister = async (req, res) => {
 }
 
 
+// Currently Logged in doctor...
 const viewLoggedDoctor = async (req, res) => {
     try {
         const id = req.headers.id
         const LoggedinDoctor = await Doctor.findById(id)
-        console.log(LoggedinDoctor)
-        res.json(LoggedinDoctor)
+        res.json({ msg: "Logged doctor...", data: LoggedinDoctor, status: 200 })
     } catch (err) {
         console.log(err)
+        res.json({ msg: "Error user not found...", status: 404 })
     }
 }
 
 
+// Changing the doctors schedule...
 const changeAvalibility = async (req, res) => {
     try {
         const { id, schedule } = req.body
-        console.log(schedule)
         const LoggedDoctor = await Doctor.findById(id)
         schedule.forEach(entry => {
             const existingEntryIndex = LoggedDoctor.schedule.findIndex(
                 s => s.dates === entry.dates
             );
-
             if (existingEntryIndex !== -1) {
                 // Entry exists — toggle the availability
                 const currentAvailability = LoggedDoctor.schedule[existingEntryIndex].availability;
@@ -73,10 +79,12 @@ const changeAvalibility = async (req, res) => {
         res.json({ msg: "Availability status changed", status: 200 })
     } catch (err) {
         console.log(err)
+        res.json({ msg: "Error...", status: 404 })
     }
 }
 
 
+// Editing Doctor's Profile...
 const doctorProfileEdit = async (req, res) => {
     try {
         const id = req.headers.id
@@ -88,34 +96,45 @@ const doctorProfileEdit = async (req, res) => {
         doctorsProfile.qualification = qualification
         doctorsProfile.specialization = specialization
         doctorsProfile.address = address
+        if (doctorsProfile.profileImage) {
+            const oldPicPath = path.join(__dirname, '..', 'uploads', doctorsProfile.profileImage)
+            fs.unlink(oldPicPath, (err) => {
+                if (err) {
+                    console.log("Error deleting old Profile Picture.")
+                } else {
+                    console.log("Old Profile Picture deleted successfully...")
+                }
+            })
+        }
         doctorsProfile.profileImage = profileImage
         await doctorsProfile.save()
         res.json({ msg: "Profile edited successfully", status: 200 })
     } catch (err) {
         console.log(err)
+        res.json({ msg: "Error...", status: 404 })
     }
 }
 
 
+// Fetch the appointments...
 const fetchAppointments = async (req, res) => {
     try {
         const id = req.headers.id
         const appointments = await Appointment.find({ doctorId: id })
             .populate("userId")
             .populate("doctorId")
-        console.log(appointments)
-        res.json(appointments)
+        res.json({ msg: "Fetched Appointments successfully...", data: appointments, status: 200 })
     } catch (err) {
         console.log(err)
+        res.json({ msg: "An Error Occured...", status: 404 })
     }
 }
 
 
+// Give Prescriptions...
 const addPrescription = async (req, res) => {
     try {
-        console.log(req.body)
         const appointmentId = req.headers.id
-        console.log(appointmentId)
         const { prescriptionsData, mention } = req.body;
 
         if (!Array.isArray(prescriptionsData)) {
@@ -136,10 +155,12 @@ const addPrescription = async (req, res) => {
         res.json({ msg: "Prescription added Successfully...", status: 200 })
     } catch (err) {
         console.log(err)
+        res.json({ msg: "An Error Occured...", status: 404 })
     }
 }
 
 
+// View Prescriptions...
 const viewPrescription = async (req, res) => {
     try {
         const doctorId = req.headers.id
@@ -153,10 +174,10 @@ const viewPrescription = async (req, res) => {
                 prescription: check.prescription,
                 mention: check.mention
             }))
-        console.log(fetchedprescription)
-        res.json(fetchedprescription)
+        res.json({ msg: "Prescriptions fetched successfully...", data: fetchedprescription, status: 200 })
     } catch (err) {
         console.log(err)
+        res.json({ msg: "An Error Occured...", status: 404 })
     }
 }
 

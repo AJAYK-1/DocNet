@@ -18,8 +18,7 @@ export default function UserFeedback() {
   useEffect(() => {
     axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/seefeedbacks`)
       .then((res) => {
-        console.log(res.data)
-        setFeedback(res.data)
+        setFeedback(res.data.data)
       }).catch((err) => {
         console.log(err)
       })
@@ -42,14 +41,12 @@ export default function UserFeedback() {
   const handleSubmit = (e) => {
     e.preventDefault()
     Writefeed.rating = starRating
-    console.log(Writefeed)
     handleClose()
     axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/write-feedback`, {
       userId: decoded.id,
       ...Writefeed
     })
       .then((res) => {
-        console.log(res.data)
         if (res.data.status == 200) {
           toast.success(res.data.msg)
 
@@ -57,7 +54,6 @@ export default function UserFeedback() {
           toast.error(res.data.msg)
         }
       }).catch((err) => {
-        console.log(err)
         toast.error(err)
       })
   }
@@ -69,7 +65,7 @@ export default function UserFeedback() {
         <h1 className='see-all-heading'>💭What other users said</h1>
         <div className="all-feedbacks">
           {Feedback.length === 0 ? (
-            <p>No Feedbacks yet...</p>
+            <p className="text-center mt-5 fs-5 text-muted">No Feedbacks yet...</p>
           ) : (
             <>
               <div className="feedback-card-container">

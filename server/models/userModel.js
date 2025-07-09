@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
     username: { type: String },
     email: { type: String },
     password: { type: String },
-    userStatus: { type: String, default: "Active" },
+    accountStatus: { type: String, default: "Active" },
     otp: { type: Number },
     otpExpiry: { type: Date }
 }, { timestamps: true })

@@ -54,7 +54,8 @@ export default function Login() {
 
   const [userData2, setUserData2] = useState({
     email: '',
-    otp: ''
+    otp: '',
+    reqtype: 'Login'
   })
 
   const handleChange2 = (e) => {
@@ -135,7 +136,7 @@ export default function Login() {
                   </FloatingLabel>
 
                   <Button variant="primary" type="submit" className="w-100">Sign In</Button>
-                  <p className="click-here mt-2 text-end">forgot password?</p>
+                  <p className="click-here mt-2 text-end"><a href="/forgotpassword">forgot password?</a> </p>
                   <p className="click-here mt-3 text-center"> Don’t have an account? <a href="/registration">Sign Up here</a></p>
                 </Form>
               </Tab>

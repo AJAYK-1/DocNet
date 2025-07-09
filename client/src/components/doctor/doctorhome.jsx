@@ -19,12 +19,11 @@ export default function Doctorhome() {
 
     if (notified.current) return
 
-    axios
-      .get(`${import.meta.env.VITE_HOST_URL}/api/doctor/fetchappointments`, {
+    axios.get(`${import.meta.env.VITE_HOST_URL}/api/doctor/fetchappointments`, {
         headers: { id: decodedtoken.id },
       })
       .then((res) => {
-        const pendingAppointments = res.data.filter(
+        const pendingAppointments = res.data.data.filter(
           (a) => a.appointmentStatus === "Pending"
         );
 

@@ -22,7 +22,7 @@ export default function DoctorViewAppointment() {
       headers: { id: decodedtoken.id },
     })
     .then((res) => {
-      const pendingAppointments = res.data.filter(
+      const pendingAppointments = res.data.data.filter(
         (a) => a.appointmentStatus === 'Pending'
       );
       const sorted = pendingAppointments.sort(

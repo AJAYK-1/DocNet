@@ -14,12 +14,11 @@ export default function GetMyPrescription() {
     const decodedtoken = jwtDecode(fetchtoken);
 
     useEffect(() => {
-        axios
-            .get(`${import.meta.env.VITE_HOST_URL}/api/user/fetchmyprescription`, {
+        axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetchmyprescription`, {
                 headers: { id: decodedtoken.id }
             })
             .then((res) => {
-                setPrescriptions(res.data);
+                setPrescriptions(res.data.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -35,7 +34,10 @@ export default function GetMyPrescription() {
                         style={{ fontFamily: "'Poppins', sans-serif", color: '#2c3e50', borderBottom: '2px solid #BDC3C7', fontSize: '2.2rem' }}>
                         <FaNotesMedical style={{ marginRight: '10px', marginBottom: '10px', color: '#2980B9' }} />
                         Prescriptions</h2>
-                    <Row className="g-4">
+                        {prescriptions.length === 0 ?
+                        (<p className="text-center mt-5 fs-5 text-muted">No Prescriptions found.</p>):
+                        (
+                            <Row className="g-4">
                         {prescriptions.map((presc) => (
                             <Col md={6} key={presc._id}>
                                 <Card className="shadow-sm border-2" border='danger'>
@@ -63,6 +65,9 @@ export default function GetMyPrescription() {
                             </Col>
                         ))}
                     </Row>
+
+                        )}
+                    
                 </Container>
             </div>
             <Footer />

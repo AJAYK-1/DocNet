@@ -3,7 +3,7 @@ import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 import UserNavbar from './usernavbar'
 import Footer from '../footer'
-import { FaHeartbeat } from 'react-icons/fa'
+import { FaHeartbeat, FaRegCommentDots } from 'react-icons/fa'
 import { Row, Col, Card, ListGroup, Modal, Button } from 'react-bootstrap';
 
 
@@ -22,15 +22,14 @@ export default function Appointment() {
 
     axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { id: decoded.id } })
       .then((res) => {
-        console.log(res.data)
+        console.log("User logged in...")
       }).catch((err) => {
         console.log(err)
       })
 
     axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetchmyappointments`, { headers: { id: decoded.id } })
       .then((res) => {
-        setAppointments(res.data)
-        console.log(res.data)
+        setAppointments(res.data.data)
       }).catch((err) => {
         console.log(err)
       })
@@ -41,8 +40,11 @@ export default function Appointment() {
     const appId = id
     axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetch-prescription-byId`, { headers: { id: appId } })
       .then((res) => {
-        setPrescription(res.data)
-        console.log(res.data)
+        if (res.data.status == 200) {
+          setPrescription(res.data.data)
+        } else {
+          setPrescription(res.data)
+        }
       }).catch((err) => {
         console.log(err)
       })
@@ -78,7 +80,7 @@ export default function Appointment() {
                   <div className="card-body d-flex flex-column">
                     <h5 className="card-title text-danger">
                       Your Appointment to Dr. {appointment.doctorId?.docname || 'N/A'}
-                    </h5> 
+                    </h5>
                     <h5 className='card-subtitle text-primary'>{appointment.appointmentDate}</h5>
                     <p className="card-text mb-1">
                       <strong>Patient Name:</strong> {appointment.patientName}
@@ -108,7 +110,7 @@ export default function Appointment() {
                 >
                   <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                      Your Prescription 
+                      Your Prescription
                     </Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
@@ -129,10 +131,25 @@ export default function Appointment() {
                                     </span>
                                   </ListGroup.Item>
                                 </ListGroup>
+
                               </Card.Body>
                             </Card>
                           </Col>
                         ))}
+                        <Col md={6} sm={6} xs={12} >
+                          <Card className="h-100 border-success border-4">
+                            <Card.Body>
+                              <Card.Title className="text-primary">
+                                <FaRegCommentDots className="me-2 text-dark mb-1" />
+                                <strong>Doctor Mentioned:</strong>
+                              </Card.Title>
+                              <Card.Text>
+                                <strong>{prescriptions.mention}</strong>
+
+                              </Card.Text>
+                            </Card.Body>
+                          </Card>
+                        </Col>
                       </Row>
                     ) : (
                       <p className="text-muted">No prescription available.</p>

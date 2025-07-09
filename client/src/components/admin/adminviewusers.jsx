@@ -12,20 +12,20 @@ export default function AdminViewUsers() {
     useEffect(() => {
         AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/admin/adminviewusers`)
             .then((res) => {
-                setUsers(res.data);
+                setUsers(res.data.data);
             })
             .catch((err) => {
                 console.log(err);
             });
     }, []);
 
-    const handleAction = (id, userStatus) => {
-        const userStatusChange = userStatus === "Active" ? "Deactivated" : "Active";
+    const handleAction = (id, accountStatus) => {
+        const userStatusChange = accountStatus === "Active" ? "Deactivated" : "Active";
         AXIOS.put(`${import.meta.env.VITE_HOST_URL}/api/admin/action-on-user`, { id, userStatusChange })
             .then((res) => {
                 setUsers(prev =>
                     prev.map(user =>
-                        user._id === id ? { ...user, userStatus: userStatusChange } : user
+                        user._id === id ? { ...user, accountStatus: userStatusChange } : user
                     )
                 );
             })
@@ -72,16 +72,16 @@ export default function AdminViewUsers() {
                                 <tr key={user._id}>
                                     <td>{user.username}</td>
                                     <td>{user.email}</td>
-                                    <td><span className={`badge ${user.userStatus=='Active' ? 'bg-success' : 'bg-secondary'}`}>
-                                            {user.userStatus=="Active" ? 'Active' : 'Deactivated'}
+                                    <td><span className={`badge ${user.accountStatus=='Active' ? 'bg-success' : 'bg-secondary'}`}>
+                                            {user.accountStatus=="Active" ? 'Active' : 'Deactivated'}
                                         </span></td>
                                     <td className="text-center">
                                         <Button
                                             className="btn btn-sm"
-                                            variant={user.userStatus === "Active" ? "danger" : "success"}
-                                            onClick={() => handleAction(user._id, user.userStatus)}
+                                            variant={user.accountStatus === "Active" ? "danger" : "success"}
+                                            onClick={() => handleAction(user._id, user.accountStatus)}
                                         >
-                                            {user.userStatus === "Active" ? "Deactivate" : "Activate"}
+                                            {user.accountStatus === "Active" ? "Deactivate" : "Activate"}
                                         </Button>
                                     </td>
                                 </tr>

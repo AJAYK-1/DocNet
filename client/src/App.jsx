@@ -2,15 +2,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { Routes, Route } from 'react-router-dom'
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import Lottie from 'lottie-react'
 import Loading from './assets/Loading.json'
+import ErrorPage from './assets/ErrorPage.json'
+import { useRef } from 'react';
 
 
 const Home = React.lazy(() => import('./components/home'))
 const Login = React.lazy(() => import('./components/login'))
 const RegistrationPage = React.lazy(() => import('./components/registration'))
 const About = React.lazy(() => import('./components/about'))
+const ForgotPassword = React.lazy(() => import('./components/forgotpassword'))
 
 const Adminhome = React.lazy(() => import('./components/admin/adminhome'))
 const AdminViewUsers = React.lazy(() => import('./components/admin/adminviewusers'))
@@ -33,15 +36,23 @@ const DoctorSeeFeedback = React.lazy(() => import('./components/doctor/doctorfee
 
 
 function App() {
+  const LottieRef = useRef()
+
+  useEffect(() => {
+    if (LottieRef.current) {
+      LottieRef.current.goToAndPlay(10, true)
+      LottieRef.current.setSpeed(2)
+    }
+  }, [])
+
 
   return (
     <>
       <Suspense fallback={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '800px', width: '100%' }}>
-          {/* <img src={Loadinggif} alt="Loading..." /> */}
-          <Lottie animationData={Loading}/>
-           <br />
-          <h2>Loading...</h2>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', height: '800px', width: '100%' }}>
+          <Lottie lottieRef={LottieRef} animationData={Loading} style={{ height: 300, width: 300 }} />
+          <br />
+          <h4 style={{ marginTop: '100px', position: 'absolute' }}>Loading...</h4>
         </div>}>
         <Routes>
 
@@ -50,6 +61,8 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/registration' element={<RegistrationPage />} />
           <Route path='/about' element={<About />} />
+          <Route path='/forgotpassword' element={<ForgotPassword />} />
+          <Route path='/*' element={<Lottie animationData={ErrorPage} style={{ height: '800px' }} />} />
 
           {/* ADMIN PAGES */}
           <Route path='/adminhome' element={<Adminhome />} />

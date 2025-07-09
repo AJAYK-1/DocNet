@@ -16,7 +16,7 @@ const doctorSchema = new mongoose.Schema({
             availability: { type: String, default: "Uavailable" }
         }
     ],
-    doctorStatus: { type: String, default: "Active" },
+    accountStatus: { type: String, default: "Active" },
     otp: { type: Number },
     otpExpiry: { type: Date }
 }, { timestamps: true })

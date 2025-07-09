@@ -44,7 +44,6 @@ export default function AddPrescription() {
                 }
             ).then((res) => {
                 if (res.data.status == 200) {
-                    console.log(res.data)
                     toast.success(res.data.msg)
                     setTimeout(() => navigate('/viewprescription'), 2000);
                 }

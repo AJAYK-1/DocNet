@@ -16,8 +16,7 @@ export default function DoctorSeeFeedback() {
   useEffect(() => {
     axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/seefeedbacks`)
       .then((res) => {
-        console.log(res.data)
-        setFeedback(res.data)
+        setFeedback(res.data.data)
       }).catch((err) => {
         console.log(err)
       })
@@ -31,7 +30,7 @@ export default function DoctorSeeFeedback() {
         <h1 className='see-all-heading'>💭this is what different users said</h1>
         <div className="all-feedbacks">
           {Feedback.length === 0 ? (
-            <p>No Feedbacks yet...</p>
+            <p className="text-center mt-5 fs-5 text-muted">No Feedbacks yet...</p>
           ) : (
             <>
               <div className="feedback-card-container">

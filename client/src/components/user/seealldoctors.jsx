@@ -37,11 +37,11 @@ export default function SeeAllDoctors() {
 
   useEffect(() => {
     AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewdoctors`)
-      .then(res => setDocProfiles(res.data))
+      .then(res => setDocProfiles(res.data.data))
       .catch(err => console.log(err));
 
     AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { id: decoded.id } })
-      .then(res => setUserData(res.data))
+      .then(res => setUserData(res.data.data))
       .catch(err => console.log(err));
   }, []);
 
@@ -121,9 +121,9 @@ export default function SeeAllDoctors() {
 
           },
           "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
-            "name": "Ajay Kumar", //your customer's name
-            "email": "ajaykumar10@gmail.com",
-            "contact": "9000090000"  //Provide the customer's phone number for better conversion rates 
+            "name": "", //your customer's name
+            "email": "",
+            "contact": ""  //Provide the customer's phone number for better conversion rates 
           },
           "notes": {
             "address": "Razorpay Corporate Office"
