@@ -28,6 +28,7 @@ export default function HomeNavbar() {
                             <Nav.Link className='navbar-contents' href="/">Home</Nav.Link>
                             <Nav.Link className='navbar-contents' href="/login">SignIn</Nav.Link>
                             <Nav.Link className='navbar-contents' href="/about">About</Nav.Link>
+                            <Nav.Link className='navbar-contents' href="/contact">Contact / Info</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

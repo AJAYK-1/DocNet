@@ -14,6 +14,7 @@ const Login = React.lazy(() => import('./components/login'))
 const RegistrationPage = React.lazy(() => import('./components/registration'))
 const About = React.lazy(() => import('./components/about'))
 const ForgotPassword = React.lazy(() => import('./components/forgotpassword'))
+const Contact = React.lazy(() => import('./components/contact'))
 
 const Adminhome = React.lazy(() => import('./components/admin/adminhome'))
 const AdminViewUsers = React.lazy(() => import('./components/admin/adminviewusers'))
@@ -62,6 +63,7 @@ function App() {
           <Route path='/registration' element={<RegistrationPage />} />
           <Route path='/about' element={<About />} />
           <Route path='/forgotpassword' element={<ForgotPassword />} />
+          <Route path='/contact' element={<Contact/>}/>
           <Route path='/*' element={<Lottie animationData={ErrorPage} style={{ height: '800px' }} />} />
 
           {/* ADMIN PAGES */}

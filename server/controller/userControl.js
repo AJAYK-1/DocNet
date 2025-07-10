@@ -46,7 +46,7 @@ const registerUser = async (req, res) => {
 const userlogin = async (req, res) => {
     try {
         const { email, password } = req.body
-        if (email === 'admin@gmail.com' && password === 'admin') {
+        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
             const token = jwt.sign({ id: "admin" }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
             res.json({ msg: "Logging in as Admin...", status: 202, token: token })
         } else {
@@ -158,11 +158,9 @@ const confirmOTP = async (req, res) => {
     try {
         const { email, otp } = req.body
         let thatUser = await User.findOne({ email })
-        let userType = 'user'
 
         if (!thatUser) {
             thatUser = await Doctor.findOne({ email })
-            userType = 'doctor'
         }
         if (!thatUser) {
             res.json({ msg: "User not found...", status: 404 })
@@ -229,6 +227,23 @@ const PasswordReset = async (req, res) => {
             res.json({ msg: "Password Reset successfully...", status: 200 })
         } else {
             res.json({ msg: "Check the passwords again...", status: 400 })
+        }
+    } catch (err) {
+        console.log(err)
+        res.json({ msg: "An Error Occured...", status: 404 })
+    }
+}
+
+
+// Contact the developer...
+const ContactDeveloper = async (req, res) => {
+    try {
+        const { name, email, message } = req.body
+        if (name && email && message) {
+            sendaMail(process.env.EMAIL, `${name} contacted | DocNet`, `${message} \n contact ${email} `)
+            res.json({ msg: "Mail send successfully...", status: 200 })
+        } else {
+            res.json({ msg: "Error sending mail. Please enter valid information...", status: 400 })
         }
     } catch (err) {
         console.log(err)
@@ -417,6 +432,7 @@ module.exports = {
     loginWithOTP,
     confirmOTP,
     PasswordReset,
+    ContactDeveloper,
     viewLoggedUser,
     viewDoctors,
     viewDoctorsProfile,

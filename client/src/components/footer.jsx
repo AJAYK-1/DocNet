@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { FaInstagram, FaTwitter, FaLinkedin, FaGithub, FaEnvelope, FaGlobe, } from 'react-icons/fa';
+import { FaInstagram, FaLinkedin, FaGithub, FaEnvelope, FaGlobe, } from 'react-icons/fa';
 
 
 export default function Footer() {
@@ -48,6 +48,7 @@ export default function Footer() {
 
           {/* Column 3: Social Media Icons */}
           <Col md={4} className="text-md-end text-center">
+            <h5>My Social Handles</h5>
             <a
               href="https://www.instagram.com/njan.ajay/"
               target="_blank"
@@ -55,14 +56,6 @@ export default function Footer() {
               className="text-light me-3 fs-3"
             >
               <FaInstagram />
-            </a>
-            <a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noreferrer"
-              className="text-light me-3 fs-3"
-            >
-              <FaTwitter />
             </a>
             <a
               href="https://www.linkedin.com/in/ajaykumartp"

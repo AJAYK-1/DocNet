@@ -84,7 +84,7 @@ export default function ForgotPassword() {
       <HomeNavbar />
       <div className="resetpassword-background">
         <div className="login-overlay" />
-        <Lottie animationData={ForgotPasswordAnimation} style={{ height: '500px',zIndex:'2',marginLeft:'200px' }} />
+        <Lottie animationData={ForgotPasswordAnimation} style={{ height: '500px', zIndex: '2', marginLeft: '200px' }} />
         <Container className="login-container">
           <Card className="login-card">
             <h2 className="text-center mb-4 login-heading fw-bold"
@@ -102,21 +102,22 @@ export default function ForgotPassword() {
                 />
               </FloatingLabel>
 
+              <FloatingLabel controlId="floatingOTP" label="Enter OTP" className="mb-4">
+                <Form.Control
+                  type="number"
+                  name="otp"
+                  placeholder="Enter OTP"
+                  onChange={handleChange}
+                  required
+                />
+              </FloatingLabel>
+
               {VerifyOTP == 1 ? (
                 <Button variant="primary" type="button" className="w-100" onClick={handleOTP}>Send OTP</Button>
               ) : (
                 <>
                   {VerifyOTP == 2 ? (
                     <>
-                      <FloatingLabel controlId="floatingOTP" label="Enter OTP" className="mb-4">
-                        <Form.Control
-                          type="number"
-                          name="otp"
-                          placeholder="Enter OTP"
-                          onChange={handleChange}
-                          required
-                        />
-                      </FloatingLabel>
 
                       <Button variant="primary" type="button" className="w-100" onClick={confirmOTP}>Confirm OTP</Button>
                     </>

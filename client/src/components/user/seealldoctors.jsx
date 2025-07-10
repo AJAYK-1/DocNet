@@ -182,7 +182,7 @@ export default function SeeAllDoctors() {
               <Card id='info-card' className="h-100 shadow-sm border-0 doctor-card">
                 <Card.Img
                   variant="top"
-                  src={`http://localhost:9000/uploads/${doctor.profileImage}`}
+                  src={`${import.meta.env.VITE_HOST_URL}/uploads/${doctor.profileImage}`}
                   className="doctor-img"
                 />
                 <Card.Body>
