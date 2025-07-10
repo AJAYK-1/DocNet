@@ -47,7 +47,7 @@ const userlogin = async (req, res) => {
     try {
         const { email, password } = req.body
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-            const token = jwt.sign({ id: "admin" }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
+            const token = jwt.sign({ role: "admin", email }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
             res.json({ msg: "Logging in as Admin...", status: 202, token: token })
         } else {
             let ValidUser = await User.findOne({ email })

@@ -72,7 +72,7 @@ export default function AdminViewDoctors() {
                                     <td>{doctor.docname}</td>
                                     <td>
                                         <img
-                                            src={`http://localhost:9000/uploads/${doctor.profileImage}`}
+                                            src={`${import.meta.env.VITE_HOST_URL}/uploads/${doctor.profileImage}`}
                                             alt="Profile"
                                             className="img-thumbnail"
                                             style={{ width: '100px', height: '120px', objectFit: 'cover' }}

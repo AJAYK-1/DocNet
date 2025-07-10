@@ -33,7 +33,7 @@ export default function DoctorProfile() {
 
 
     useEffect(() => {
-        AXIOS.get('http://localhost:9000/api/doctor/viewloggeddoctor', {
+        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/doctor/viewloggeddoctor`, {
             headers: { id: decoded.id }
         })
             .then((res) => {
@@ -370,7 +370,7 @@ export default function DoctorProfile() {
                             <Form.Label>Current Profile Image:</Form.Label>
                             <div style={{ marginTop: '5px', marginLeft: '100px' }}>
                                 <img
-                                    src={`http://localhost:9000/uploads/${DocData.profileImage}`}
+                                    src={`${import.meta.env.VITE_HOST_URL}/uploads/${DocData.profileImage}`}
                                     alt="Current Profile"
                                     style={{ width: '150px', height: '150px', objectFit: 'cover' }}
                                 />
