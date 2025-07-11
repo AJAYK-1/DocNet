@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef,useMemo } from 'react'
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 import DoctorNavbar from './doctornavbar'
@@ -10,8 +10,10 @@ import { toast } from 'react-toastify'
 
 export default function Doctorhome() {
 
-  const doctorstoken = localStorage.getItem('token')
-  const decodedtoken = jwtDecode(doctorstoken)
+  const decodedtoken = useMemo(() => {
+          const token = localStorage.getItem('token');
+          return jwtDecode(token);
+      }, [])
 
   const notified = useRef(false)
 

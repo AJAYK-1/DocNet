@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { Container, Card, Form, Button, FloatingLabel, Modal } from 'react-bootstrap';
@@ -10,8 +10,10 @@ import './userStyling.css'
 
 
 export default function UserFeedback() {
-  const token = localStorage.getItem("token");
-  const decoded = jwtDecode(token);
+  const decoded = useMemo(() => {
+    const token = localStorage.getItem('token');
+    return jwtDecode(token);
+  }, [])
 
   const [Feedback, setFeedback] = useState('')
 

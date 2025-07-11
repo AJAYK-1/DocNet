@@ -38,7 +38,6 @@ export default function DoctorProfile() {
         })
             .then((res) => {
                 setDocData(res.data.data)
-                console.log(res.data.data.docname)
                 const unavailableDates = res.data.data.schedule
                     .filter(entry => entry.availability === "Unavailable")
                     .map(item => item.dates);
@@ -155,7 +154,7 @@ export default function DoctorProfile() {
             { opacity: 0, x: -100 },
             { opacity: 1, x: 0, duration: 1, ease: 'power3.out', delay: 0.2 }
         )
-    }, [])
+    }, [DocData.profileImage])
 
     return (
         <>

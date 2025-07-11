@@ -12,7 +12,12 @@ import {
 
 export default function Adminhome() {
 
-  
+  const decoded = useMemo(() => {
+    const token = localStorage.getItem('token');
+    return jwtDecode(token);
+  }, [])
+
+
   const navigate = useNavigate()
   const [Calculations, setCalculations] = useState([])
 

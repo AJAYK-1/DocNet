@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import AXIOS from 'axios';
 import UserNavbar from './usernavbar';
 import Footer from '../footer';
 import { Form, FloatingLabel, Modal, Card, Button } from 'react-bootstrap';
@@ -36,11 +35,11 @@ export default function SeeAllDoctors() {
 
 
   useEffect(() => {
-    AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewdoctors`)
+    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewdoctors`)
       .then(res => setDocProfiles(res.data.data))
       .catch(err => console.log(err));
 
-    AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { id: decoded.id } })
+    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { id: decoded.id } })
       .then(res => setUserData(res.data.data))
       .catch(err => console.log(err));
   }, []);
@@ -62,7 +61,7 @@ export default function SeeAllDoctors() {
   };
 
   const handleAppointment = async (docId) => {
-    AXIOS.post(`${import.meta.env.VITE_HOST_URL}/api/user/bookappointment`, {
+    axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/bookappointment`, {
       userId: decoded.id,
       doctorId: docId,
       ...PatientDetails,
@@ -99,8 +98,8 @@ export default function SeeAllDoctors() {
           amount: 1000, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
           currency: "INR",
           "name": "DocNet", //your business name
-          "description": "Test Transaction",
-          "image": "https://example.com/your_logo",
+          "description": "Dummy Transaction",
+          "image": "https://www.freeiconspng.com/thumbs/doctor-logo/doctor-logo-png-photo-5.png",
           "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
           "handler": async function (response) {
             axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/validate-payment`,
@@ -184,6 +183,7 @@ export default function SeeAllDoctors() {
                   variant="top"
                   src={`${import.meta.env.VITE_HOST_URL}/uploads/${doctor.profileImage}`}
                   className="doctor-img"
+                  alt='Image not Found '
                 />
                 <Card.Body>
                   <Card.Title>Dr. {doctor.docname}</Card.Title>

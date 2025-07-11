@@ -76,10 +76,12 @@ export default function CombinedRegistration() {
     })
       .then((res) => {
         if (res.data.status == 200) {
-          toast.success("Doctor Registered Successfully");
+          toast.success(res.data.msg);
           setDoctorForm({ docname: '', email: '', password: '', address: '', license: '', qualification: '', specialization: '' });
           setDoctorImage(null);
-          navigate('/login');
+          setTimeout(() => {
+            navigate('/login');
+          }, 2500);
         } else if (res.data.status == 400) {
           toast.error(res.data.msg)
         }
@@ -95,7 +97,7 @@ export default function CombinedRegistration() {
       <div className="registration-page">
         <div className="login-overlay" />
         <Container className="registration-card">
-          
+
           <h2 className="text-center mb-4 fw-bold text-dark border-bottom pb-2"
             style={{ fontFamily: "'Shadows Into Light', cursive", fontSize: '2rem', letterSpacing: '1px' }}>
             Register

@@ -7,8 +7,11 @@ import Footer from '../footer'
 
 
 export default function AppointmentHistory() {
-  const doctorstoken = localStorage.getItem('token')
-  const decodedtoken = jwtDecode(doctorstoken)
+  
+  const decodedtoken = useMemo(() => {
+    const token = localStorage.getItem('token');
+    return jwtDecode(token);
+  }, [])
 
   const [Appointments, setAppointments] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -17,8 +20,8 @@ export default function AppointmentHistory() {
 
   useEffect(() => {
     axios.get(`${import.meta.env.VITE_HOST_URL}/api/doctor/fetchappointments`, {
-        headers: { id: decodedtoken.id },
-      })
+      headers: { id: decodedtoken.id },
+    })
       .then((res) => {
         const pendingAppointments = res.data.data.filter(
           (a) => a.appointmentStatus === 'Complete'
@@ -49,7 +52,7 @@ export default function AppointmentHistory() {
   return (
     <>
       <DoctorNavbar />
-      <div className="container mt-5" style={{ minHeight: '550px',padding: '40px' }}>
+      <div className="container mt-5" style={{ minHeight: '550px', padding: '40px' }}>
         <h2
           className="mb-4 text-center d-flex justify-content-center align-items-center"
           style={{

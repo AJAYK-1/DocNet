@@ -66,7 +66,7 @@ const userlogin = async (req, res) => {
                         if (ValidUser.accountStatus != 'Active') {
                             res.json({ msg: "Your account has been deactivated.", status: 400 })
                         } else {
-                            const token = jwt.sign({ id: ValidUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
+                            const token = jwt.sign({ id: ValidUser._id, userType }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
                             res.json({ msg: "Login successfull...", status: 200, token: token })
                         }
                     } else {
@@ -79,7 +79,7 @@ const userlogin = async (req, res) => {
                         if (ValidUser.accountStatus != 'Active') {
                             res.json({ msg: "Your account has been deactivated.", status: 400 })
                         } else {
-                            const token = jwt.sign({ id: ValidUser._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
+                            const token = jwt.sign({ id: ValidUser._id, role: userType }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
                             res.json({ msg: "Login successfull...", status: 201, token: token })
                         }
                     } else {

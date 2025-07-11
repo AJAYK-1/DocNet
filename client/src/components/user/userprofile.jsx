@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import AXIOS from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import UserNavbar from './usernavbar';
@@ -9,8 +9,10 @@ import { useNavigate } from 'react-router-dom';
 
 
 export default function UserProfile() {
-    const token = localStorage.getItem('token');
-    const decoded = jwtDecode(token);
+    const decoded = useMemo(() => {
+            const token = localStorage.getItem('token');
+            return jwtDecode(token);
+        }, [])
 
     const [UserData, setUserData] = useState({
         username: '',

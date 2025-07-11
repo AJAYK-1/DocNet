@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import AXIOS from 'axios';
 import UserNavbar from './usernavbar';
 import Footer from '../footer';
@@ -15,15 +15,16 @@ import { useNavigate } from 'react-router-dom';
 
 export default function UserHome() {
 
+    const decoded = useMemo(() => {
+        const token = localStorage.getItem('token');
+        return jwtDecode(token);
+    }, [])
+
     const [DocProfiles, setDocProfiles] = useState([]);
     const [UserData, setUserData] = useState({
         username: '',
         email: ''
     });
-
-
-    const token = localStorage.getItem('token');
-    const decoded = jwtDecode(token);
 
     useEffect(() => {
         AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewdoctors`)
