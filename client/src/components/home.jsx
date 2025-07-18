@@ -20,7 +20,7 @@ export default function Home() {
             <HomeNavbar />
 
             {/* Hero Section Starting */}
-            <div className="hero-section">
+            <div className="hero-section text-center ">
                 <div className='hero-overlay'></div>
                 <Container>
                     <h1 className="hero-title">Welcome to DocNet</h1>

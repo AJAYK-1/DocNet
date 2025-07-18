@@ -74,9 +74,9 @@ export default function UserFeedback() {
 
                 {Feedback.map((feed) => (
                   <div key={feed._id} className="feedback-card">
-                    <h5 className="user-name"> <FaUser className='user-icon' /> {feed.userId.username} says...</h5>
+                    <h5 className="user-name flex items-center gap-2"> <FaUser className='user-icon' /> {feed.userId.username} says...</h5>
                     <p className="feedback-text"> {feed.feedback}</p>
-                    <div className="rating-stars">
+                    <div className="rating-stars flex items-center">
                       {[...Array(5)].map((_, index) => (
                         <FaStar
                           className='star-rating'
@@ -91,7 +91,7 @@ export default function UserFeedback() {
             </>
           )}
         </div>
-        <div className='click-to-add-feedback' onClick={handleShow}>
+        <div className='click-to-add-feedback flex items-center justify-center' onClick={handleShow}>
           <FaComment />
         </div>
         <Modal show={show} onHide={handleClose}>
@@ -113,7 +113,7 @@ export default function UserFeedback() {
               </FloatingLabel>
 
               <Form.Label className='mb-2'>Your Rating:</Form.Label>
-              <div>
+              <div className='flex '>
                 {[...Array(5)].map((_, i) => {
                   const starNumber = i + 1;
                   return (

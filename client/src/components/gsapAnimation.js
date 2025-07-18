@@ -3,17 +3,27 @@ import { SplitText } from 'gsap/SplitText';
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 
-export const HomeNavbarAnimation = () => {
+export const HomeNavbarAnimation = ({ navbarRef, navContentRef, mobileConRef }) => {
 
     gsap.fromTo(
-        ".navbar",
+        navbarRef?.current,
         { y: -100 },
-        { y: 0, stagger: 1, duration: 1 })
+        { y: 0, duration: 1 })
 
     gsap.fromTo(
-        ".navbar-contents",
+        navContentRef?.current.children,
         { x: -200, opacity: 0 },
         { x: 0, opacity: 1, delay: 0.6, stagger: { each: 0.3, from: "end" } })
+
+    gsap.fromTo(
+        mobileConRef?.current,
+        { y: -100, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1 })
+
+    gsap.fromTo(
+        mobileConRef?.current.children,
+        { x: 100, opacity: 0 },
+        { x: 0, opacity: 1, delay: 0.5, stagger: 0.2 })
 
 }
 

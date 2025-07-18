@@ -6,17 +6,10 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserDoctor, faUsers, faCalendarCheck, faPrescriptionBottleMedical } from '@fortawesome/free-solid-svg-icons'
-import {
-  PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend
-} from 'recharts'
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+
 
 export default function Adminhome() {
-
-  const decoded = useMemo(() => {
-    const token = localStorage.getItem('token');
-    return jwtDecode(token);
-  }, [])
-
 
   const navigate = useNavigate()
   const [Calculations, setCalculations] = useState([])

@@ -56,7 +56,7 @@ export default function Doctorhome() {
           textAlign: 'center'
         }}>
           <Container>
-            <h1 style={{ fontWeight: 'bold', fontSize: '2.5rem' }}>Welcome, Doctor!</h1>
+            <h1 className='font-extrabold text-3xl'>Welcome, Doctor!</h1>
             <p style={{ fontSize: '1.2rem' }}>Manage your appointments, prescriptions, and profile with ease.</p>
           </Container>
         </div>
@@ -67,7 +67,7 @@ export default function Doctorhome() {
             <Col md={4}>
               <Card className="h-100 shadow-sm text-center border-primary">
                 <Card.Body>
-                  <FaCalendarCheck size={40} className="text-primary mb-3" />
+                  <FaCalendarCheck size={40} className="text-primary mb-3 mx-auto" />
                   <Card.Title>View Appointments</Card.Title>
                   <Card.Text>See your scheduled appointments and plan your day efficiently.</Card.Text>
                   <Button variant="primary" href="/viewappointment">Go</Button>
@@ -77,7 +77,7 @@ export default function Doctorhome() {
             <Col md={4}>
               <Card className="h-100 shadow-sm text-center border-success">
                 <Card.Body>
-                  <FaPrescriptionBottleAlt size={40} className="text-success mb-3" />
+                  <FaPrescriptionBottleAlt size={40} className="text-success mb-3 mx-auto" />
                   <Card.Title>Prescriptions</Card.Title>
                   <Card.Text>Access and manage all your written prescriptions in one place.</Card.Text>
                   <Button variant="success" href="/viewprescription">View</Button>
@@ -87,7 +87,7 @@ export default function Doctorhome() {
             <Col md={4}>
               <Card className="h-100 shadow-sm text-center border-info">
                 <Card.Body>
-                  <FaUserMd size={40} className="text-info mb-3" />
+                  <FaUserMd size={40} className="text-info mb-3 mx-auto" />
                   <Card.Title>Profile</Card.Title>
                   <Card.Text>Update your profile, availability, and contact information.</Card.Text>
                   <Button variant="info" href="/doctorprofile">Edit</Button>

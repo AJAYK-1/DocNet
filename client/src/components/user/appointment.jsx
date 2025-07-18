@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 import UserNavbar from './usernavbar'
@@ -8,8 +8,11 @@ import { Row, Col, Card, ListGroup, Modal, Button } from 'react-bootstrap';
 
 
 export default function Appointment() {
-  const token = localStorage.getItem('token')
-  const decoded = jwtDecode(token)
+  const decoded = useMemo(() => {
+    const token = localStorage.getItem('token');
+    return jwtDecode(token);
+  }, [])
+
   const [Appointments, setAppointments] = useState([])
   const [prescriptions, setPrescription] = useState({
     appointmentId: '',
@@ -139,7 +142,7 @@ export default function Appointment() {
                         <Col md={6} sm={6} xs={12} >
                           <Card className="h-100 border-success border-4">
                             <Card.Body>
-                              <Card.Title className="text-primary">
+                              <Card.Title className="text-primary flex items-center">
                                 <FaRegCommentDots className="me-2 text-dark mb-1" />
                                 <strong>Doctor Mentioned:</strong>
                               </Card.Title>

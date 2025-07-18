@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+
 
 export default function AdminNavbar() {
     const navigate = useNavigate();
+
+    const decoded = useMemo(() => {
+        const token = localStorage.getItem('token');
+        return jwtDecode(token);
+    }, [])
 
     const handleLogout = () => {
         localStorage.removeItem('token');

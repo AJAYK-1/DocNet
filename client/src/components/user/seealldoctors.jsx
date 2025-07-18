@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import UserNavbar from './usernavbar';
 import Footer from '../footer';
 import { Form, FloatingLabel, Modal, Card, Button } from 'react-bootstrap';
@@ -13,6 +13,11 @@ import axios from 'axios';
 
 
 export default function SeeAllDoctors() {
+
+  const decoded = useMemo(() => {
+    const token = localStorage.getItem('token');
+    return jwtDecode(token);
+  }, [])
 
   const [DocProfiles, setDocProfiles] = useState([]);
   const [show, setShow] = useState(false);
@@ -29,8 +34,7 @@ export default function SeeAllDoctors() {
     email: ''
   });
   const [searchTerm, setSearchTerm] = useState("");
-  const token = localStorage.getItem('token');
-  const decoded = jwtDecode(token);
+
   const navigate = useNavigate();
 
 
@@ -187,15 +191,15 @@ export default function SeeAllDoctors() {
                 />
                 <Card.Body>
                   <Card.Title>Dr. {doctor.docname}</Card.Title>
-                  <Card.Text className="mb-1 text-muted">
+                  <Card.Text className="mb-1 text-muted flex items-center">
                     <BsPersonWorkspace className="me-2 text-primary" />
                     {doctor.qualification}
                   </Card.Text>
-                  <Card.Text className="mb-1 text-muted">
+                  <Card.Text className="mb-1 text-muted flex items-center">
                     <FaHeartbeat className="me-2 text-danger" />
                     {doctor.specialization}
                   </Card.Text>
-                  <Card.Text className="text-muted">
+                  <Card.Text className="text-muted flex items-center">
                     <BsGeoAltFill className="me-2 text-success" />
                     {doctor.address}
                   </Card.Text>

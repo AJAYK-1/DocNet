@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
-import { Container, Card, Form, Button, FloatingLabel, Modal } from 'react-bootstrap';
-import { FaComment, FaStar, FaUser } from 'react-icons/fa';
-import { toast } from 'react-toastify';
+import { FaStar, FaUser } from 'react-icons/fa';
 import Footer from '../footer';
 import DoctorNavbar from './doctornavbar';
 import './doctorStyle.css'

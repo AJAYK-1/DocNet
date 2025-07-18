@@ -83,7 +83,7 @@
     background: rgba(149, 197, 229, 0.29);
 }
 
-.feedback-card-container{
+.feedback-card-container {
     display: flex;
     flex-wrap: wrap;
     padding-left: 50px;
@@ -107,7 +107,7 @@
     border-radius: 50%;
     width: 60px;
     height: 60px;
-    top:30%;
+    top: 30%;
     font-size: 35px;
     padding: auto;
     text-align: center;
@@ -115,7 +115,7 @@
     right: 20px;
     color: rgb(255, 255, 255);
     background-color: #008ffd;
-    box-shadow: #00000082 2px 2px 2px 2px ;
+    box-shadow: #00000082 2px 2px 2px 2px;
     cursor: pointer;
 }
 

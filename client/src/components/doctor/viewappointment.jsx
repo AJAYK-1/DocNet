@@ -1,14 +1,17 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
 import DoctorNavbar from './doctornavbar'
 import { FaHeartbeat } from 'react-icons/fa'
 import Footer from '../footer'
 
+
 export default function DoctorViewAppointment() {
-  const doctorstoken = localStorage.getItem('token')
-  const decodedtoken = jwtDecode(doctorstoken)
+  const decodedtoken = useMemo(() => {
+            const token = localStorage.getItem('token');
+            return jwtDecode(token);
+        }, [])
 
   const [Appointments, setAppointments] = useState([])
   const [searchTerm, setSearchTerm] = useState('')

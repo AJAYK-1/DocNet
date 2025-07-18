@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import AXIOS from 'axios'
 import { jwtDecode } from 'jwt-decode'
 import DoctorNavbar from './doctornavbar'
@@ -15,8 +15,11 @@ import { toast } from 'react-toastify'
 
 
 export default function DoctorProfile() {
-    const token = localStorage.getItem('token')
-    const decoded = jwtDecode(token)
+    const decoded = useMemo(() => {
+        const token = localStorage.getItem('token');
+        return jwtDecode(token);
+    }, [])
+    
     const [DocData, setDocData] = useState({})
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -82,7 +85,7 @@ export default function DoctorProfile() {
         handleClose()
         AXIOS.put(`${import.meta.env.VITE_HOST_URL}/api/doctor/doctoreditprofile`, newData, { headers: { id: decoded.id } })
             .then((res) => {
-                if(res.data.status == 200) {
+                if (res.data.status == 200) {
                     toast.success(res.data.msg)
                     setTimeout(() => {
                         window.location.reload()
@@ -254,7 +257,7 @@ export default function DoctorProfile() {
                                                     </div>
 
                                                     <div className="modal-body d-flex justify-content-center">
-                                                        <DatePicker style={{minWidth:'400px'}}
+                                                        <DatePicker style={{ minWidth: '400px' }}
                                                             multiple
                                                             value={selectedDates}
                                                             onChange={handleDateChange}
@@ -283,7 +286,7 @@ export default function DoctorProfile() {
                                                         <button className="btn btn-success" onClick={handleAvailability} onMouseEnter={() => setOpen(!open)} onMouseLeave={() => setOpen(!open)}>
                                                             Set Dates
                                                         </button>
-                                                        
+
                                                     </div>
 
                                                 </div>
@@ -309,7 +312,7 @@ export default function DoctorProfile() {
                 <Modal.Header closeButton>
                     <Modal.Title>✏️ Edit your profile</Modal.Title>
                 </Modal.Header>
-                <Modal.Body style={{background:'rgba(143, 211, 229, 0.33)'}}>
+                <Modal.Body style={{ background: 'rgba(143, 211, 229, 0.33)' }}>
                     <Form>
                         <FloatingLabel controlId="floatingDocName" label="Doctor Name" className="mb-3">
                             <Form.Control type="text" name="docname" value={ProfileEdit.docname} onChange={handleChange} placeholder="Enter name" />

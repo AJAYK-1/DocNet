@@ -10,9 +10,9 @@ import { useNavigate } from 'react-router-dom';
 
 export default function UserProfile() {
     const decoded = useMemo(() => {
-            const token = localStorage.getItem('token');
-            return jwtDecode(token);
-        }, [])
+        const token = localStorage.getItem('token');
+        return jwtDecode(token);
+    }, [])
 
     const [UserData, setUserData] = useState({
         username: '',

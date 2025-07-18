@@ -97,7 +97,7 @@ export default function UserHome() {
                         </Row>
                     </Container>
                 </div>
-                <div className="stat-card-background row justify-content-center text-center mb-4 mt-5" style={{ padding: '20px' }}>
+                <div className="stat-card-background row justify-content-center text-center mb-4 mt-5 p-20">
                     <h1 className="health-quote-text mb-4">
                         Just one click to see...
                     </h1>
@@ -105,7 +105,7 @@ export default function UserHome() {
                     <div className="col-md-4">
                         <div className="info-card card text-center shadow-sm border-0 h-100">
                             <div className="card-body">
-                                <BsPersonCircle size={50} className="mb-3 text-primary" />
+                                <BsPersonCircle size={50} className="mb-3 text-primary mx-auto" />
                                 <h5 className="card-title">Your Profile</h5>
                                 <p className="card-text">View and update your personal and medical profile.</p>
                                 <a href="/userprofile" className="btn btn-outline-primary w-100 mt-2">Go to Profile</a>
@@ -115,7 +115,7 @@ export default function UserHome() {
                     <div className="col-md-4">
                         <div className="info-card card text-center shadow-sm border-0 h-100">
                             <div className="card-body">
-                                <BsCalendarCheck size={50} className="mb-3 text-success" />
+                                <BsCalendarCheck size={50} className="mb-3 text-success mx-auto" />
                                 <h5 className="card-title">Your Appointments</h5>
                                 <p className="card-text">Track your appointments with ease.</p>
                                 <a href="/appointment" className="btn btn-outline-success w-100 mt-2">View Appointments</a>
@@ -125,7 +125,7 @@ export default function UserHome() {
                     <div className="col-md-4">
                         <div className="info-card card text-center shadow-sm border-0 h-100">
                             <div className="card-body">
-                                <BsFileEarmarkText size={50} className="mb-3 text-secondary" />
+                                <BsFileEarmarkText size={50} className="mb-3 text-secondary mx-auto" />
                                 <h5 className="card-title">Your Prescription</h5>
                                 <p className="card-text">Access your prescriptions and view treatment details.</p>
                                 <a href="/getprescription" className="btn btn-outline-secondary w-100 mt-2">View Prescriptions</a>
@@ -151,15 +151,15 @@ export default function UserHome() {
                                 />
                                 <Card.Body>
                                     <Card.Title>Dr. {doctor.docname}</Card.Title>
-                                    <Card.Text className="mb-1 text-muted">
+                                    <Card.Text className="mb-1 text-muted flex items-center">
                                         <BsPersonWorkspace className="me-2 text-primary" />
                                         {doctor.qualification}
                                     </Card.Text>
-                                    <Card.Text className="mb-1 text-muted">
+                                    <Card.Text className="mb-1 text-muted flex items-center">
                                         <FaHeartbeat className="me-2 text-danger" />
                                         {doctor.specialization}
                                     </Card.Text>
-                                    <Card.Text className="text-muted">
+                                    <Card.Text className="text-muted flex items-center">
                                         <BsGeoAltFill className="me-2 text-success" />
                                         {doctor.address}
                                     </Card.Text>
@@ -169,10 +169,12 @@ export default function UserHome() {
                         </div>
                     ))}
                     {/* Show More Button */}
-                    <div className="col-md-4 text-center" style={{ marginTop: '200px' }}>
-                        <Button id='info-card' variant="info" onClick={() => navigate('/seealldoctors')} style={{ borderRadius: '20px' }}>
-                            See more doctors <FaArrowRight className="ms-2" />
-                        </Button>
+                    <div className="col-md-4 text-center my-auto md:mx-auto" >
+                        <button id='info-card' variant="info"  
+                        className='w-40 flex items-center justify-center rounded-5 p-2 gap-2 bg-[#41ecec]'
+                        onClick={() => navigate('/seealldoctors')} >
+                            See more doctors <FaArrowRight className="ms-2 my-auto mx-auto" />
+                        </button>
                     </div>
                 </div>
             </div>
