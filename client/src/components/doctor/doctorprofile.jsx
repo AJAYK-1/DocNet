@@ -167,6 +167,7 @@ export default function DoctorProfile() {
                     <Row className="justify-content-center text-center">
                         <Col xs={12}>
                             <h1
+                                className='flex justify-center'
                                 ref={headerRef}
                                 style={{
                                     fontFamily: "'Poppins', sans-serif",
@@ -175,7 +176,7 @@ export default function DoctorProfile() {
                                     marginBottom: '1rem',
                                 }}
                             >
-                                <FaAddressCard size={32} style={{ marginBottom: '7px', marginRight: '10px', color: '#2980B9' }} />
+                                <FaAddressCard size={32} style={{ marginBottom: '5px', marginRight: '10px', color: '#2980B9' }} />
                                 Profile
                             </h1>
                         </Col>

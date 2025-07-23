@@ -34,9 +34,9 @@ export default function DoctorSeeFeedback() {
 
                 {Feedback.map((feed) => (
                   <div key={feed._id} className="feedback-card">
-                    <h5 className="user-name"> <FaUser className='user-icon' /> {feed.userId.username} says...</h5>
+                    <h5 className="user-name flex gap-1"> <FaUser className='user-icon' /> {feed.userId.username} says...</h5>
                     <p className="feedback-text"> {feed.feedback}</p>
-                    <div className="rating-stars">
+                    <div className="rating-stars flex">
                       {[...Array(5)].map((_, index) => (
                         <FaStar
                           className='star-rating'

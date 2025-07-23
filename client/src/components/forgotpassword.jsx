@@ -84,7 +84,7 @@ export default function ForgotPassword() {
       <HomeNavbar />
       <div className="resetpassword-background">
         <div className="login-overlay" />
-        <Lottie animationData={ForgotPasswordAnimation} style={{ height: '500px', zIndex: '2', marginLeft: '200px' }} />
+        {/* <Lottie animationData={ForgotPasswordAnimation} className='h-400px z-20 ml-5' /> */}
         <Container className="login-container">
           <Card className="login-card">
             <h2 className="text-center mb-4 login-heading fw-bold"

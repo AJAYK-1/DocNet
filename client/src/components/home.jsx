@@ -80,7 +80,7 @@ export default function Home() {
                     <Col md={4}>
                         <Card id='info-card' className="h-100 shadow-sm text-center">
                             <Card.Body>
-                                <FaUserMd size={40} className="text-primary mb-3" />
+                                <FaUserMd size={40} className="text-primary mb-3 mx-auto" />
                                 <Card.Title>Doctor Registration</Card.Title>
                                 <Card.Text>
                                     Doctors can sign up, upload their profile, and manage patient prescriptions with ease.
@@ -91,7 +91,7 @@ export default function Home() {
                     <Col md={4}>
                         <Card id='info-card' className="h-100 shadow-sm text-center">
                             <Card.Body>
-                                <FaNotesMedical size={40} className="text-success mb-3" />
+                                <FaNotesMedical size={40} className="text-success mb-3 mx-auto" />
                                 <Card.Title>Prescriptions Management</Card.Title>
                                 <Card.Text>
                                     View and manage prescriptions in a clean, structured format built for quick access.
@@ -102,7 +102,7 @@ export default function Home() {
                     <Col md={4}>
                         <Card id='info-card' className="h-100 shadow-sm text-center">
                             <Card.Body>
-                                <FaLaptopMedical size={40} className="text-danger mb-3" />
+                                <FaLaptopMedical size={40} className="text-danger mb-3 mx-auto" />
                                 <Card.Title>Accessible Portal</Card.Title>
                                 <Card.Text>
                                     Patients and doctors access a unified dashboard — secure, fast, and user-friendly.

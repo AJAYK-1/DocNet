@@ -53,7 +53,7 @@ export default function About() {
                     <Col md={4}>
                         <Card className="h-100 text-center shadow-sm">
                             <Card.Body>
-                                <FaLaptopMedical size={40} className="text-primary mb-3" />
+                                <FaLaptopMedical size={40} className="text-primary mb-3 mx-auto" />
                                 <Card.Title>Easy Access</Card.Title>
                                 <Card.Text>
                                     Access your healthcare records, prescriptions, and appointments anytime, anywhere.
@@ -64,7 +64,7 @@ export default function About() {
                     <Col md={4}>
                         <Card className="h-100 text-center shadow-sm">
                             <Card.Body>
-                                <FaHeartbeat size={40} className="text-danger mb-3" />
+                                <FaHeartbeat size={40} className="text-danger mb-3 mx-auto" />
                                 <Card.Title>Doctor-Friendly</Card.Title>
                                 <Card.Text>
                                     Doctors can efficiently manage patients, upload prescriptions, and update profiles with just a few clicks.
@@ -75,7 +75,7 @@ export default function About() {
                     <Col md={4}>
                         <Card className="h-100 text-center shadow-sm">
                             <Card.Body>
-                                <FaShieldAlt size={40} className="text-success mb-3" />
+                                <FaShieldAlt size={40} className="text-success mb-3 mx-auto" />
                                 <Card.Title>Secure Platform</Card.Title>
                                 <Card.Text>
                                     Security and privacy of medical data are our top priority with secure token-based access.
