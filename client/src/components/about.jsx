@@ -22,7 +22,7 @@ export default function About() {
                 <h1 className='hero-title' style={{ fontSize: '3rem', fontWeight: 'bold', fontFamily: 'Poppins' }}>
                     About DocNet
                 </h1>
-                <p style={{ fontSize: '1.2rem', maxWidth: '800px', margin: '20px auto' }}>
+                <p className='hero-subtext' style={{ fontSize: '1.2rem', maxWidth: '800px', margin: '20px auto' }}>
                     DocNet is your all-in-one digital healthcare platform — connecting patients and doctors with ease, security, and convenience.
                 </p>
             </div>

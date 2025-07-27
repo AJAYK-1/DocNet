@@ -44,7 +44,7 @@ export default function UserNavbar() {
                         <button className='hover:underline relative text-white'
                             onClick={() => setDropDown(!dropDown)}> Profile▾ </button>
                         {dropDown && (
-                            <div className="absolute flex flex-col w-35 mt-2 p-2 z-6 shadow-md rounded bg-[#1e2329]">
+                            <div className="absolute flex flex-col w-35 mt-2 p-2 z-[999] shadow-md rounded bg-[#1e2329]">
                                 <a href="/userprofile" className='mb-2 text-white text-decoration-none text-center'> My Profile</a>
                                 <button className='text-white'
                                     onClick={handleLogout}>Logout</button>
@@ -63,23 +63,24 @@ export default function UserNavbar() {
                 </div>
             </nav>
             {openMenu && (
-                <div ref={mobileConRef} className='md:hidden flex flex-col px-4 space-y-3 z-20 text-white font-medium bg-[#1f2933]'>
+                <div ref={mobileConRef} className='md:hidden flex flex-col px-4 pb-3 space-y-3 z-20 text-white font-medium bg-[#1f2933]'>
                     <a href='/userhome' className='text-decoration-none text-white'> Home </a>
                     <a href='/seealldoctors' className='text-decoration-none text-white'> Find Doctors </a>
                     <a href='/appointment' className='text-decoration-none text-white'> My Appointments </a>
                     <a href='/getprescription' className='text-decoration-none text-white'> Presciptions </a>
-                    <div>
-                        <button className='hover:underline relative text-white'
+                    <a href='/userfeedback' className='text-white text-decoration-none mb-3'> Feedback </a>
+                    <div className='relative'>
+                        <button className='hover:underline text-white'
                             onClick={() => setDropDown(!dropDown)}> Profile▾ </button>
                         {dropDown && (
-                            <div className="absolute flex flex-col w-35 mt-2 p-2 z-30 shadow-md rounded bg-[#1e2329]">
+                            <div className="absolute flex flex-col w-40  p-2 z-[999] shadow-md rounded bg-[#1e2329]">
                                 <a href="/userprofile" className='mb-2 text-white text-decoration-none text-center'> My Profile</a>
                                 <button className='text-white'
                                     onClick={handleLogout}>Logout</button>
                             </div>
                         )}
                     </div>
-                    <a href='/userfeedback' className='text-white text-decoration-none mb-3'> Feedback </a>
+                    
                 </div>
             )}
 

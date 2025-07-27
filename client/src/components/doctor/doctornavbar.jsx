@@ -23,17 +23,17 @@ export default function DoctorNavbar() {
         navigate("/login")
     }
 
-        const navbarRef = useRef(null)
-        const navContentRef = useRef(null)
-        const mobileConRef = useRef(null)
+    const navbarRef = useRef(null)
+    const navContentRef = useRef(null)
+    const mobileConRef = useRef(null)
 
-     useGSAP(() => {
-            if (openMenu) {
-                HomeNavbarAnimation({ mobileConRef })
-            } else {
-                HomeNavbarAnimation({ navbarRef, navContentRef })
-            }
-        }, [openMenu])
+    useGSAP(() => {
+        if (openMenu) {
+            HomeNavbarAnimation({ mobileConRef })
+        } else {
+            HomeNavbarAnimation({ navbarRef, navContentRef })
+        }
+    }, [openMenu])
 
     return (
         <>
@@ -81,19 +81,12 @@ export default function DoctorNavbar() {
                 </div>
             </nav>
             {openMenu && (
-                <div ref={mobileConRef} className='md:hidden flex flex-col px-4 space-y-3 text-white font-medium bg-[#1f2933]'>
+                <div ref={mobileConRef} className='md:hidden flex flex-col px-4 pb-3 space-y-3 text-white font-medium bg-[#1f2933]'>
                     <a href='/doctorhome' className='text-decoration-none text-white'> Home </a>
-                    <div>
-                        <button className='relative text-white'
-                            onClick={() => setDropDown2(!dropDown2)}> Appointments▾ </button>
-                        {dropDown2 && (
-                            <div className="absolute flex flex-col w-35 mt-2 p-2 z-6 shadow-md rounded bg-[#1e2329]">
-                                <a href="/viewappointment" className='mb-2 text-white text-decoration-none text-center'> New </a>
-                                <a href="/appointmenthistory" className='mb-2 text-white text-decoration-none text-center'> History </a>
-                            </div>
-                        )}
-                    </div>
+                    <a href="/viewappointment" className='text-decoration-none text-white'> New Appointment </a>
+                    <a href="/appointmenthistory" className='text-decoration-none text-white'> Appointment History </a>
                     <a href='/viewprescription' className='text-decoration-none text-white'> Prescriptions </a>
+                    <a href='/doctorfeedback' className='text-white text-decoration-none mb-3'> Feedback </a>
                     <div>
                         <button className='relative text-white'
                             onClick={() => setDropDown(!dropDown)}> Profile▾ </button>
@@ -105,7 +98,6 @@ export default function DoctorNavbar() {
                             </div>
                         )}
                     </div>
-                    <a href='/doctorfeedback' className='text-white text-decoration-none mb-3'> Feedback </a>
                 </div>
             )}
 

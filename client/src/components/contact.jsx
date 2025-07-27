@@ -54,7 +54,7 @@ export default function Contact() {
                 <h1 className="hero-title" style={{ fontSize: '3rem', fontWeight: 'bold', fontFamily: 'Poppins' }}>
                     Contact Me
                 </h1>
-                <p style={{ fontSize: '1.2rem', maxWidth: '800px', margin: '20px auto' }}>
+                <p className='hero-subtext' style={{ fontSize: '1.2rem', maxWidth: '800px', margin: '20px auto' }}>
                     Have a question, feedback, or need help with DocNet? Feel free to get in touch — I’d love to hear from you!
                 </p>
             </div>
@@ -66,26 +66,29 @@ export default function Contact() {
                     <Col md={6} className="mb-4">
                         <h3>Developer Info</h3>
                         <Card className="p-3 mb-3 shadow-sm">
-                            <Card.Body>
-                                <FaUserTie className="me-2 text-primary" />
+                            <Card.Body >
+                                <div className='flex'>
+                                <FaUserTie className="me-1 text-xl text-primary" />
                                 <strong>Name:</strong> Ajay Kumar T P
-                                <br />
-                                <span style={{marginLeft:'4%'}}>Full Stack Developer | MERN Stack</span>
+                                </div>
+                                <span className='ml-6'>Full Stack Developer | MERN Stack</span>
                             </Card.Body>
                         </Card>
 
                         <Card className="p-3 mb-3 shadow-sm">
-                            <Card.Body>
-                                <FaMobileAlt className="me-2 text-success" />
+                            <Card.Body className='flex'>
+                                <FaMobileAlt className="me-1 text-xl text-success" />
                                 <strong>Phone:</strong> +91 82899 38749
                             </Card.Body>
                         </Card>
 
                         <Card className="p-3 shadow-sm">
                             <Card.Body>
-                                <FaTools className="me-2 text-warning" />
+                                <div className='flex'>
+
+                                <FaTools className="me-1 text-xl text-warning" />
                                 <strong>Technologies Used:</strong>
-                                <br />
+                                </div>
                                 <table style={{ width: '100%',marginLeft:'4%', borderCollapse: 'collapse' }} cellPadding="4" cellSpacing="0">
                                     <tbody>
                                         <tr>

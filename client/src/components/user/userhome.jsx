@@ -70,7 +70,7 @@ export default function UserHome() {
         <>
             <UserNavbar />
 
-            <div className="hero-section">
+            <div className="hero-section z-0">
                 <div className="hero-overlay"></div>
                 <h1 className=" mb-4 text-center">
                     <span className='welcome-part'>Welcome </span>

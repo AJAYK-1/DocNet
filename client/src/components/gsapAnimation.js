@@ -17,8 +17,8 @@ export const HomeNavbarAnimation = ({ navbarRef, navContentRef, mobileConRef }) 
 
     gsap.fromTo(
         mobileConRef?.current,
-        { y: -100, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1 })
+        { y: -100 },
+        { y: 0, duration: 1 })
 
     gsap.fromTo(
         mobileConRef?.current.children,
