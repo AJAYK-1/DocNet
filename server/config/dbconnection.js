@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 
-
 const DataBaseConnect = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI)
@@ -9,6 +8,5 @@ const DataBaseConnect = async () => {
         console.log("Connection Failed...", error)
     }
 }
-
 
 module.exports = DataBaseConnect

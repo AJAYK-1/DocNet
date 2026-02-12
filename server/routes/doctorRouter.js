@@ -1,6 +1,6 @@
 const express = require('express')
 const { DoctorRegister, fetchAppointments, addPrescription, viewPrescription, viewLoggedDoctor, changeAvalibility, doctorProfileEdit } = require('../controller/doctorControl')
-const upload = require('../middleware/multerConfig')
+const upload = require('../config/multerConfig')
 const RouterDoctor = express.Router()
 
 

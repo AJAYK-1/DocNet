@@ -4,7 +4,7 @@ const Prescription = require('../models/prescriptionModel')
 const path = require('path')
 const fs = require('fs')
 const argon2 = require('argon2')
-const { sendaMail } = require('../middleware/nodeMailer')
+const { sendaMail } = require('../config/nodeMailer')
 const { WelcomeMailDoctor } = require('../emails/welcomeDoctor')
 
 
