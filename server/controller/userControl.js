@@ -1,5 +1,4 @@
-const User = require('../models/userModel')
-const Doctor = require('../models/doctorModel')
+const Users = require('../models/usersModel')
 const Appointment = require('../models/appointmentModel')
 const Prescription = require('../models/prescriptionModel')
 const Feedback = require('../models/feedbackModel')
@@ -13,31 +12,47 @@ const { LoginOTP } = require('../emails/LoginOTP')
 const { ResetPasswordOTP } = require('../emails/ResetPassword')
 const argon2 = require('argon2')
 
-
 // Registration for the user...
 const registerUser = async (req, res) => {
     try {
-        const { username, email, password } = req.body
+        const { name, email, password, role } = req.body
 
-        const ExistingUser = await User.findOne({ email })
-        if (ExistingUser) {
-            res.json({ msg: "Regisration failed... User already exist...", status: 400 })
+        const existingUser = await Users.findOne({ email })
+        if (existingUser) {
+            return res.json({ msg: "Regisration failed... Account already exist...", status: 400 })
         }
-        else {
-            const hashedPassword = await argon2.hash(password)
-            const userdata = await User({
-                username,
+
+        const hashedPassword = await argon2.hash(password)
+
+        if (role === 'patient') {
+            await Users.create({
+                name,
                 email,
-                password: hashedPassword
+                password: hashedPassword,
+                role: role || 'patient'
             })
-            const personalMail = await WelcomeMailUser(username)
-            sendaMail(email, "🎉 Welcome to DocNet – Your Health, Simplified!", "", personalMail)
-            await userdata.save()
-            res.json({ msg: "Data Registered Successfully...", status: 200 })
+        } else if (role === 'doctor') {
+            const { address, license, qualification, specialization } = req.body
+            const profileImage = req.file?.filename || null
+            await Users.create({
+                name,
+                email,
+                password: hashedPassword,
+                role: role || 'doctor',
+                address,
+                license,
+                qualification,
+                specialization,
+                profileImage
+            })
         }
+        const personalMail = WelcomeMailUser(name)
+        await sendaMail(email, "🎉 Welcome to DocNet – Your Health, Simplified!", "", personalMail)
+        return res.json({ msg: "Registration Successfull...", status: 200 })
+
     } catch (err) {
         console.log(err)
-        res.json({ msg: "Registration Error...", status: 404 })
+        return res.json({ msg: "Registration Error...", status: 404 })
     }
 }
 
@@ -48,49 +63,49 @@ const userlogin = async (req, res) => {
         const { email, password } = req.body
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
             const token = jwt.sign({ role: "admin", email }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
-            res.json({ msg: "Logging in as Admin...", status: 202, token: token })
+            return res.json({ msg: "Logging in as Admin...", status: 202, token: token })
         } else {
-            let ValidUser = await User.findOne({ email })
+            let ValidUser = await Users.findOne({ email })
             let userType = 'user'
 
             if (!ValidUser) {
-                ValidUser = await Doctor.findOne({ email })
+                ValidUser = await Users.findOne({ email })
                 userType = 'doctor'
             }
             if (!ValidUser) {
-                res.json({ msg: "User not found", status: 400 })
+                return res.json({ msg: "User not found", status: 400 })
             } else {
                 if (userType == 'user') {
                     const checkPassword = await argon2.verify(ValidUser.password, password)
                     if (checkPassword) {
                         if (ValidUser.accountStatus != 'Active') {
-                            res.json({ msg: "Your account has been deactivated.", status: 400 })
+                            return res.json({ msg: "Your account has been deactivated.", status: 400 })
                         } else {
                             const token = jwt.sign({ id: ValidUser._id, userType }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
-                            res.json({ msg: "Login successfull...", status: 200, token: token })
+                            return res.json({ msg: "Login successfull...", status: 200, token: token })
                         }
                     } else {
-                        res.json({ msg: "Incorrect Email or Password...", status: 400 })
+                        return res.json({ msg: "Incorrect Email or Password...", status: 400 })
                     }
                 }
                 if (userType = 'doctor') {
                     const checkPassword = await argon2.verify(ValidUser.password, password)
                     if (checkPassword) {
                         if (ValidUser.accountStatus != 'Active') {
-                            res.json({ msg: "Your account has been deactivated.", status: 400 })
+                            return res.json({ msg: "Your account has been deactivated.", status: 400 })
                         } else {
                             const token = jwt.sign({ id: ValidUser._id, role: userType }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
-                            res.json({ msg: "Login successfull...", status: 201, token: token })
+                            return res.json({ msg: "Login successfull...", status: 201, token: token })
                         }
                     } else {
-                        res.json({ msg: "Incorrect Email or Password...", status: 400 })
+                        return res.json({ msg: "Incorrect Email or Password...", status: 400 })
                     }
                 }
             }
         }
     } catch (err) {
         console.log(err)
-        res.json({ msg: "User Not Found...", status: 400 })
+        return res.json({ msg: "User Not Found...", status: 400 })
     }
 }
 
@@ -103,10 +118,10 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 const sendOTP = async (req, res) => {
     try {
         const { email, reqtype } = req.body
-        let userExist = await User.findOne({ email })
+        let userExist = await Users.findOne({ email })
         let userType = 'user'
         if (!userExist) {
-            userExist = await Doctor.findOne({ email })
+            userExist = await Users.findOne({ email })
             userType = 'doctor'
         }
         if (!userExist) {
@@ -157,10 +172,10 @@ const sendOTP = async (req, res) => {
 const confirmOTP = async (req, res) => {
     try {
         const { email, otp } = req.body
-        let thatUser = await User.findOne({ email })
+        let thatUser = await Users.findOne({ email })
 
         if (!thatUser) {
-            thatUser = await Doctor.findOne({ email })
+            thatUser = await Users.findOne({ email })
         }
         if (!thatUser) {
             res.json({ msg: "User not found...", status: 404 })
@@ -180,11 +195,11 @@ const confirmOTP = async (req, res) => {
 const loginWithOTP = async (req, res) => {
     try {
         const { email, otp } = req.body
-        let userExist = await User.findOne({ email })
+        let userExist = await Users.findOne({ email })
         let userType = 'user'
 
         if (!userExist) {
-            userExist = await Doctor.findOne({ email })
+            userExist = await Users.findOne({ email })
             userType = 'doctor'
         }
         if (!userExist) {
@@ -216,9 +231,9 @@ const loginWithOTP = async (req, res) => {
 const PasswordReset = async (req, res) => {
     try {
         const { email, newpassword, confirmpassword } = req.body
-        let findUser = await User.findOne({ email })
+        let findUser = await Users.findOne({ email })
         if (!findUser) {
-            findUser = await Doctor.findOne({ email })
+            findUser = await Users.findOne({ email })
         }
         if (newpassword === confirmpassword) {
             const hashedPassword = await argon2.hash(newpassword)
@@ -256,7 +271,7 @@ const ContactDeveloper = async (req, res) => {
 const viewLoggedUser = async (req, res) => {
     try {
         const id = req.headers.id
-        const LoggedinUser = await User.findById(id)
+        const LoggedinUser = await Users.findById(id)
         res.json({ msg: "Logged in...", data: LoggedinUser, status: 200 })
     } catch (err) {
         console.log(err)
@@ -268,7 +283,7 @@ const viewLoggedUser = async (req, res) => {
 // Display all doctors...
 const viewDoctors = async (req, res) => {
     try {
-        const Docs = await Doctor.find({})
+        const Docs = await Users.find({})
         res.json({ msg: "View Doctors...", data: Docs, status: 200 })
     } catch (err) {
         console.log(err)
@@ -281,7 +296,7 @@ const viewDoctors = async (req, res) => {
 const viewDoctorsProfile = async (req, res) => {
     try {
         const id = req.params.id
-        const DocData = await Doctor.findById(id)
+        const DocData = await Users.findById(id)
         res.json({ msg: "View your Profile...", data: DocData, status: 200 })
     } catch (err) {
         console.log(err)

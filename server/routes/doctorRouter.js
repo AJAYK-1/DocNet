@@ -3,7 +3,6 @@ const { DoctorRegister, fetchAppointments, addPrescription, viewPrescription, vi
 const upload = require('../config/multerConfig')
 const RouterDoctor = express.Router()
 
-
 RouterDoctor.post('/doctorregistration',upload.single('profileImage'), DoctorRegister)
 RouterDoctor.get('/viewloggeddoctor',viewLoggedDoctor)
 RouterDoctor.put('/changeavailability',changeAvalibility)
@@ -11,6 +10,5 @@ RouterDoctor.put('/doctoreditprofile',upload.single('profileImage'),doctorProfil
 RouterDoctor.get('/fetchappointments', fetchAppointments)
 RouterDoctor.post('/yourprescription', addPrescription)
 RouterDoctor.get('/viewprescription',viewPrescription)
-
 
 module.exports = RouterDoctor

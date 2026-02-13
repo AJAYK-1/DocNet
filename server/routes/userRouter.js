@@ -4,9 +4,11 @@ const { registerUser, userlogin, viewLoggedUser, viewDoctors, viewDoctorsProfile
     bookAppointment, fetchMyPrescription, fetchMyAppointments, fetchPrescriptionById,
     viewFeedbacks, submitFeedback, Payment, ValidatePayment, loginWithOTP, sendOTP,
     confirmOTP, PasswordReset, ContactDeveloper } = require('../controller/userControl')
+const upload = require('../config/multerConfig')
+const validate = require('../middlewares/validate')
+const { registerSchema } = require('../utils/validators/authValidator')
 
-
-RouterUser.post('/registeruser', registerUser)
+RouterUser.post('/registeruser', upload.single('profileImage'), validate(registerSchema), registerUser)
 RouterUser.post('/login', userlogin)
 RouterUser.put('/send-otp', sendOTP)
 RouterUser.post('/loginwithOTP', loginWithOTP)
@@ -24,6 +26,5 @@ RouterUser.post('/write-feedback', submitFeedback)
 RouterUser.get('/seefeedbacks', viewFeedbacks)
 RouterUser.post('/payment', Payment)
 RouterUser.post('/validate-payment', ValidatePayment)
-
 
 module.exports = RouterUser
