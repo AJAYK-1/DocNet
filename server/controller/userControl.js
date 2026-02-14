@@ -10,6 +10,7 @@ const { sendaMail } = require('../config/nodeMailer')
 const { WelcomeMailUser } = require('../emails/welcomeUser')
 const { LoginOTP } = require('../emails/LoginOTP')
 const { ResetPasswordOTP } = require('../emails/ResetPassword')
+const { generateOTP } = require('../utils/OTPgenerator')
 const argon2 = require('argon2')
 
 // Registration for the user...
@@ -56,117 +57,62 @@ const registerUser = async (req, res) => {
     }
 }
 
-
 // Common login using password for all type of users...
 const userlogin = async (req, res) => {
     try {
         const { email, password } = req.body
-        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-            const token = jwt.sign({ role: "admin", email }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
-            return res.json({ msg: "Logging in as Admin...", status: 202, token: token })
-        } else {
-            let ValidUser = await Users.findOne({ email })
-            let userType = 'user'
 
-            if (!ValidUser) {
-                ValidUser = await Users.findOne({ email })
-                userType = 'doctor'
-            }
-            if (!ValidUser) {
-                return res.json({ msg: "User not found", status: 400 })
-            } else {
-                if (userType == 'user') {
-                    const checkPassword = await argon2.verify(ValidUser.password, password)
-                    if (checkPassword) {
-                        if (ValidUser.accountStatus != 'Active') {
-                            return res.json({ msg: "Your account has been deactivated.", status: 400 })
-                        } else {
-                            const token = jwt.sign({ id: ValidUser._id, userType }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
-                            return res.json({ msg: "Login successfull...", status: 200, token: token })
-                        }
-                    } else {
-                        return res.json({ msg: "Incorrect Email or Password...", status: 400 })
-                    }
-                }
-                if (userType = 'doctor') {
-                    const checkPassword = await argon2.verify(ValidUser.password, password)
-                    if (checkPassword) {
-                        if (ValidUser.accountStatus != 'Active') {
-                            return res.json({ msg: "Your account has been deactivated.", status: 400 })
-                        } else {
-                            const token = jwt.sign({ id: ValidUser._id, role: userType }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
-                            return res.json({ msg: "Login successfull...", status: 201, token: token })
-                        }
-                    } else {
-                        return res.json({ msg: "Incorrect Email or Password...", status: 400 })
-                    }
-                }
-            }
+        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+            const token = jwt.sign({ role: "admin" }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
+            return res.json({ msg: "Logging in as Admin...", status: 202, token: token })
         }
+
+        let ValidUser = await Users.findOne({ email })
+        if (!ValidUser) return res.json({ msg: "User not found", status: 404 })
+
+        const checkPassword = await argon2.verify(ValidUser.password, password)
+        if (!checkPassword) return res.json({ msg: "Incorrect password", status: 400 })
+
+        if (ValidUser.accountStatus != 'Active') return res.json({ msg: "Your account has been deactivated.", status: 400 })
+
+        const token = jwt.sign({ id: ValidUser._id, role: ValidUser.role }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
+        return res.json({ msg: "Login successfull...", status: 200, token: token })
+
     } catch (err) {
         console.log(err)
-        return res.json({ msg: "User Not Found...", status: 400 })
+        return res.json({ msg: "Internal Server Error...", status: 500 })
     }
 }
-
-
-// OTP Generator function...
-const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
-
 
 // sends OTP via email...
 const sendOTP = async (req, res) => {
     try {
         const { email, reqtype } = req.body
-        let userExist = await Users.findOne({ email })
-        let userType = 'user'
-        if (!userExist) {
-            userExist = await Users.findOne({ email })
-            userType = 'doctor'
+        let user = await Users.findOne({ email })
+
+        if (!user) return res.json({ msg: "User not found...", status: 404 })
+
+        const newotp = await generateOTP()
+        const expiry = Date.now() + 5 * 60 * 1000
+        user.otp = newotp
+        user.otpExpiry = expiry
+        await user.save()
+
+        if (reqtype == 'Login') {
+            const LoginotpMail = LoginOTP(user.name, newotp)
+            sendaMail(email, "OTP to Login to DocNet", ``, LoginotpMail)
+            return res.json({ msg: "OTP send to Mail. Please check your mail.", status: 200 })
+        } else if (reqtype == 'Resetpassword') {
+            const ResetPasswordMail = ResetPasswordOTP(user.name, newotp)
+            sendaMail(email, "OTP to Reset Password", ``, ResetPasswordMail)
+            return res.json({ msg: "OTP send to Mail. Please check your mail.", status: 200 })
         }
-        if (!userExist) {
-            res.json({ msg: "Incorrect Email address...", status: 400 })
-        } else {
-            newotp = generateOTP()
-            expiry = Date.now() + 5 * 60 * 1000
-            if (userType == 'user') {
-                if (reqtype == 'Login') {
-                    const LoginotpMail = LoginOTP(userExist.username, newotp)
-                    sendaMail(email, "OTP to Login to DocNet", ``, LoginotpMail)
-                    res.json({ msg: "OTP send to Mail. Please check your mail.", status: 200 })
-                } else if (reqtype == 'Resetpassword') {
-                    const ResetPasswordMail = ResetPasswordOTP(userExist.username, newotp)
-                    sendaMail(email, "OTP to Reset Password", ``, ResetPasswordMail)
-                    res.json({ msg: "OTP send to Mail. Please check your mail.", status: 200 })
-                } else {
-                    res.json({ msg: "Error Sending OTP...", status: 400 })
-                }
-            } else if (userType == 'doctor') {
-                if (reqtype == 'Login') {
-                    const LoginotpMail = LoginOTP(userExist.docname, newotp)
-                    sendaMail(email, "OTP to Login to DocNet", ``, LoginotpMail)
-                    res.json({ msg: "OTP send to Mail. Please check your mail.", status: 200 })
-                } else if (reqtype == 'Resetpassword') {
-                    const ResetPasswordMail = ResetPasswordOTP(userExist.docname, newotp)
-                    sendaMail(email, "OTP to Reset Password", ``, ResetPasswordMail)
-                    res.json({ msg: "OTP send to Mail. Please check your mail.", status: 200 })
-                } else {
-                    res.json({ msg: "Error Sending OTP...", status: 400 })
-                }
-            } else {
-                res.json({ msg: "Invalid User...", status: 400 })
-            }
-            userExist.otp = newotp
-            userExist.otpExpiry = expiry
-            await userExist.save()
-            res.json({ msg: "OTP send to your Email address...", status: 200 })
-        }
+        return res.json({ msg: "Error Sending OTP...", status: 400 })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "User not found...", status: 404 })
+        return res.json({ msg: "Internal Server Error", status: 500 })
     }
 }
-
 
 // OTP confirmation...
 const confirmOTP = async (req, res) => {
@@ -175,135 +121,115 @@ const confirmOTP = async (req, res) => {
         let thatUser = await Users.findOne({ email })
 
         if (!thatUser) {
-            thatUser = await Users.findOne({ email })
-        }
-        if (!thatUser) {
-            res.json({ msg: "User not found...", status: 404 })
+            return res.json({ msg: "User not found...", status: 404 })
         } else if (thatUser.otp == otp) {
-            res.json({ msg: "OTP Confirmed...", status: 200 })
-        } else {
-            res.json({ msg: "OTP Incorrect...", status: 404 })
+            return res.json({ msg: "OTP Confirmed...", status: 200 })
         }
+        return res.json({ msg: "OTP Incorrect...", status: 400 })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "An Error Occured...", status: 404 })
+        return res.json({ msg: "Internal Server Error", status: 500 })
     }
 }
-
 
 // Common login using OTP for all types of users...
 const loginWithOTP = async (req, res) => {
     try {
         const { email, otp } = req.body
-        let userExist = await Users.findOne({ email })
-        let userType = 'user'
+        let user = await Users.findOne({ email })
 
-        if (!userExist) {
-            userExist = await Users.findOne({ email })
-            userType = 'doctor'
+        if (!user) return res.json({ msg: "User not found", status: 404 })
+
+        if (user.accountStatus != 'Active') return res.json({ msg: "Your account has been deactivated.", status: 400 })
+        if (user.otpExpiry < Date.now()) return res.json({ msg: "OTP expired or invalid.", status: 400 })
+
+        if (user.otp == otp) {
+            const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
+            return res.json({ msg: "Login successfull", status: 200, token: token })
         }
-        if (!userExist) {
-            res.json({ msg: "User not found", status: 400 })
-        } else if (userExist.accountStatus != 'Active') {
-            res.json({ msg: "Your account has been deactivated.", status: 400 })
-        } else if (userExist.otpExpiry < Date.now()) {
-            res.json({ msg: "OTP expired or invalid.", status: 400 })
-        } else {
-            if (userExist.otp == otp) {
-                const token = jwt.sign({ id: userExist._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
-                if (userType == 'user') {
-                    res.json({ msg: "Login successfull", status: 200, token: token })
-                } else if (userType == 'doctor') {
-                    res.json({ msg: "Login successfull...", status: 201, token: token })
-                }
-            } else {
-                res.json({ msg: "Incorrect OTP", status: 400 })
-            }
-        }
+        return res.json({ msg: "Incorrect OTP", status: 400 })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "User not found...", status: 404 })
+        return res.json({ msg: "Internal Server Error", status: 500 })
     }
 }
-
 
 // Reset Password...
 const PasswordReset = async (req, res) => {
     try {
         const { email, newpassword, confirmpassword } = req.body
-        let findUser = await Users.findOne({ email })
-        if (!findUser) {
-            findUser = await Users.findOne({ email })
-        }
-        if (newpassword === confirmpassword) {
-            const hashedPassword = await argon2.hash(newpassword)
-            findUser.password = hashedPassword
-            await findUser.save()
-            res.json({ msg: "Password Reset successfully...", status: 200 })
-        } else {
-            res.json({ msg: "Check the passwords again...", status: 400 })
-        }
+        if (newpassword !== confirmpassword) return res.json({ msg: "New and confirm passwords does not match", status: 400 })
+
+        let user = await Users.findOne({ email })
+        if (!user) return res.json({ msg: "User not found...", status: 404 })
+
+        const hashedPassword = await argon2.hash(newpassword)
+        user.password = hashedPassword
+        await user.save()
+        return res.json({ msg: "Password Reset successfully...", status: 200 })
+
     } catch (err) {
         console.log(err)
-        res.json({ msg: "An Error Occured...", status: 404 })
+        return res.json({ msg: "Internal Server Error", status: 500 })
     }
 }
-
 
 // Contact the developer...
 const ContactDeveloper = async (req, res) => {
     try {
         const { name, email, message } = req.body
-        if (name && email && message) {
-            sendaMail(process.env.EMAIL, `${name} contacted | DocNet`, `${message} \n contact ${email} `)
-            res.json({ msg: "Mail send successfully...", status: 200 })
-        } else {
-            res.json({ msg: "Error sending mail. Please enter valid information...", status: 400 })
-        }
+
+        if (!name && !email && !message)
+            return res.json({ msg: "Error sending mail. Please enter all valid information...", status: 400 })
+
+        sendaMail(process.env.EMAIL, `${name} contacted | DocNet`, `${message} \n contact ${email} `)
+        return res.json({ msg: "Mail send successfully...", status: 200 })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "An Error Occured...", status: 404 })
+        return res.json({ msg: "Internal Server Error", status: 500 })
     }
 }
-
 
 // Currently logged in user...
 const viewLoggedUser = async (req, res) => {
     try {
         const id = req.headers.id
         const LoggedinUser = await Users.findById(id)
-        res.json({ msg: "Logged in...", data: LoggedinUser, status: 200 })
+        return res.json({ msg: "Logged in...", data: LoggedinUser, status: 200 })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "An Error Occured...", status: 404 })
+        return res.json({ msg: "Internal Server Error", status: 500 })
     }
 }
-
 
 // Display all doctors...
 const viewDoctors = async (req, res) => {
     try {
-        const Docs = await Users.find({})
-        res.json({ msg: "View Doctors...", data: Docs, status: 200 })
+        const doctors = await Users.find({})
+
+        if (!doctors) return res.json({ msg: "No doctors found", status: 404 })
+
+        return res.json({ msg: "View Doctors...", data: doctors, status: 200 })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "An Error Occured...", status: 404 })
+        return res.json({ msg: "Internal Server Error", status: 500 })
     }
 }
-
 
 // Get Doctor's profile...
 const viewDoctorsProfile = async (req, res) => {
     try {
         const id = req.params.id
         const DocData = await Users.findById(id)
-        res.json({ msg: "View your Profile...", data: DocData, status: 200 })
+
+        if (!DocData) return res.json({ msg: "No doctor found", status: 404 })
+
+        return res.json({ msg: "View your Profile...", data: DocData, status: 200 })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "An Error Occured...", status: 404 })
+        return res.json({ msg: "Internal Server Error", status: 500 })
     }
 }
-
 
 // Book an appointment...
 const bookAppointment = async (req, res) => {
@@ -311,13 +237,12 @@ const bookAppointment = async (req, res) => {
         const { userId, doctorId, patientName, patientAge, patientGender, patientSymptoms, appointmentDate } = req.body
         const appointment = await Appointment({ userId, doctorId, patientName, patientAge, patientGender, patientSymptoms, appointmentDate })
         await appointment.save()
-        res.json({ msg: "Appointment Booked successfully", status: 200 })
+        return res.json({ msg: "Appointment Booked successfully", status: 200 })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "Booking failed", status: 400 })
+        return res.json({ msg: "Internal Server Error", status: 500 })
     }
 }
-
 
 // Fetch booked appointment...
 const fetchMyAppointments = async (req, res) => {
