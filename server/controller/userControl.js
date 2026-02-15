@@ -1,5 +1,6 @@
 const Users = require('../models/usersModel')
-const Appointment = require('../models/appointmentModel')
+const DoctorSchedule = require('../models/docScheduleModel')
+const Appointments = require('../models/appointmentModel')
 const Prescription = require('../models/prescriptionModel')
 const Feedback = require('../models/feedbackModel')
 const jwt = require('jsonwebtoken')
@@ -10,7 +11,7 @@ const { sendaMail } = require('../config/nodeMailer')
 const { WelcomeMailUser } = require('../emails/welcomeUser')
 const { LoginOTP } = require('../emails/LoginOTP')
 const { ResetPasswordOTP } = require('../emails/ResetPassword')
-const { generateOTP } = require('../utils/OTPgenerator')
+const generateOTP = require('../utils/OTPgenerator')
 const argon2 = require('argon2')
 
 // Registration for the user...
@@ -64,7 +65,7 @@ const userlogin = async (req, res) => {
 
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
             const token = jwt.sign({ role: "admin" }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
-            return res.json({ msg: "Logging in as Admin...", status: 202, token: token })
+            return res.json({ msg: "Logging in as Admin...", status: 200, token: token })
         }
 
         let ValidUser = await Users.findOne({ email })
@@ -92,7 +93,7 @@ const sendOTP = async (req, res) => {
 
         if (!user) return res.json({ msg: "User not found...", status: 404 })
 
-        const newotp = await generateOTP()
+        const newotp = generateOTP()
         const expiry = Date.now() + 5 * 60 * 1000
         user.otp = newotp
         user.otpExpiry = expiry
@@ -205,11 +206,11 @@ const viewLoggedUser = async (req, res) => {
 // Display all doctors...
 const viewDoctors = async (req, res) => {
     try {
-        const doctors = await Users.find({})
+        const doctors = await Users.find({ role: 'doctor', accountStatus: 'Active' }).select('-password -otp -otpExpiry')
 
-        if (!doctors) return res.json({ msg: "No doctors found", status: 404 })
+        if (doctors.length === 0) return res.json({ msg: "No doctors found", status: 404 })
 
-        return res.json({ msg: "View Doctors...", data: doctors, status: 200 })
+        return res.json({ msg: "Doctors fetched successfully", data: doctors, status: 200 })
     } catch (err) {
         console.log(err)
         return res.json({ msg: "Internal Server Error", status: 500 })
@@ -234,30 +235,121 @@ const viewDoctorsProfile = async (req, res) => {
 // Book an appointment...
 const bookAppointment = async (req, res) => {
     try {
-        const { userId, doctorId, patientName, patientAge, patientGender, patientSymptoms, appointmentDate } = req.body
-        const appointment = await Appointment({ userId, doctorId, patientName, patientAge, patientGender, patientSymptoms, appointmentDate })
-        await appointment.save()
-        return res.json({ msg: "Appointment Booked successfully", status: 200 })
+        const patientId = req.user.id
+
+        const {
+            doctorId,
+            patientName,
+            patientAge,
+            patientGender,
+            patientSymptoms,
+            appointmentDate,
+            appointmentTime
+        } = req.body
+
+        const selectedDate = new Date(appointmentDate)
+        selectedDate.setHours(0, 0, 0, 0)
+
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
+        const maxDate = new Date()
+        maxDate.setDate(today.getDate() + 7)
+
+        if (selectedDate < today || selectedDate > maxDate) {
+            return res.status(400).json({
+                msg: "Booking allowed only within next 7 days"
+            })
+        }
+
+        const doctor = await Users.findOne({
+            _id: doctorId,
+            role: "doctor",
+            accountStatus: "Active"
+        })
+
+        if (!doctor) {
+            return res.status(404).json({
+                msg: "Doctor not found or not active"
+            })
+        }
+
+        const updatedSchedule = await DoctorSchedule.findOneAndUpdate(
+            {
+                doctorId,
+                date: selectedDate,
+                "slots.time": appointmentTime,
+                "slots.isBooked": false
+            },
+            {
+                $set: { "slots.$.isBooked": true }
+            },
+            { new: true }
+        )
+
+        if (!updatedSchedule) {
+            return res.status(400).json({
+                msg: "Selected slot is already booked or unavailable"
+            })
+        }
+
+        await Appointments.create({
+            patientId,
+            doctorId,
+            patientName,
+            patientAge,
+            patientGender,
+            patientSymptoms,
+            appointmentDate: selectedDate,
+            appointmentTime,
+            appointmentStatus: "Pending",
+            paymentStatus: "Pending"
+        })
+
+        return res.status(200).json({
+            msg: "Appointment booked successfully"
+        })
+
     } catch (err) {
         console.log(err)
-        return res.json({ msg: "Internal Server Error", status: 500 })
+        return res.status(500).json({
+            msg: "Internal Server Error"
+        })
     }
 }
 
 // Fetch booked appointment...
 const fetchMyAppointments = async (req, res) => {
     try {
-        const id = req.headers.id
-        const myappointments = await Appointment.find({ userId: id })
-            .populate("doctorId")
-            .populate("userId")
-        res.json({ msg: "Your appointments...", data: myappointments, status: 200 })
+         const userId = req.user.id
+        const role = req.user.role
+
+        let filter = {}
+
+        if (role === "patient") {
+            filter = { patientId: userId }
+        } else if (role === "doctor") {
+            filter = { doctorId: userId }
+        } else {
+            return res.status(403).json({
+                msg: "Access denied"
+            })
+        }
+
+        const appointments = await Appointments.find(filter)
+            .populate("doctorId", "name specialization profileImage")
+            .populate("patientId", "name email")
+            .sort({ appointmentDate: 1 })
+
+        return res.status(200).json({
+            msg: "Appointments fetched successfully",
+            data: appointments
+        })
     } catch (err) {
         console.log(err)
         res.json({ msg: "An Error Occured...", status: 404 })
     }
 }
-
 
 // Fetch all prescriptions...
 const fetchMyPrescription = async (req, res) => {

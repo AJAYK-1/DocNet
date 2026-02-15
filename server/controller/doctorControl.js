@@ -1,4 +1,4 @@
-const Doctor = require('../models/doctorModel')
+const Users = require('../models/usersModel')
 const Appointment = require('../models/appointmentModel')
 const Prescription = require('../models/prescriptionModel')
 const path = require('path')
@@ -6,19 +6,75 @@ const fs = require('fs')
 const argon2 = require('argon2')
 const { sendaMail } = require('../config/nodeMailer')
 const { WelcomeMailDoctor } = require('../emails/welcomeDoctor')
+const DoctorSchedule = require("../models/docScheduleModel")
+const generateSlots = require("../utils/generateSlots")
 
+// Create a schedule for the doctor...
+const createSchedule = async (req, res) => {
+    try {
+        const doctorId = req.user.id
+        const { startTime, endTime, interval } = req.body
+
+        if (!startTime || !endTime || !interval) {
+            return res.status(400).json({ msg: "All fields required" })
+        }
+
+        const generatedSlots = generateSlots(startTime, endTime, interval)
+
+        if (generatedSlots.length === 0) {
+            return res.status(400).json({ msg: "Invalid time range" })
+        }
+
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
+        const schedules = []
+
+        for (let i = 0; i < 7; i++) {
+
+            const date = new Date(today)
+            date.setDate(today.getDate() + i)
+
+            const existing = await DoctorSchedule.findOne({
+                doctorId,
+                date
+            })
+
+            if (!existing) {
+                schedules.push({
+                    doctorId,
+                    date,
+                    slots: generatedSlots.map(time => ({
+                        time,
+                        isBooked: false
+                    }))
+                })
+            }
+        }
+
+        if (schedules.length > 0) {
+            await DoctorSchedule.insertMany(schedules)
+        }
+
+        return res.status(200).json({ msg: "Schedule created successfully" })
+
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ msg: "Internal Server Error" })
+    }
+}
 
 // Registration for doctors...
 const DoctorRegister = async (req, res) => {
     try {
         const { docname, email, password, address, license, qualification, specialization } = req.body
         const profileImage = req.file.filename
-        const ExistingDoctor = await Doctor.findOne({ email })
+        const ExistingDoctor = await Users.findOne({ email })
         if (ExistingDoctor) {
             res.json({ msg: "Account already exists...", status: 400 })
         } else {
             const hashedPassword = await argon2.hash(password)
-            const DoctorData = await Doctor({
+            const DoctorData = await Users({
                 docname,
                 email,
                 password: hashedPassword,
@@ -44,7 +100,7 @@ const DoctorRegister = async (req, res) => {
 const viewLoggedDoctor = async (req, res) => {
     try {
         const id = req.headers.id
-        const LoggedinDoctor = await Doctor.findById(id)
+        const LoggedinDoctor = await Users.findById(id)
         res.json({ msg: "Logged doctor...", data: LoggedinDoctor, status: 200 })
     } catch (err) {
         console.log(err)
@@ -57,7 +113,7 @@ const viewLoggedDoctor = async (req, res) => {
 const changeAvalibility = async (req, res) => {
     try {
         const { id, schedule } = req.body
-        const LoggedDoctor = await Doctor.findById(id)
+        const LoggedDoctor = await Users.findById(id)
         schedule.forEach(entry => {
             const existingEntryIndex = LoggedDoctor.schedule.findIndex(
                 s => s.dates === entry.dates
@@ -90,7 +146,7 @@ const doctorProfileEdit = async (req, res) => {
         const id = req.headers.id
         const { docname, license, qualification, specialization, address } = req.body
         const profileImage = req.file.filename
-        const doctorsProfile = await Doctor.findById(id)
+        const doctorsProfile = await Users.findById(id)
         doctorsProfile.docname = docname
         doctorsProfile.license = license
         doctorsProfile.qualification = qualification
@@ -181,9 +237,9 @@ const viewPrescription = async (req, res) => {
     }
 }
 
-
 module.exports = {
     DoctorRegister,
+    createSchedule,
     viewLoggedDoctor,
     changeAvalibility,
     doctorProfileEdit,
