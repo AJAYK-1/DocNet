@@ -87,7 +87,7 @@ const DoctorRegister = async (req, res) => {
             const personalMail = await WelcomeMailDoctor(docname)
             sendaMail(email, "🎉 Welcome to DocNet – Your Health, Simplified!", "", personalMail)
             await DoctorData.save()
-            res.json({ msg: "Registration Successfull...", status: 200 })
+            res.status(200).json({ msg: "Registration Successfull..." })
         }
     } catch (err) {
         console.log(err)
@@ -95,19 +95,21 @@ const DoctorRegister = async (req, res) => {
     }
 }
 
-
 // Currently Logged in doctor...
 const viewLoggedDoctor = async (req, res) => {
     try {
-        const id = req.headers.id
-        const LoggedinDoctor = await Users.findById(id)
-        res.json({ msg: "Logged doctor...", data: LoggedinDoctor, status: 200 })
+        const id = req.user.id
+        const LoggedinDoctor = await Users.findById(id).select("-password -otp -otpExpiry")
+
+        if (!LoggedinDoctor)
+            return res.status(404).json({ msg: "No doctor found..." })
+
+        return res.status(200).json({ msg: "Doctor data fetched successfully...", data: LoggedinDoctor })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "Error user not found...", status: 404 })
+        return res.status(500).json({ msg: "Error user not found..." })
     }
 }
-
 
 // Changing the doctors schedule...
 const changeAvalibility = async (req, res) => {
@@ -132,13 +134,12 @@ const changeAvalibility = async (req, res) => {
             }
         });
         await LoggedDoctor.save()
-        res.json({ msg: "Availability status changed", status: 200 })
+        return res.json({ msg: "Availability status changed", status: 200 })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "Error...", status: 404 })
+        return res.json({ msg: "Error...", status: 404 })
     }
 }
-
 
 // Editing Doctor's Profile...
 const doctorProfileEdit = async (req, res) => {
@@ -164,13 +165,12 @@ const doctorProfileEdit = async (req, res) => {
         }
         doctorsProfile.profileImage = profileImage
         await doctorsProfile.save()
-        res.json({ msg: "Profile edited successfully", status: 200 })
+        return res.json({ msg: "Profile edited successfully", status: 200 })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "Error...", status: 404 })
+        return res.json({ msg: "Error...", status: 404 })
     }
 }
-
 
 // Fetch the appointments...
 const fetchAppointments = async (req, res) => {
@@ -179,13 +179,12 @@ const fetchAppointments = async (req, res) => {
         const appointments = await Appointment.find({ doctorId: id })
             .populate("userId")
             .populate("doctorId")
-        res.json({ msg: "Fetched Appointments successfully...", data: appointments, status: 200 })
+        return res.json({ msg: "Fetched Appointments successfully...", data: appointments, status: 200 })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "An Error Occured...", status: 404 })
+        return res.json({ msg: "An Error Occured...", status: 404 })
     }
 }
-
 
 // Give Prescriptions...
 const addPrescription = async (req, res) => {
@@ -208,13 +207,12 @@ const addPrescription = async (req, res) => {
         });
 
         await prescriptionDoc.save();
-        res.json({ msg: "Prescription added Successfully...", status: 200 })
+        return res.json({ msg: "Prescription added Successfully...", status: 200 })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "An Error Occured...", status: 404 })
+        return res.json({ msg: "An Error Occured...", status: 404 })
     }
 }
-
 
 // View Prescriptions...
 const viewPrescription = async (req, res) => {
@@ -230,10 +228,10 @@ const viewPrescription = async (req, res) => {
                 prescription: check.prescription,
                 mention: check.mention
             }))
-        res.json({ msg: "Prescriptions fetched successfully...", data: fetchedprescription, status: 200 })
+        return res.json({ msg: "Prescriptions fetched successfully...", data: fetchedprescription, status: 200 })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "An Error Occured...", status: 404 })
+        return res.json({ msg: "An Error Occured...", status: 404 })
     }
 }
 
