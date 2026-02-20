@@ -112,32 +112,35 @@ const viewLoggedDoctor = async (req, res) => {
 }
 
 // Changing the doctors schedule...
-const changeAvalibility = async (req, res) => {
+const editSchedule = async (req, res) => {
     try {
-        const { id, schedule } = req.body
-        const LoggedDoctor = await Users.findById(id)
-        schedule.forEach(entry => {
-            const existingEntryIndex = LoggedDoctor.schedule.findIndex(
-                s => s.dates === entry.dates
-            );
-            if (existingEntryIndex !== -1) {
-                // Entry exists — toggle the availability
-                const currentAvailability = LoggedDoctor.schedule[existingEntryIndex].availability;
-                LoggedDoctor.schedule[existingEntryIndex].availability =
-                    currentAvailability === "Available" ? "Unavailable" : "Available";
-            } else {
-                // Entry doesn't exist — add it as new
-                LoggedDoctor.schedule.push({
-                    dates: entry.dates,
-                    availability: "Unavailable"
-                });
-            }
-        });
-        await LoggedDoctor.save()
-        return res.json({ msg: "Availability status changed", status: 200 })
+        const doctorId = req.user.id
+        const { date, startTime, endTime, interval } = req.body
+
+        const selectedDate = new Date(date)
+        selectedDate.setHours(0, 0, 0, 0)
+
+        const schedule = await DoctorSchedule.findOne({ doctorId, date: selectedDate })
+
+        if (!schedule)
+            return res.status(404).json({ msg: "Schedule for the date not found" })
+
+        const hasBookedSlots = schedule.slots.some(slot => slot.isBooked === true)
+
+        if (hasBookedSlots)
+            return res.status(400).json({ msg: "Cannot edit schedule with booked appointments" })
+
+        const newSlots = generateSlots(startTime, endTime, interval)
+
+        if (newSlots.length === 0) return res.status(400).json({ msg: "Invalid Time range" })
+
+        schedule.slots = newSlots.map(time => ({ time, isBooked: false }))
+        await schedule.save()
+
+        return res.status(200).json({ msg: "Availability status changed" })
     } catch (err) {
         console.log(err)
-        return res.json({ msg: "Error...", status: 404 })
+        return res.status(500).json({ msg: "Internal Server Error..." })
     }
 }
 
@@ -239,7 +242,7 @@ module.exports = {
     DoctorRegister,
     createSchedule,
     viewLoggedDoctor,
-    changeAvalibility,
+    editSchedule,
     doctorProfileEdit,
     fetchAppointments,
     addPrescription,
