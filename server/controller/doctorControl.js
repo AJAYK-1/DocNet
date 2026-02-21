@@ -147,94 +147,121 @@ const editSchedule = async (req, res) => {
 // Editing Doctor's Profile...
 const doctorProfileEdit = async (req, res) => {
     try {
-        const id = req.headers.id
-        const { docname, license, qualification, specialization, address } = req.body
-        const profileImage = req.file.filename
-        const doctorsProfile = await Users.findById(id)
-        doctorsProfile.docname = docname
-        doctorsProfile.license = license
-        doctorsProfile.qualification = qualification
-        doctorsProfile.specialization = specialization
-        doctorsProfile.address = address
-        if (doctorsProfile.profileImage) {
-            const oldPicPath = path.join(__dirname, '..', 'uploads', doctorsProfile.profileImage)
-            fs.unlink(oldPicPath, (err) => {
-                if (err) {
-                    console.log("Error deleting old Profile Picture.")
-                } else {
-                    console.log("Old Profile Picture deleted successfully...")
+        const doctorId = req.user.id
+        const { name, license, qualification, specialization, address } = req.body
+
+        const doctor = await Users.findById(doctorId)
+        if (!doctor) return res.status(404).json({ msg: "Doctor not found..." })
+
+        doctor.name = name ?? doctor.name
+        doctor.license = license ?? doctor.license
+        doctor.qualification = qualification ?? doctor.qualification
+        doctor.specialization = specialization ?? doctor.specialization
+        doctor.address = address ?? doctor.address
+
+        if (req.file) {
+            if (doctor.profileImage) {
+                const oldPicPath = path.join(__dirname, '..', 'uploads', doctor.profileImage)
+                if (fs.existsSync(oldPicPath)) {
+                    fs.unlink(oldPicPath, (err) => {
+                        if (err) {
+                            console.log("Error deleting old Profile Picture.")
+                        } else {
+                            console.log("Old Profile Picture deleted successfully...")
+                        }
+                    })
                 }
-            })
+            }
+            doctor.profileImage = req.file.filename
         }
-        doctorsProfile.profileImage = profileImage
-        await doctorsProfile.save()
-        return res.json({ msg: "Profile edited successfully", status: 200 })
+        await doctor.save()
+
+        return res.status(200).json({ msg: "Profile edited successfully", doctor })
     } catch (err) {
         console.log(err)
-        return res.json({ msg: "Error...", status: 404 })
+        return res.status(500).json({ msg: "Internal Server Error..." })
     }
 }
 
 // Fetch the appointments...
 const fetchAppointments = async (req, res) => {
     try {
-        const id = req.headers.id
-        const appointments = await Appointment.find({ doctorId: id })
-            .populate("userId")
-            .populate("doctorId")
-        return res.json({ msg: "Fetched Appointments successfully...", data: appointments, status: 200 })
+        const doctorId = req.user.id
+        const appointments = await Appointment.find({ doctorId })
+            .populate("patientId", "name email")
+            .sort({ appointmentDate: 1, appointmentTime: 1 })
+
+        return res.status(200).json({ msg: "Fetched Appointments successfully...", appointments })
     } catch (err) {
         console.log(err)
-        return res.json({ msg: "An Error Occured...", status: 404 })
+        return res.status(500).json({ msg: "Internal Server Error..." })
     }
 }
 
 // Give Prescriptions...
 const addPrescription = async (req, res) => {
     try {
-        const appointmentId = req.headers.id
+        const doctorId = req.user.id
+        const { appointmentId } = req.params
         const { prescriptionsData, mention } = req.body;
 
-        if (!Array.isArray(prescriptionsData)) {
-            return res.json({ msg: "Request body should be an array.", status: 400 });
+        if (!Array.isArray(prescriptionsData) || prescriptionsData.length === 0) {
+            return res.status(400).json({ msg: "Prescription data cannot be empty." });
         }
 
-        const prescriptionDoc = new Prescription({
+        const appointment = await Appointment.findById(appointmentId)
+
+        if (!appointment) {
+            return res.status(404).json({ msg: "Appointment not found" })
+        }
+        if (appointment.doctorId.toString() !== doctorId) {
+            return res.status(403).json({ msg: "Access denied" })
+        }
+        if (appointment.appointmentStatus === "Completed") {
+            return res.status(400).json({ msg: "Prescription already added" })
+        }
+
+        await Prescription.create({
             appointmentId,
             prescription: prescriptionsData,
             mention: mention
         });
 
-        await Appointment.findByIdAndUpdate(appointmentId, {
-            appointmentStatus: "Complete"
-        });
+        appointment.appointmentStatus = "Completed"
+        await appointment.save()
 
-        await prescriptionDoc.save();
-        return res.json({ msg: "Prescription added Successfully...", status: 200 })
+        return res.status(200).json({ msg: "Prescription added Successfully..." })
     } catch (err) {
         console.log(err)
-        return res.json({ msg: "An Error Occured...", status: 404 })
+        return res.status(500).json({ msg: "Internal Server Error..." })
     }
 }
 
 // View Prescriptions...
 const viewPrescription = async (req, res) => {
     try {
-        const doctorId = req.headers.id
-        const prescriptions = await Prescription.find()
-            .populate({ path: "appointmentId", populate: { path: "userId" } })
+        const doctorId = req.user.id
 
-        const fetchedprescription = prescriptions.filter(check => check.appointmentId?.doctorId == doctorId)
-            .map(check => ({
-                username: check.appointmentId.userId.username,
-                patientName: check.appointmentId.patientName,
-                prescription: check.prescription,
-                mention: check.mention
-            }))
-        return res.json({ msg: "Prescriptions fetched successfully...", data: fetchedprescription, status: 200 })
+        const appointments = await Appointment.find({ doctorId }).select("_id")
+        if (appointments.length === 0)
+            return res.status(404).json({ msg: "No Prescriptions found...", prescriptions: [] })
+
+        const appointmentIds = appointments.map(appointment => appointment._id)
+
+        const prescriptions = await Prescription.find({
+            appointmentId: { $in: appointmentIds }
+        })
+            .populate({
+                path: "appointmentId",
+                populate: { path: "patientId", select: "name email" }
+            })
+            .sort({ createdAt: -1 })
+
+        return res.status(200).json({ msg: "Prescriptions fetched successfully...", prescriptions })
+
     } catch (err) {
         console.log(err)
-        return res.json({ msg: "An Error Occured...", status: 404 })
+        return res.status(500).json({ msg: "Internal Server Error..." })
     }
 }
 

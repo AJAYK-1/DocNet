@@ -6,12 +6,12 @@ const verifyToken = require('../middlewares/verifyToken')
 const RouterDoctor = express.Router()
 
 // RouterDoctor.post('/doctorregistration',upload.single('profileImage'), DoctorRegister)
-RouterDoctor.get('/viewloggeddoctor', verifyToken, authorizeRole('doctor'), viewLoggedDoctor)
+RouterDoctor.get('/profile', verifyToken, authorizeRole('doctor'), viewLoggedDoctor)
 RouterDoctor.post('/create-schedule', verifyToken, authorizeRole('doctor'), createSchedule)
-RouterDoctor.put('/changeavailability', verifyToken, authorizeRole('doctor'), editSchedule)
-RouterDoctor.put('/doctoreditprofile', verifyToken, authorizeRole('doctor'), upload.single('profileImage'), doctorProfileEdit)
-RouterDoctor.get('/fetchappointments', verifyToken, authorizeRole('doctor'), fetchAppointments)
-RouterDoctor.post('/yourprescription', verifyToken, authorizeRole('doctor'), addPrescription)
-RouterDoctor.get('/viewprescription', verifyToken, authorizeRole('doctor'), viewPrescription)
+RouterDoctor.put('/edit-schedule', verifyToken, authorizeRole('doctor'), editSchedule)
+RouterDoctor.put('/edit-profile', verifyToken, authorizeRole('doctor'), upload.single('profileImage'), doctorProfileEdit)
+RouterDoctor.get('/appointments', verifyToken, authorizeRole('doctor'), fetchAppointments)
+RouterDoctor.post('/prescription/:appointmentId', verifyToken, authorizeRole('doctor'), addPrescription)
+RouterDoctor.get('/prescriptions', verifyToken, authorizeRole('doctor'), viewPrescription)
 
 module.exports = RouterDoctor

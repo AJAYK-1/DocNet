@@ -1,18 +1,19 @@
 const mongoose = require('mongoose')
 
-
 const prescriptionSchema = new mongoose.Schema({
-    appointmentId: {type: mongoose.Schema.Types.ObjectId, ref: "Appointment_tbl"},
+    appointmentId: { type: mongoose.Schema.Types.ObjectId, ref: "Appointments", required: true },
     prescription: [
         {
-            medicine: { type: String },
-            quantity: { type: String },
-            dosage: { type: String }
+            medicine: { type: String, required: true, trim: true },
+            quantity: { type: String, required: true, trim: true },
+            dosage: { type: String, required: true, trim: true },
         }
     ],
-    mention: {type:String}
+    mention: { type: String, trim: true }
 }, { timestamps: true })
 
-const Prescription = mongoose.model("Prescription_tbl", prescriptionSchema)
+prescriptionSchema.index({ appointmentId: 1 }, { unique: true })
+
+const Prescription = mongoose.model("Prescriptions", prescriptionSchema)
 
 module.exports = Prescription
