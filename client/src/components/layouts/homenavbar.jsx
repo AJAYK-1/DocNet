@@ -1,7 +1,6 @@
 import { useGSAP } from '@gsap/react';
 import React, { useState, useRef } from 'react'
-import { HomeNavbarAnimation } from './gsapAnimation';
-
+import { HomeNavbarAnimation } from '../gsapAnimation';
 
 export default function HomeNavbar() {
 

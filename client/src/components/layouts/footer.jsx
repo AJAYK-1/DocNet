@@ -1,7 +1,6 @@
 import React from 'react';
 import { FaInstagram, FaLinkedin, FaGithub, FaEnvelope, FaGlobe, FaPhoneAlt, FaMapMarkerAlt } from 'react-icons/fa';
-import Docnetlogo from '../assets/docnetlogo.png'
-
+import Docnetlogo from '../../assets/docnetlogo.png'
 
 export default function Footer() {
   return (

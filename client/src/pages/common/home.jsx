@@ -1,12 +1,10 @@
 import React from 'react'
 import { Container, Row, Col, Button, Card, Carousel } from 'react-bootstrap'
-import HomeNavbar from './homenavbar'
-import Footer from './footer'
+import HomeNavbar from '../../components/layouts/homenavbar'
+import Footer from '../../components/layouts/footer'
 import { FaUserMd, FaNotesMedical, FaLaptopMedical } from 'react-icons/fa'
 import { useGSAP } from '@gsap/react'
-import { HomePageContentSection, HomePageHeroSection } from './gsapAnimation'
-import './App.css'
-
+import { HomePageContentSection, HomePageHeroSection } from '../../components/gsapAnimation'
 
 export default function Home() {
 

@@ -1,10 +1,10 @@
 import React from 'react'
 import { Container, Row, Col, Card } from 'react-bootstrap'
 import { FaHeartbeat, FaLaptopMedical, FaShieldAlt } from 'react-icons/fa'
-import HomeNavbar from './homenavbar'
-import Footer from './footer'
+import HomeNavbar from '../../components/layouts/homenavbar'
+import Footer from '../../components/layouts/footer'
 import { useGSAP } from '@gsap/react'
-import { HomePageHeroSection } from './gsapAnimation'
+import { HomePageHeroSection } from '../../components/gsapAnimation'
 import './App.css'
 
 

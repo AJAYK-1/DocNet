@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect, useMemo } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import UserNavbar from './usernavbar';
-import Footer from '../footer';
+import Footer from '../../components/layouts/footer';
 import { Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
 import { FaNotesMedical } from 'react-icons/fa';
 

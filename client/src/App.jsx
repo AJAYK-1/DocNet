@@ -7,34 +7,33 @@ import ErrorPage from './assets/ErrorPage.json'
 import { useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import './App.css'
 
+const Home = React.lazy(() => import('./pages/common/home'))
+const Login = React.lazy(() => import('./pages/common/login'))
+const RegistrationPage = React.lazy(() => import('./pages/common/registration'))
+const About = React.lazy(() => import('./pages/common/about'))
+const ForgotPassword = React.lazy(() => import('./pages/common/forgotpassword'))
+const Contact = React.lazy(() => import('./pages/common/contact'))
 
-const Home = React.lazy(() => import('./components/home'))
-const Login = React.lazy(() => import('./components/login'))
-const RegistrationPage = React.lazy(() => import('./components/registration'))
-const About = React.lazy(() => import('./components/about'))
-const ForgotPassword = React.lazy(() => import('./components/forgotpassword'))
-const Contact = React.lazy(() => import('./components/contact'))
+const Adminhome = React.lazy(() => import('./pages/admin/adminhome'))
+const AdminViewUsers = React.lazy(() => import('./pages/admin/adminviewusers'))
+const AdminViewDoctors = React.lazy(() => import('./pages/admin/adminviewdoctors'))
 
-const Adminhome = React.lazy(() => import('./components/admin/adminhome'))
-const AdminViewUsers = React.lazy(() => import('./components/admin/adminviewusers'))
-const AdminViewDoctors = React.lazy(() => import('./components/admin/adminviewdoctors'))
+const Userhome = React.lazy(() => import("./pages/patient/userhome"))
+const UserProfile = React.lazy(() => import('./pages/patient/userprofile'))
+const Appointment = React.lazy(() => import('./pages/patient/appointment'))
+const GetMyPrescription = React.lazy(() => import('./pages/patient/getprescription'))
+const SeeAllDoctors = React.lazy(() => import('./pages/patient/seealldoctors'))
+const UserFeedback = React.lazy(() => import('./pages/patient/userfeedback'))
 
-const Userhome = React.lazy(() => import("./components/user/userhome"))
-const UserProfile = React.lazy(() => import('./components/user/userprofile'))
-const Appointment = React.lazy(() => import('./components/user/appointment'))
-const GetMyPrescription = React.lazy(() => import('./components/user/getprescription'))
-const SeeAllDoctors = React.lazy(() => import('./components/user/seealldoctors'))
-const UserFeedback = React.lazy(() => import('./components/user/userfeedback'))
-
-const Doctorhome = React.lazy(() => import("./components/doctor/doctorhome"))
-const DoctorProfile = React.lazy(() => import('./components/doctor/doctorprofile'))
-const DoctorViewAppointment = React.lazy(() => import('./components/doctor/viewappointment'))
-const AddPrescription = React.lazy(() => import('./components/doctor/addprescription'))
-const ViewPrescription = React.lazy(() => import('./components/doctor/viewprescription'))
-const AppointmentHistory = React.lazy(() => import('./components/doctor/appointmenthistory'))
-const DoctorSeeFeedback = React.lazy(() => import('./components/doctor/doctorfeedback'))
-
+const Doctorhome = React.lazy(() => import("./pages/doctor/doctorhome"))
+const DoctorProfile = React.lazy(() => import('./pages/doctor/doctorprofile'))
+const DoctorViewAppointment = React.lazy(() => import('./pages/doctor/viewappointment'))
+const AddPrescription = React.lazy(() => import('./pages/doctor/addprescription'))
+const ViewPrescription = React.lazy(() => import('./pages/doctor/viewprescription'))
+const AppointmentHistory = React.lazy(() => import('./pages/doctor/appointmenthistory'))
+const DoctorSeeFeedback = React.lazy(() => import('./pages/doctor/doctorfeedback'))
 
 function App() {
   const LottieRef = useRef()
@@ -45,7 +44,6 @@ function App() {
       LottieRef.current.setSpeed(2)
     }
   }, [])
-
 
   return (
     <>
@@ -63,7 +61,7 @@ function App() {
           <Route path='/registration' element={<RegistrationPage />} />
           <Route path='/about' element={<About />} />
           <Route path='/forgotpassword' element={<ForgotPassword />} />
-          <Route path='/contact' element={<Contact/>}/>
+          <Route path='/contact' element={<Contact />} />
           <Route path='/*' element={<Lottie animationData={ErrorPage} style={{ height: '800px' }} />} />
 
           {/* ADMIN PAGES */}

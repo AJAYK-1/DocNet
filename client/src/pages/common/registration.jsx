@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import { Tab, Tabs, Form, Button, FloatingLabel, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import AXIOS from 'axios';
-import HomeNavbar from './homenavbar';
-import Footer from './footer';
+import HomeNavbar from '../../components/layouts/homenavbar';
+import Footer from '../../components/layouts/footer';
 import { toast } from 'react-toastify';
-import './App.css'
-
 
 export default function CombinedRegistration() {
   const [userForm, setUserForm] = useState({

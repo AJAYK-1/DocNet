@@ -194,8 +194,8 @@ const ContactDeveloper = async (req, res) => {
 // Currently logged in user...
 const viewLoggedUser = async (req, res) => {
     try {
-        const id = req.headers.id
-        const LoggedinUser = await Users.findById(id)
+        const id = req.user.id
+        const LoggedinUser = await Users.findById(id).select('-password -otp -otpExpiry')
         return res.json({ msg: "Logged in...", data: LoggedinUser, status: 200 })
     } catch (err) {
         console.log(err)
@@ -321,7 +321,7 @@ const bookAppointment = async (req, res) => {
 // Fetch booked appointment...
 const fetchMyAppointments = async (req, res) => {
     try {
-         const userId = req.user.id
+        const userId = req.user.id
         const role = req.user.role
 
         let filter = {}

@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { Button, Form, FloatingLabel, Container, Card, Tabs, Tab } from 'react-bootstrap';
-import HomeNavbar from './homenavbar'
-import Footer from './footer'
+import HomeNavbar from '../../components/layouts/homenavbar'
+import Footer from '../../components/layouts/footer'
 import { toast } from 'react-toastify';
 import './App.css'
 import Lottie from 'lottie-react';
-import ForgotPasswordAnimation from '../assets/ForgotPasswordAnimation.json'
+import ForgotPasswordAnimation from '../../assets/ForgotPasswordAnimation.json'
 
 
 export default function ForgotPassword() {

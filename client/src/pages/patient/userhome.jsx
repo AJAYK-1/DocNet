@@ -1,47 +1,42 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import AXIOS from 'axios';
 import UserNavbar from './usernavbar';
-import Footer from '../footer';
+import Footer from '../../components/layouts/footer';
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import { BsGeoAltFill, BsCalendarCheck, BsPersonWorkspace, BsPersonCircle, BsFileEarmarkText } from "react-icons/bs";
 import { FaArrowRight, FaHeartbeat } from 'react-icons/fa';
-import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-toastify';
 import { useGSAP } from '@gsap/react';
-import { HomePageContentSection, UserSection } from '../gsapAnimation';
+import { HomePageContentSection, UserSection } from '../../components/gsapAnimation';
 import '../App.css'
 import { useNavigate } from 'react-router-dom';
 
-
 export default function UserHome() {
-
-    const decoded = useMemo(() => {
-        const token = localStorage.getItem('token');
-        return jwtDecode(token);
-    }, [])
 
     const [DocProfiles, setDocProfiles] = useState([]);
     const [UserData, setUserData] = useState({
-        username: '',
+        name: '',
         email: ''
     });
 
+    const token = localStorage.getItem('token');
+
     useEffect(() => {
-        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewdoctors`)
+        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewdoctors`, { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 setDocProfiles(res.data.data);
             }).catch((err) => {
                 console.log(err);
             });
 
-        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { id: decoded.id } })
+        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 setUserData(res.data.data);
             }).catch((err) => {
                 console.log(err);
             });
 
-        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetchmyappointments`, { headers: { id: decoded.id } })
+        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetchmyappointments`, { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 const pendingAppointments = res.data.data.filter(
                     (a) => a.appointmentStatus === "Complete"
@@ -60,11 +55,11 @@ export default function UserHome() {
     const navigate = useNavigate()
 
     useGSAP(() => {
-        if (UserData.username) {
+        if (UserData.name) {
             UserSection()
         }
         HomePageContentSection()
-    }, [UserData.username])
+    }, [UserData.name])
 
     return (
         <>
@@ -74,7 +69,7 @@ export default function UserHome() {
                 <div className="hero-overlay"></div>
                 <h1 className=" mb-4 text-center">
                     <span className='welcome-part'>Welcome </span>
-                    <span className='user-name'>{UserData.username}</span>
+                    <span className='user-name'>{UserData.name}</span>
                 </h1>
             </div>
             <div style={{ padding: '20px' }}>
@@ -150,7 +145,7 @@ export default function UserHome() {
                                     style={{ height: "250px", objectFit: "cover" }}
                                 />
                                 <Card.Body>
-                                    <Card.Title>Dr. {doctor.docname}</Card.Title>
+                                    <Card.Title>Dr. {doctor.name}</Card.Title>
                                     <Card.Text className="mb-1 text-muted flex items-center">
                                         <BsPersonWorkspace className="me-2 text-primary" />
                                         {doctor.qualification}
@@ -170,9 +165,9 @@ export default function UserHome() {
                     ))}
                     {/* Show More Button */}
                     <div className="col-md-4 text-center my-auto md:mx-auto" >
-                        <button id='info-card' variant="info"  
-                        className='w-40 flex items-center justify-center rounded-5 p-2 gap-2 bg-[#41ecec]'
-                        onClick={() => navigate('/seealldoctors')} >
+                        <button id='info-card' variant="info"
+                            className='w-40 flex items-center justify-center rounded-5 p-2 gap-2 bg-[#41ecec]'
+                            onClick={() => navigate('/seealldoctors')} >
                             See more doctors <FaArrowRight className="ms-2 my-auto mx-auto" />
                         </button>
                     </div>
