@@ -5,8 +5,6 @@ import HomeNavbar from '../../components/layouts/homenavbar'
 import Footer from '../../components/layouts/footer'
 import { useGSAP } from '@gsap/react'
 import { HomePageHeroSection } from '../../components/gsapAnimation'
-import './App.css'
-
 
 export default function About() {
 

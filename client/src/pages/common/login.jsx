@@ -44,9 +44,7 @@ export default function Login() {
         console.log(error)
         toast.error('Login failed...')
       })
-
   }
-
 
   const [VerifyOTP, setVerifyOTP] = useState(1)
 
@@ -97,8 +95,6 @@ export default function Login() {
       })
   }
 
-
-
   return (
     <>
       <HomeNavbar />
@@ -110,6 +106,7 @@ export default function Login() {
             <h2 className="text-center mb-4 login-heading fw-bold"
               style={{ fontFamily: "'Shadows Into Light', cursive", fontSize: '2rem', letterSpacing: '1px' }}>
               Login</h2>
+              
             <Tabs defaultActiveKey="passlogin" id="registration-tabs" className="mb-4 tabs-nav" justify>
               <Tab eventKey="passlogin" title="using Password">
                 <Form noValidate onSubmit={handleSubmit}>

@@ -5,10 +5,8 @@ import HomeNavbar from '../../components/layouts/homenavbar'
 import Footer from '../../components/layouts/footer'
 import { useGSAP } from '@gsap/react'
 import { HomePageHeroSection } from '../../components/gsapAnimation'
-import './App.css'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-
 
 export default function Contact() {
 

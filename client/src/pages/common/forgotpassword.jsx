@@ -5,10 +5,8 @@ import { Button, Form, FloatingLabel, Container, Card, Tabs, Tab } from 'react-b
 import HomeNavbar from '../../components/layouts/homenavbar'
 import Footer from '../../components/layouts/footer'
 import { toast } from 'react-toastify';
-import './App.css'
 import Lottie from 'lottie-react';
 import ForgotPasswordAnimation from '../../assets/ForgotPasswordAnimation.json'
-
 
 export default function ForgotPassword() {
 
