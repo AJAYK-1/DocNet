@@ -21,7 +21,7 @@ const registerUser = async (req, res) => {
 
         const existingUser = await Users.findOne({ email })
         if (existingUser) {
-            return res.json({ msg: "Regisration failed... Account already exist...", status: 400 })
+            return res.status(400).json({ msg: "Regisration failed... Account already exist..." })
         }
 
         const hashedPassword = await argon2.hash(password)
@@ -50,7 +50,7 @@ const registerUser = async (req, res) => {
         }
         const personalMail = WelcomeMailUser(name)
         await sendaMail(email, "🎉 Welcome to DocNet – Your Health, Simplified!", "", personalMail)
-        return res.json({ msg: "Registration Successfull...", status: 200 })
+        return res.status(200).json({ msg: "Registration Successfull..." })
 
     } catch (err) {
         console.log(err)

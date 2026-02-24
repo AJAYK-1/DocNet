@@ -10,7 +10,7 @@ const verifyToken = require('../middlewares/verifyToken')
 const authorizeRole = require('../middlewares/authorizeRole')
 const { registerSchema } = require('../utils/validators/authValidator')
 
-RouterUser.post('/registeruser', upload.single('profileImage'), validate(registerSchema), registerUser)
+RouterUser.post('/registration', upload.single('profileImage'), validate(registerSchema), registerUser)
 RouterUser.post('/login', userlogin)
 RouterUser.put('/send-otp', sendOTP)
 RouterUser.post('/loginwithOTP', loginWithOTP)

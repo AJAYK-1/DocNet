@@ -5,18 +5,21 @@ import AXIOS from 'axios';
 import HomeNavbar from '../../components/layouts/homenavbar';
 import Footer from '../../components/layouts/footer';
 import { toast } from 'react-toastify';
+import { SPECIALIZATIONS } from '../../components/constants/specializations';
 
 export default function CombinedRegistration() {
   const [userForm, setUserForm] = useState({
-    username: '',
+    name: '',
     email: '',
-    password: ''
+    password: '',
+    role: 'patient'
   });
 
   const [doctorForm, setDoctorForm] = useState({
-    docname: '',
+    name: '',
     email: '',
     password: '',
+    role: 'doctor',
     address: '',
     license: '',
     qualification: '',
@@ -26,28 +29,26 @@ export default function CombinedRegistration() {
   const [doctorImage, setDoctorImage] = useState(null);
   const navigate = useNavigate();
 
-
   const handleUserChange = (e) => {
     setUserForm({ ...userForm, [e.target.name]: e.target.value });
   };
 
   const handleUserSubmit = async (e) => {
     e.preventDefault();
-    AXIOS.post(`${import.meta.env.VITE_HOST_URL}/api/user/registeruser`, userForm)
+    AXIOS.post(`${import.meta.env.VITE_HOST_URL}/api/user/registration`, userForm)
       .then((res) => {
-        if (res.data.status == 200) {
+        if (res.status == 200) {
           toast.success(res.data.msg);
-          setUserForm({ username: '', email: '', password: '' });
+          setUserForm({ name: '', email: '', password: '' });
           setTimeout(() => navigate('/login'), 2000);
-        } else if (res.data.status == 400) {
+        } else if (res.status == 400) {
           toast.error(res.data.msg)
         }
       }).catch((err) => {
         console.log(err);
-        toast.error(res.data.msg);
+        toast.error("Something went wrong...");
       });
   };
-
 
   const handleDoctorChange = (e) => {
     setDoctorForm({ ...doctorForm, [e.target.name]: e.target.value });
@@ -60,7 +61,7 @@ export default function CombinedRegistration() {
   const handleDoctorSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('docname', doctorForm.docname)
+    formData.append('name', doctorForm.name)
     formData.append('email', doctorForm.email)
     formData.append('password', doctorForm.password)
     formData.append('address', doctorForm.address)
@@ -69,23 +70,23 @@ export default function CombinedRegistration() {
     formData.append('specialization', doctorForm.specialization)
     formData.append('profileImage', doctorImage)
 
-    AXIOS.post(`${import.meta.env.VITE_HOST_URL}/api/doctor/doctorregistration`, formData, {
+    AXIOS.post(`${import.meta.env.VITE_HOST_URL}/api/user/registration`, formData, {
       headers: { "Content-Type": "multipart/form-data" }
     })
       .then((res) => {
-        if (res.data.status == 200) {
+        if (res.status == 200) {
           toast.success(res.data.msg);
-          setDoctorForm({ docname: '', email: '', password: '', address: '', license: '', qualification: '', specialization: '' });
+          setDoctorForm({ name: '', email: '', password: '', address: '', license: '', qualification: '', specialization: '' });
           setDoctorImage(null);
           setTimeout(() => {
             navigate('/login');
-          }, 2500);
-        } else if (res.data.status == 400) {
+          }, 2000);
+        } else if (res.status == 400) {
           toast.error(res.data.msg)
         }
       }).catch((err) => {
         console.log(err);
-        toast.error(res.data.msg);
+        toast.error("Something went wrong...");
       });
   };
 
@@ -101,11 +102,11 @@ export default function CombinedRegistration() {
             Register
           </h2>
 
-          <Tabs defaultActiveKey="user" id="registration-tabs" className="mb-4 tabs-nav" justify>
+          <Tabs defaultActiveKey="user" id="registration-tabs" className="mb-4 tabs-nav"  justify>
             <Tab eventKey="user" title="User">
               <Form onSubmit={handleUserSubmit}>
                 <FloatingLabel controlId="floatingUserName" label="Your Name" className="mb-3">
-                  <Form.Control type="text" name="username" value={userForm.username} onChange={handleUserChange} placeholder="Enter your name" required />
+                  <Form.Control type="text" name="name" value={userForm.name} onChange={handleUserChange} placeholder="Enter your name" required />
                 </FloatingLabel>
 
                 <FloatingLabel controlId="floatingEmail" label="Email" className="mb-3">
@@ -126,7 +127,7 @@ export default function CombinedRegistration() {
             <Tab eventKey="doctor" title="Doctor">
               <Form onSubmit={handleDoctorSubmit}>
                 <FloatingLabel controlId="floatingDocName" label="Doctor Name" className="mb-3">
-                  <Form.Control type="text" name="docname" onChange={handleDoctorChange} placeholder="Enter name" required />
+                  <Form.Control type="text" name="name" onChange={handleDoctorChange} placeholder="Enter name" required />
                 </FloatingLabel>
 
                 <FloatingLabel controlId="floatingDocEmail" label="Email address" className="mb-3">
@@ -149,40 +150,10 @@ export default function CombinedRegistration() {
                 <FloatingLabel controlId="floatingSpecialization" label="Specialization" className="mb-3">
                   <Form.Select name="specialization" onChange={handleDoctorChange} required>
                     <option value="">-- Select Specialization --</option>
-
-                    <optgroup label=" Non-Surgical (MD/DNB)">
-                      <option value="General Medicine">General Medicine</option>
-                      <option value="Pediatrics">Pediatrics</option>
-                      <option value="Dermatology">Dermatology</option>
-                      <option value="Psychiatry">Psychiatry</option>
-                      <option value="Radiology">Radiology</option>
-                      <option value="Pathology">Pathology</option>
-                      <option value="Anesthesiology">Anesthesiology</option>
-                      <option value="Pulmonology">Pulmonology</option>
-                      <option value="Cardiology">Cardiology</option>
-                      <option value="Endocrinology">Endocrinology</option>
-                      <option value="Neurology">Neurology</option>
-                      <option value="Gastroenterology">Gastroenterology</option>
-                      <option value="Nephrology">Nephrology</option>
-                      <option value="Hematology">Hematology</option>
-                    </optgroup>
-                    <optgroup label=" Surgical (MS/MCh)">
-                      <option value="General Surgery">General Surgery</option>
-                      <option value="Orthopedics">Orthopedics</option>
-                      <option value="ENT">ENT (Otorhinolaryngology)</option>
-                      <option value="Ophthalmology">Ophthalmology</option>
-                      <option value="Obstetrics & Gynecology">Obstetrics & Gynecology (OBG)</option>
-                      <option value="Urology">Urology</option>
-                      <option value="Neurosurgery">Neurosurgery</option>
-                      <option value="Cardiothoracic Surgery">Cardiothoracic Surgery</option>
-                      <option value="Plastic Surgery">Plastic Surgery</option>
-                    </optgroup>
-                    <optgroup label=" Alternative & Traditional Medicine">
-                      <option value="Ayurveda">Ayurveda</option>
-                      <option value="Homeopathy">Homeopathy</option>
-                      <option value="Unani">Unani</option>
-                      <option value="Naturopathy">Naturopathy</option>
-                    </optgroup>
+                    {SPECIALIZATIONS.map((specialization) =>
+                      <option value={specialization}>{specialization}</option>
+                    )}
+                    
                   </Form.Select>
                 </FloatingLabel>
 
