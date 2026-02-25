@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import UserNavbar from './usernavbar';
-import Footer from '../footer';
+import Footer from '../../components/layouts/footer';
 import { Form, FloatingLabel, Modal, Card, Button } from 'react-bootstrap';
 import { BsGeoAltFill, BsPersonWorkspace } from "react-icons/bs";
 import { FaHeartbeat, FaSearch } from 'react-icons/fa';
@@ -11,13 +11,9 @@ import { useNavigate } from 'react-router-dom';
 import './userStyling.css';
 import axios from 'axios';
 
-
 export default function SeeAllDoctors() {
 
-  const decoded = useMemo(() => {
-    const token = localStorage.getItem('token');
-    return jwtDecode(token);
-  }, [])
+  const token = localStorage.getItem('token');
 
   const [DocProfiles, setDocProfiles] = useState([]);
   const [show, setShow] = useState(false);
@@ -37,13 +33,12 @@ export default function SeeAllDoctors() {
 
   const navigate = useNavigate();
 
-
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewdoctors`)
+    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewdoctors`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => setDocProfiles(res.data.data))
       .catch(err => console.log(err));
 
-    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { id: decoded.id } })
+    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { Authorization: `Bearer ${token}` }   })
       .then(res => setUserData(res.data.data))
       .catch(err => console.log(err));
   }, []);
@@ -151,8 +146,6 @@ export default function SeeAllDoctors() {
         console.log(err)
       })
   }
-
-
 
   return (
     <>

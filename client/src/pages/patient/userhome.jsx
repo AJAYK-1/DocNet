@@ -8,7 +8,6 @@ import { FaArrowRight, FaHeartbeat } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useGSAP } from '@gsap/react';
 import { HomePageContentSection, UserSection } from '../../components/gsapAnimation';
-import '../App.css'
 import { useNavigate } from 'react-router-dom';
 
 export default function UserHome() {
