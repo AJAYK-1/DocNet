@@ -1,17 +1,14 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { jwtDecode } from 'jwt-decode'
 import UserNavbar from './usernavbar'
-import Footer from '../footer'
+import Footer from '../../components/layouts/footer'
 import { FaHeartbeat, FaRegCommentDots } from 'react-icons/fa'
 import { Row, Col, Card, ListGroup, Modal, Button } from 'react-bootstrap';
-
+import { toast } from 'react-toastify'
 
 export default function Appointment() {
-  const decoded = useMemo(() => {
-    const token = localStorage.getItem('token');
-    return jwtDecode(token);
-  }, [])
+
+  const token = localStorage.getItem('token');
 
   const [Appointments, setAppointments] = useState([])
   const [prescriptions, setPrescription] = useState({
@@ -21,21 +18,23 @@ export default function Appointment() {
   })
   const [modalShow, setModalShow] = useState(false);
 
+  const fetchAppointments = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetchmyappointments`,
+        { headers: { Authorization: `Bearer ${token}` } })
+      if (response.status === 200) {
+        setAppointments(response.data.data)
+      } else {
+        toast.error(response.data.msg)
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong...")
+    }
+  }
+
   useEffect(() => {
-
-    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { id: decoded.id } })
-      .then((res) => {
-        console.log("User logged in...")
-      }).catch((err) => {
-        console.log(err)
-      })
-
-    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetchmyappointments`, { headers: { id: decoded.id } })
-      .then((res) => {
-        setAppointments(res.data.data)
-      }).catch((err) => {
-        console.log(err)
-      })
+    fetchAppointments()
   }, [])
 
   const handleButton = (id) => {
@@ -82,7 +81,7 @@ export default function Appointment() {
                 <div className="card shadow-sm h-100">
                   <div className="card-body d-flex flex-column">
                     <h5 className="card-title text-danger">
-                      Your Appointment to Dr. {appointment.doctorId?.docname || 'N/A'}
+                      Your Appointment to Dr. {appointment.doctorId?.name || 'N/A'}
                     </h5>
                     <h5 className='card-subtitle text-primary'>{appointment.appointmentDate}</h5>
                     <p className="card-text mb-1">

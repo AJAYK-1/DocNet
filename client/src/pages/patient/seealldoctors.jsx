@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import UserNavbar from './usernavbar';
 import Footer from '../../components/layouts/footer';
 import { Form, FloatingLabel, Modal, Card, Button } from 'react-bootstrap';
 import { BsGeoAltFill, BsPersonWorkspace } from "react-icons/bs";
 import { FaHeartbeat, FaSearch } from 'react-icons/fa';
-import { jwtDecode } from 'jwt-decode';
 import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -25,22 +24,27 @@ export default function SeeAllDoctors() {
     patientGender: '',
     patientSymptoms: ''
   });
-  const [UserData, setUserData] = useState({
-    username: '',
-    email: ''
-  });
   const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewdoctors`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => setDocProfiles(res.data.data))
-      .catch(err => console.log(err));
+  const getDoctors = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewdoctors`,
+        { headers: { Authorization: `Bearer ${token}` } })
+      if (response.status === 200) {
+        setDocProfiles(response.data.data)
+      } else {
+        toast.error(response.data.msg)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error("Something went wrong...")
+    }
+  }
 
-    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, { headers: { Authorization: `Bearer ${token}` }   })
-      .then(res => setUserData(res.data.data))
-      .catch(err => console.log(err));
+  useEffect(() => {
+    getDoctors()
   }, []);
 
   const handleChange = (e) => {
@@ -169,7 +173,7 @@ export default function SeeAllDoctors() {
           {DocProfiles.filter((doctor) => {
             const query = searchTerm.toLowerCase();
             return (
-              doctor.docname.toLowerCase().includes(query) ||
+              doctor.name.toLowerCase().includes(query) ||
               doctor.specialization.toLowerCase().includes(query) ||
               doctor.address.toLowerCase().includes(query)
             );
@@ -183,7 +187,7 @@ export default function SeeAllDoctors() {
                   alt='Image not Found '
                 />
                 <Card.Body>
-                  <Card.Title>Dr. {doctor.docname}</Card.Title>
+                  <Card.Title>Dr. {doctor.name}</Card.Title>
                   <Card.Text className="mb-1 text-muted flex items-center">
                     <BsPersonWorkspace className="me-2 text-primary" />
                     {doctor.qualification}
