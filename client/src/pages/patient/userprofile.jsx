@@ -1,34 +1,38 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import AXIOS from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import UserNavbar from './usernavbar';
-import Footer from '../footer';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import Footer from '../../components/layouts/footer';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-
+import { toast } from 'react-toastify';
 
 export default function UserProfile() {
-    const decoded = useMemo(() => {
-        const token = localStorage.getItem('token');
-        return jwtDecode(token);
-    }, [])
+
+    const token = localStorage.getItem('token');
 
     const [UserData, setUserData] = useState({
-        username: '',
+        name: '',
         email: ''
     });
 
-    useEffect(() => {
-        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, {
-            headers: { id: decoded.id }
-        })
-            .then((res) => {
-                setUserData(res.data.data);
+    const fetchUser = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/viewloggeduser`, {
+                headers: { Authorization: `Bearer ${token}` }
             })
-            .catch((err) => {
-                console.log(err);
-            });
+            if (res.status === 200) {
+                setUserData(res.data.data);
+            } else {
+                toast.error(res.data.msg)
+            }
+        } catch (error) {
+            console.log(error.message);
+            toast.error('Something went wrong')
+        }
+    }
+
+    useEffect(() => {
+        fetchUser()
     }, []);
 
     const navigate = useNavigate()
@@ -49,7 +53,7 @@ export default function UserProfile() {
                     </div>
                     <div className="mb-3">
                         <h5 className="mb-1 text-secondary">Name</h5>
-                        <p className="fs-5">{UserData.username}</p>
+                        <p className="fs-5">{UserData.name}</p>
                     </div>
                     <div>
                         <h5 className="mb-1 text-secondary">Email</h5>

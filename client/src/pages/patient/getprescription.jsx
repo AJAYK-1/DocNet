@@ -1,30 +1,35 @@
 import axios from 'axios';
-import React, { useState, useEffect, useMemo } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import React, { useState, useEffect } from 'react';
 import UserNavbar from './usernavbar';
 import Footer from '../../components/layouts/footer';
 import { Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
 import { FaNotesMedical } from 'react-icons/fa';
-
+import { toast } from 'react-toastify';
 
 export default function GetMyPrescription() {
 
     const [prescriptions, setPrescriptions] = useState([]);
-    const decodedtoken = useMemo(() => {
-        const token = localStorage.getItem('token');
-        return jwtDecode(token);
-    }, [])
+
+    const token = localStorage.getItem('token');
+
+    const fetchPrescription = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetchmyprescription`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            if (res.status === 200) {
+                setPrescriptions(res.data.data);
+            } else {
+                toast.error(res.data.msg)
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error('Something went wrong...')
+        }
+    }
 
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetchmyprescription`, {
-            headers: { id: decodedtoken.id }
-        })
-            .then((res) => {
-                setPrescriptions(res.data.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        fetchPrescription()
     }, []);
 
     return (
@@ -44,7 +49,7 @@ export default function GetMyPrescription() {
                                     <Col md={6} key={presc._id}>
                                         <Card className="shadow-sm border-2" border='danger'>
                                             <Card.Body>
-                                                <Card.Title className="text-primary">Dr. {presc.docname}</Card.Title>
+                                                <Card.Title className="text-primary">Dr. {presc.name}</Card.Title>
                                                 <Card.Subtitle className="mb-2 text-muted">Patient: {presc.patientName}</Card.Subtitle>
                                                 <Card.Subtitle className="mb-2 text-muted">Doctor's Mention: {presc.mention}</Card.Subtitle>
                                                 <hr />

@@ -1,29 +1,36 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
 import { Container, Card, Form, Button, FloatingLabel, Modal } from 'react-bootstrap';
 import { FaComment, FaStar, FaUser } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import UserNavbar from './usernavbar';
-import Footer from '../footer';
+import Footer from '../../components/layouts/footer';
 import './userStyling.css'
 
-
 export default function UserFeedback() {
-  const decoded = useMemo(() => {
-    const token = localStorage.getItem('token');
-    return jwtDecode(token);
-  }, [])
+
+  const token = localStorage.getItem('token');
 
   const [Feedback, setFeedback] = useState('')
 
-  useEffect(() => {
-    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/seefeedbacks`)
-      .then((res) => {
+  const fetchFeedbacks = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/seefeedbacks`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      if (res.status === 200) {
         setFeedback(res.data.data)
-      }).catch((err) => {
-        console.log(err)
-      })
+      } else {
+        toast.error(res.data.msg)
+      }
+    } catch (error) {
+      console.log(err)
+      toast.error('Something went wrong')
+    }
+  }
+
+  useEffect(() => {
+    fetchFeedbacks()
   }, [])
 
   const [show, setShow] = useState(false)
