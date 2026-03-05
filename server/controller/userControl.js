@@ -13,6 +13,8 @@ const { LoginOTP } = require('../emails/LoginOTP')
 const { ResetPasswordOTP } = require('../emails/ResetPassword')
 const generateOTP = require('../utils/OTPgenerator')
 const argon2 = require('argon2')
+const docScheduleModel = require('../models/docScheduleModel')
+const { id } = require('zod/v4/locales')
 
 // Registration for the user...
 const registerUser = async (req, res) => {
@@ -227,6 +229,20 @@ const viewDoctorsProfile = async (req, res) => {
 
         return res.json({ msg: "View your Profile...", data: DocData, status: 200 })
     } catch (err) {
+        console.log(err)
+        return res.json({ msg: "Internal Server Error", status: 500 })
+    }
+}
+
+const fetchSchedule = async (req, res) => {
+    try {
+        const { id: doctorId } = req.body
+        const schedule = await docScheduleModel.find(doctorId)
+
+        if (!schedule) return res.status(404).json({ msg: 'No schedule found for this doctor...' })
+
+        return res.status(200).json({ msg: "Schedule fetched successfully...", schedule })
+    } catch (error) {
         console.log(err)
         return res.json({ msg: "Internal Server Error", status: 500 })
     }
@@ -468,6 +484,7 @@ module.exports = {
     viewLoggedUser,
     viewDoctors,
     viewDoctorsProfile,
+    fetchSchedule,
     bookAppointment,
     fetchMyAppointments,
     fetchMyPrescription,

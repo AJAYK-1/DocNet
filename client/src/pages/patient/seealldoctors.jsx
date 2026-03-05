@@ -109,7 +109,7 @@ export default function SeeAllDoctors() {
       </div>
 
       {selectedDoctor && (
-        <PatientForm show={show} handleClose={handleClose} selectedDoctor={selectedDoctor} />
+        <PatientForm show={show} handleClose={handleClose} token={token} selectedDoctor={selectedDoctor} />
       )}
 
       <Footer />

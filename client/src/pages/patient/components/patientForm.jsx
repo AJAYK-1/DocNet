@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form, FloatingLabel, Modal, Button } from 'react-bootstrap';
 import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
-const PatientForm = ({ show, handleClose, selectedDoctor }) => {
+const PatientForm = ({ show, handleClose, token, selectedDoctor }) => {
+
+    const [schedule, setSchedule] = useState([])
     const [PatientDetails, setPatientDetails] = useState({
         patientName: '',
         patientAge: '',
@@ -12,11 +15,34 @@ const PatientForm = ({ show, handleClose, selectedDoctor }) => {
         patientSymptoms: ''
     });
     const [selectedDates, setSelectedDates] = useState();
+
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         setPatientDetails({ ...PatientDetails, [e.target.name]: e.target.value });
     };
+
+    const fetchSchedule = async () => {
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetch-schedule`, selectedDoctor,
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            if (response.status === 200) {
+                setSchedule(response.data.schedule)
+            } else {
+                toast.error(response.data.msg)
+            }
+            console.log(schedule);
+
+        } catch (error) {
+            console.log(error)
+            toast.error("Something went wrong...")
+        }
+    }
+
+    useEffect(() => {
+        fetchSchedule()
+    }, [])
 
     const handleAppointment = async (docId) => {
         try {

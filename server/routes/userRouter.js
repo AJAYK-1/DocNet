@@ -3,7 +3,8 @@ const RouterUser = express.Router()
 const { registerUser, userlogin, viewLoggedUser, viewDoctors, viewDoctorsProfile,
     bookAppointment, fetchMyPrescription, fetchMyAppointments, fetchPrescriptionById,
     viewFeedbacks, submitFeedback, Payment, ValidatePayment, loginWithOTP, sendOTP,
-    confirmOTP, PasswordReset, ContactDeveloper } = require('../controller/userControl')
+    confirmOTP, PasswordReset, ContactDeveloper,
+    fetchSchedule } = require('../controller/userControl')
 const upload = require('../config/multerConfig')
 const validate = require('../middlewares/validate')
 const verifyToken = require('../middlewares/verifyToken')
@@ -17,8 +18,9 @@ RouterUser.post('/loginwithOTP', loginWithOTP)
 RouterUser.post('/confirm-otp', confirmOTP)
 RouterUser.put('/reset-password', PasswordReset)
 RouterUser.post('/contact-developer', ContactDeveloper)
-RouterUser.get('/viewloggeduser',verifyToken, authorizeRole('patient'), viewLoggedUser)
+RouterUser.get('/viewloggeduser', verifyToken, authorizeRole('patient'), viewLoggedUser)
 RouterUser.get('/viewdoctors', verifyToken, authorizeRole('patient'), viewDoctors)
+RouterUser.get('/fetch-schedule', verifyToken, authorizeRole('patient'), fetchSchedule)
 RouterUser.get('/viewdoctorprofile/:id', verifyToken, authorizeRole('patient'), viewDoctorsProfile)
 RouterUser.post('/bookappointment', verifyToken, authorizeRole('patient'), bookAppointment)
 RouterUser.get('/fetchmyappointments', verifyToken, authorizeRole('patient'), fetchMyAppointments)
