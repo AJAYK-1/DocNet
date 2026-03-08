@@ -14,7 +14,6 @@ const { ResetPasswordOTP } = require('../emails/ResetPassword')
 const generateOTP = require('../utils/OTPgenerator')
 const argon2 = require('argon2')
 const docScheduleModel = require('../models/docScheduleModel')
-const { id } = require('zod/v4/locales')
 
 // Registration for the user...
 const registerUser = async (req, res) => {

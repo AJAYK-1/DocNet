@@ -1,29 +1,22 @@
-import React, { useEffect, useRef,useMemo } from 'react'
+import React, { useEffect, useRef } from 'react'
 import axios from 'axios'
-import { jwtDecode } from 'jwt-decode'
 import DoctorNavbar from './doctornavbar'
 import { Container, Row, Col, Card, Button } from 'react-bootstrap'
 import { FaCalendarCheck, FaPrescriptionBottleAlt, FaUserMd } from 'react-icons/fa'
-import Footer from '../footer'
+import Footer from '../../components/layouts/footer'
 import { toast } from 'react-toastify'
-
 
 export default function Doctorhome() {
 
-  const decodedtoken = useMemo(() => {
-          const token = localStorage.getItem('token');
-          return jwtDecode(token);
-      }, [])
-
+  const token = localStorage.getItem('token');
   const notified = useRef(false)
 
   useEffect(() => {
-
     if (notified.current) return
 
     axios.get(`${import.meta.env.VITE_HOST_URL}/api/doctor/fetchappointments`, {
-        headers: { id: decodedtoken.id },
-      })
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((res) => {
         const pendingAppointments = res.data.data.filter(
           (a) => a.appointmentStatus === "Pending"
@@ -41,7 +34,6 @@ export default function Doctorhome() {
         console.log(err);
       });
   }, []);
-
 
   return (
     <>

@@ -1,9 +1,8 @@
 import React, { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useGSAP } from '@gsap/react'
-import { HomeNavbarAnimation } from '../gsapAnimation';
+import { HomeNavbarAnimation } from '../../components/gsapAnimation';
 import { jwtDecode } from 'jwt-decode';
-
 
 export default function DoctorNavbar() {
 
