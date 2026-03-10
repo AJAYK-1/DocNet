@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import AXIOS from 'axios'
+import axios from 'axios'
 import { Button, Form, FloatingLabel, Container, Card, Tabs, Tab } from 'react-bootstrap';
 import HomeNavbar from '../../components/layouts/homenavbar'
 import Footer from '../../components/layouts/footer'
 import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
 
 export default function Login() {
   const [UserData, setUserData] = useState({
@@ -20,30 +21,29 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
-    AXIOS.post(`${import.meta.env.VITE_HOST_URL}/api/user/login`, UserData)
-      .then((res) => {
-        if (res.data.status == 202) {
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/login`, UserData)
+      if (res.data.status === 200) {
+        toast.success(res.data.msg)
+        localStorage.setItem('token', res.data.token)
+        const decodedToken = jwtDecode(localStorage.getItem('token'))
+        if (decodedToken.role === 'admin') {
           toast.success(res.data.msg)
-          localStorage.setItem('token', res.data.token)
           setTimeout(() => navigate('/adminhome'), 2000)
-        }
-        else if (res.data.status == 200) {
+        } else if (decodedToken.role === 'patient') {
           toast.success(res.data.msg)
-          localStorage.setItem('token', res.data.token)
           setTimeout(() => navigate('/userhome'), 2000)
-        } else if (res.data.status == 201) {
+        } else if (decodedToken.role === 'doctor') {
           toast.success(res.data.msg)
-          localStorage.setItem('token', res.data.token)
           setTimeout(() => navigate('/doctorhome'), 2000)
-        } else {
-          toast.error(res.data.msg)
         }
-      })
-      .catch((error) => {
-        console.log(error)
-        toast.error('Login failed...')
-      })
+      } else {
+        toast.error(res.data.msg)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error('Something went wrong...')
+    }
   }
 
   const [VerifyOTP, setVerifyOTP] = useState(1)
@@ -60,39 +60,45 @@ export default function Login() {
 
   const handleOTP = async (e) => {
     e.preventDefault()
-    setVerifyOTP(2)
-    AXIOS.put(`${import.meta.env.VITE_HOST_URL}/api/user/send-otp`, userData2)
-      .then((res) => {
-        if (res.data.status == 200) {
-          toast.success(res.data.msg)
-        } else if (res.data.status == 400) {
-          toast.error(res.data.msg)
-        }
-      }).catch((err) => {
-        console.log(err)
-        toast.error("Error sending OTP...")
-      })
+    try {
+      setVerifyOTP(2)
+      const res = await axios.put(`${import.meta.env.VITE_HOST_URL}/api/user/send-otp`, userData2)
+      if (res.data.status === 200) {
+        toast.success(res.data.msg)
+      } else {
+        toast.error(res.data.msg)
+      }
+    } catch (error) {
+      console.log(err)
+      toast.error("Error sending OTP...")
+    }
   }
 
   const handleOTPLogin = async (e) => {
     e.preventDefault()
-    AXIOS.post(`${import.meta.env.VITE_HOST_URL}/api/user/loginwithOTP`, userData2)
-      .then((res) => {
-        if (res.data.status == 200) {
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/loginwithOTP`, userData2)
+      if (res.data.status === 200) {
+        toast.success(res.data.msg)
+        localStorage.setItem('token', res.data.token)
+        const decodedToken = jwtDecode(localStorage.getItem('token'))
+        if (decodedToken.role === 'admin') {
           toast.success(res.data.msg)
-          localStorage.setItem('token', res.data.token)
-          setTimeout(() => navigate('/userhome'), 2000);
-        } else if (res.data.status == 201) {
+          setTimeout(() => navigate('/adminhome'), 2000)
+        } else if (decodedToken.role === 'patient') {
           toast.success(res.data.msg)
-          localStorage.setItem('token', res.data.token)
-          setTimeout(() => navigate('/doctorhome'), 2000);
-        } else {
-          toast.error(res.data.msg)
+          setTimeout(() => navigate('/userhome'), 2000)
+        } else if (decodedToken.role === 'doctor') {
+          toast.success(res.data.msg)
+          setTimeout(() => navigate('/doctorhome'), 2000)
         }
-      }).catch((err) => {
-        console.log(err)
-        toast.error("Login Error...")
-      })
+      } else {
+        toast.error(res.data.msg)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error('Something went wrong...')
+    }
   }
 
   return (
@@ -106,7 +112,7 @@ export default function Login() {
             <h2 className="text-center mb-4 login-heading fw-bold"
               style={{ fontFamily: "'Shadows Into Light', cursive", fontSize: '2rem', letterSpacing: '1px' }}>
               Login</h2>
-              
+
             <Tabs defaultActiveKey="passlogin" id="registration-tabs" className="mb-4 tabs-nav" justify>
               <Tab eventKey="passlogin" title="using Password">
                 <Form noValidate onSubmit={handleSubmit}>
