@@ -5,8 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import DoctorNavbar from './doctornavbar'
 import { Card, Container, Row, Col } from 'react-bootstrap'
 import { FaNotesMedical, FaUser, FaPills, FaRegCommentDots } from 'react-icons/fa'
-import Footer from '../footer'
-
+import Footer from '../../components/layouts/footer'
 
 export default function ViewPrescription() {
 

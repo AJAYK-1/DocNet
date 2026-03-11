@@ -3,7 +3,7 @@ import React, { useEffect, useState, useMemo } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import DoctorNavbar from './doctornavbar'
 import { FaFirstAid } from 'react-icons/fa'
-import Footer from '../footer'
+import Footer from '../../components/layouts/footer'
 
 
 export default function AppointmentHistory() {

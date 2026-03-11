@@ -4,8 +4,7 @@ import { jwtDecode } from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
 import DoctorNavbar from './doctornavbar'
 import { FaHeartbeat } from 'react-icons/fa'
-import Footer from '../footer'
-
+import Footer from '../../components/layouts/footer'
 
 export default function DoctorViewAppointment() {
   const decodedtoken = useMemo(() => {

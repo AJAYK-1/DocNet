@@ -1,24 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaStar, FaUser } from 'react-icons/fa';
-import Footer from '../footer';
+import Footer from '../../components/layouts/footer'
 import DoctorNavbar from './doctornavbar';
 import './doctorStyle.css'
-
+import { toast } from 'react-toastify';
 
 export default function DoctorSeeFeedback() {
-
+  const token = localStorage.getItem('token')
   const [Feedback, setFeedback] = useState('')
 
-  useEffect(() => {
-    axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/seefeedbacks`)
-      .then((res) => {
+  const fetchFeedback = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/seefeedbacks`, { headers: { Authorization: `Bearer ${token}` } })
+      if (res.status === 200) {
         setFeedback(res.data.data)
-      }).catch((err) => {
-        console.log(err)
-      })
-  }, [])
+      } else {
+        toast.error(res.data.msg)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error('Something went wrong')
+    }
+  }
   
+  useEffect(() => {
+    fetchFeedback()
+  }, [])
 
   return (
     <>

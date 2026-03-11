@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import DoctorNavbar from './doctornavbar'
 import { MdLocalPharmacy } from 'react-icons/md'
 import { Form, FloatingLabel } from 'react-bootstrap'
-import Footer from '../footer'
+import Footer from '../../components/layouts/footer'
 import { toast } from 'react-toastify'
 
 export default function AddPrescription() {

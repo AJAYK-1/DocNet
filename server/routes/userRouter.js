@@ -27,7 +27,7 @@ RouterUser.get('/fetchmyappointments', verifyToken, authorizeRole('patient'), fe
 RouterUser.get('/fetchmyprescription', verifyToken, authorizeRole('patient'), fetchMyPrescription)
 RouterUser.get('/fetch-prescription-byId', verifyToken, authorizeRole('patient'), fetchPrescriptionById)
 RouterUser.post('/write-feedback', verifyToken, authorizeRole('patient'), submitFeedback)
-RouterUser.get('/seefeedbacks', verifyToken, authorizeRole('patient'), viewFeedbacks)
+RouterUser.get('/seefeedbacks', verifyToken, authorizeRole('patient','doctor'), viewFeedbacks)
 RouterUser.post('/payment', verifyToken, authorizeRole('patient'), Payment)
 RouterUser.post('/validate-payment', verifyToken, authorizeRole('patient'), ValidatePayment)
 

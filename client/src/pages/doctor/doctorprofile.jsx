@@ -1,31 +1,28 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
-import AXIOS from 'axios'
-import { jwtDecode } from 'jwt-decode'
+import React, { useState, useEffect, useRef } from 'react'
+import axios from 'axios'
 import DoctorNavbar from './doctornavbar'
+import Footer from '../../components/layouts/footer'
 import { Container, Row, Col, Image, Card, Button, Form, FloatingLabel } from 'react-bootstrap'
 import { gsap } from 'gsap'
 import { useNavigate } from 'react-router-dom'
 import { FaAddressCard } from 'react-icons/fa';
 import Modal from 'react-bootstrap/Modal';
-import Footer from '../footer'
 import { useGSAP } from '@gsap/react'
 import DatePicker, { DateObject } from "react-multi-date-picker"
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from 'react-toastify'
-
+import { SPECIALIZATIONS } from '../../components/constants/specializations'
 
 export default function DoctorProfile() {
-    const decoded = useMemo(() => {
-        const token = localStorage.getItem('token');
-        return jwtDecode(token);
-    }, [])
-    
+
+    const token = localStorage.getItem('token');
+
     const [DocData, setDocData] = useState({})
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [ProfileEdit, setProfileEdit] = useState({
-        docname: '',
+        name: '',
         address: '',
         license: '',
         qualification: '',
@@ -34,34 +31,41 @@ export default function DoctorProfile() {
     const [doctorImage, setDoctorImage] = useState(null);
     const [open, setOpen] = useState(false);
 
+    const fetchProfile = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/doctor/profile`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            if (res.status === 200) {
+                console.log(res.data.data);
 
-    useEffect(() => {
-        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/doctor/viewloggeddoctor`, {
-            headers: { id: decoded.id }
-        })
-            .then((res) => {
                 setDocData(res.data.data)
-                const unavailableDates = res.data.data.schedule
-                    .filter(entry => entry.availability === "Unavailable")
-                    .map(item => item.dates);
+                // const unavailableDates = res.data.data.schedule
+                //     .filter(entry => entry.availability === "Unavailable")
+                //     .map(item => item.dates);
 
-                setMarkedDates(unavailableDates); // Used to highlight red dates
-                setSelectedDates(unavailableDates.map(d => new DateObject(d))); // Initialize selection in calendar
+                // setMarkedDates(unavailableDates); // Used to highlight red dates
+                // setSelectedDates(unavailableDates.map(d => new DateObject(d))); // Initialize selection in calendar
 
                 setProfileEdit({
-                    docname: res.data.data.docname,
+                    name: res.data.data.docname,
                     address: res.data.data.address,
                     license: res.data.data.license,
                     qualification: res.data.data.qualification,
                     specialization: res.data.data.specialization
                 })
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+            } else {
+                toast.error(res.data.msg)
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error('Something went wrong...')
+        }
+    }
+
+    useEffect(() => {
+        fetchProfile()
     }, [])
-
-
 
     const handleChange = (e) => {
         setProfileEdit({ ...ProfileEdit, [e.target.name]: e.target.value })
@@ -71,32 +75,34 @@ export default function DoctorProfile() {
         setDoctorImage(e.target.files[0])
     }
 
-    const handleSaveChanges = (e) => {
+    const handleSaveChanges = async (e) => {
         e.preventDefault()
+        try {
+            const newData = new FormData()
+            newData.append('docname', ProfileEdit.name)
+            newData.append('license', ProfileEdit.license)
+            newData.append('qualification', ProfileEdit.qualification)
+            newData.append('specialization', ProfileEdit.specialization)
+            newData.append('address', ProfileEdit.address)
+            newData.append('profileImage', doctorImage)
 
-        const newData = new FormData()
-        newData.append('docname', ProfileEdit.docname)
-        newData.append('license', ProfileEdit.license)
-        newData.append('qualification', ProfileEdit.qualification)
-        newData.append('specialization', ProfileEdit.specialization)
-        newData.append('address', ProfileEdit.address)
-        newData.append('profileImage', doctorImage)
+            handleClose()
+            const res = await axios.put(`${import.meta.env.VITE_HOST_URL}/api/doctor/edit-profile`, newData,
+                { headers: { Authorization: `Bearer ${token}` } })
 
-        handleClose()
-        AXIOS.put(`${import.meta.env.VITE_HOST_URL}/api/doctor/doctoreditprofile`, newData, { headers: { id: decoded.id } })
-            .then((res) => {
-                if (res.data.status == 200) {
-                    toast.success(res.data.msg)
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 2000);
-                }
-            }).catch((err) => {
-                console.log(err)
-                toast.error(err)
-            })
+            if (res.status == 200) {
+                toast.success(res.data.msg)
+                setTimeout(() => {
+                    window.location.reload()
+                }, 2000);
+            } else {
+                toast.error(res.data.msg)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error('Something went wrong...')
+        }
     }
-
 
     const [showModal, setShowModal] = useState(false);
     const [selectedDates, setSelectedDates] = useState([]);
@@ -115,7 +121,7 @@ export default function DoctorProfile() {
             dates: date.format("YYYY-MM-DD")
         }));
         console.log(formattedSchedule)
-        AXIOS.put(`${import.meta.env.VITE_HOST_URL}/api/doctor/changeavailability`, { id: decoded.id, schedule: formattedSchedule }
+        axios.put(`${import.meta.env.VITE_HOST_URL}/api/doctor/changeavailability`, { id: decoded.id, schedule: formattedSchedule }
         ).then((res) => {
             window.location.reload()
             toast.success(res.data.msg)
@@ -210,7 +216,7 @@ export default function DoctorProfile() {
                                         className="mb-3"
                                         style={{ fontSize: '1.8rem', fontWeight: '600', color: '#2c3e50' }}
                                     >
-                                        Dr. {DocData.docname}
+                                        Dr. {DocData.name}
                                     </Card.Title>
 
                                     <Card.Text className="mb-2" style={{ fontSize: '1.1rem', color: '#34495E' }}>
@@ -316,7 +322,7 @@ export default function DoctorProfile() {
                 <Modal.Body style={{ background: 'rgba(143, 211, 229, 0.33)' }}>
                     <Form>
                         <FloatingLabel controlId="floatingDocName" label="Doctor Name" className="mb-3">
-                            <Form.Control type="text" name="docname" value={ProfileEdit.docname} onChange={handleChange} placeholder="Enter name" />
+                            <Form.Control type="text" name="docname" value={ProfileEdit.name} onChange={handleChange} placeholder="Enter name" />
                         </FloatingLabel>
 
                         <FloatingLabel controlId="floatingLicense" label="Medical License Number" className="mb-3">
@@ -330,40 +336,10 @@ export default function DoctorProfile() {
                         <FloatingLabel controlId="floatingSpecialization" label="Specialization" className="mb-3">
                             <Form.Select name="specialization" value={ProfileEdit.specialization} onChange={handleChange} required>
                                 <option value="">-- Select Specialization --</option>
-
-                                <optgroup label=" Non-Surgical (MD/DNB)">
-                                    <option value="General Medicine">General Medicine</option>
-                                    <option value="Pediatrics">Pediatrics</option>
-                                    <option value="Dermatology">Dermatology</option>
-                                    <option value="Psychiatry">Psychiatry</option>
-                                    <option value="Radiology">Radiology</option>
-                                    <option value="Pathology">Pathology</option>
-                                    <option value="Anesthesiology">Anesthesiology</option>
-                                    <option value="Pulmonology">Pulmonology</option>
-                                    <option value="Cardiology">Cardiology</option>
-                                    <option value="Endocrinology">Endocrinology</option>
-                                    <option value="Neurology">Neurology</option>
-                                    <option value="Gastroenterology">Gastroenterology</option>
-                                    <option value="Nephrology">Nephrology</option>
-                                    <option value="Hematology">Hematology</option>
-                                </optgroup>
-                                <optgroup label=" Surgical (MS/MCh)">
-                                    <option value="General Surgery">General Surgery</option>
-                                    <option value="Orthopedics">Orthopedics</option>
-                                    <option value="ENT">ENT (Otorhinolaryngology)</option>
-                                    <option value="Ophthalmology">Ophthalmology</option>
-                                    <option value="Obstetrics & Gynecology">Obstetrics & Gynecology (OBG)</option>
-                                    <option value="Urology">Urology</option>
-                                    <option value="Neurosurgery">Neurosurgery</option>
-                                    <option value="Cardiothoracic Surgery">Cardiothoracic Surgery</option>
-                                    <option value="Plastic Surgery">Plastic Surgery</option>
-                                </optgroup>
-                                <optgroup label=" Alternative & Traditional Medicine">
-                                    <option value="Ayurveda">Ayurveda</option>
-                                    <option value="Homeopathy">Homeopathy</option>
-                                    <option value="Unani">Unani</option>
-                                    <option value="Naturopathy">Naturopathy</option>
-                                </optgroup> </Form.Select> </FloatingLabel>
+                                {SPECIALIZATIONS.map((spec) =>
+                                    <option value={spec} key={spec}> {spec} </option>
+                                )}
+                            </Form.Select> </FloatingLabel>
 
                         <FloatingLabel controlId="floatingDocAddress" label="Address" className="mb-3">
                             <Form.Control as="textarea" name="address" value={ProfileEdit.address} onChange={handleChange} style={{ height: '100px' }} placeholder="Enter address" />
