@@ -51,7 +51,7 @@ function App() {
 
     const isLoggedIn = decodedToken ? decodedToken.role : null
     setRole(isLoggedIn)
-  }, [])
+  }, [decodedToken])
 
   return (
     <>

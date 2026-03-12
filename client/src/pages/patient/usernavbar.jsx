@@ -3,12 +3,10 @@ import React, { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { HomeNavbarAnimation } from '../../components/gsapAnimation';
 
-
 export default function UserNavbar() {
 
     const [openMenu, setOpenMenu] = useState(false)
     const [dropDown, setDropDown] = useState(false)
-
     const navigate = useNavigate()
 
     const handleLogout = () => {

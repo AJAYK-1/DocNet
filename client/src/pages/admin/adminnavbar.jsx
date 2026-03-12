@@ -7,7 +7,6 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
-
 export default function AdminNavbar() {
     const navigate = useNavigate();
 

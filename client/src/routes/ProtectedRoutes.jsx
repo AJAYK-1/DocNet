@@ -9,7 +9,7 @@ const ProtectedRoutes = () => {
 
     if (!role) toast.info('Please login first...')
 
-    return role ? <Outlet /> : <Navigate to={'login'} replace />
+    return role ? <Outlet /> : <Navigate to={'/login'} replace />
 }
 
 export default ProtectedRoutes

@@ -1,27 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import AXIOS from 'axios';
+import axios from 'axios';
 import AdminNavbar from './adminnavbar';
 import { Button, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Footer from '../footer';
+import Footer from '../../components/layouts/footer'
+import { toast } from 'react-toastify';
 
 export default function AdminViewUsers() {
     const [users, setUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/admin/adminviewusers`)
-            .then((res) => {
+    const dashboardData = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/admin/adminviewusers`)
+            if (res.status === 200) {
                 setUsers(res.data.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+            } else {
+                toast.error(res.data.msg)
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error('Something went wrong...')
+        }
+    }
+
+    useEffect(() => {
+        dashboardData()
     }, []);
 
     const handleAction = (id, accountStatus) => {
         const userStatusChange = accountStatus === "Active" ? "Deactivated" : "Active";
-        AXIOS.put(`${import.meta.env.VITE_HOST_URL}/api/admin/action-on-user`, { id, userStatusChange })
+        axios.put(`${import.meta.env.VITE_HOST_URL}/api/admin/action-on-user`, { id, userStatusChange })
             .then((res) => {
                 setUsers(prev =>
                     prev.map(user =>
@@ -72,9 +81,9 @@ export default function AdminViewUsers() {
                                 <tr key={user._id}>
                                     <td>{user.username}</td>
                                     <td>{user.email}</td>
-                                    <td><span className={`badge ${user.accountStatus=='Active' ? 'bg-success' : 'bg-secondary'}`}>
-                                            {user.accountStatus=="Active" ? 'Active' : 'Deactivated'}
-                                        </span></td>
+                                    <td><span className={`badge ${user.accountStatus == 'Active' ? 'bg-success' : 'bg-secondary'}`}>
+                                        {user.accountStatus == "Active" ? 'Active' : 'Deactivated'}
+                                    </span></td>
                                     <td className="text-center">
                                         <Button
                                             className="btn btn-sm"

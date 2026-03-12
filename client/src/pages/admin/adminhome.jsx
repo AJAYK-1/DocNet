@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Row, Col, Card, Button } from 'react-bootstrap'
 import AdminNavbar from './adminnavbar'
-import Footer from '../footer'
+import Footer from '../../components/layouts/footer'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserDoctor, faUsers, faCalendarCheck, faPrescriptionBottleMedical } from '@fortawesome/free-solid-svg-icons'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
-
 
 export default function Adminhome() {
 

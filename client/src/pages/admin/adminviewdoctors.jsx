@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AXIOS from 'axios';
 import AdminNavbar from './adminnavbar';
-import Footer from '../footer';
+import Footer from '../../components/layouts/footer'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form } from 'react-bootstrap';
 

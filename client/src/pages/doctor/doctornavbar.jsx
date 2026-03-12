@@ -9,12 +9,6 @@ export default function DoctorNavbar() {
     const [openMenu, setOpenMenu] = useState(false)
     const [dropDown, setDropDown] = useState(false)
     const [dropDown2, setDropDown2] = useState(false)
-
-    const decoded = useMemo(() => {
-        const token = localStorage.getItem('token');
-        return jwtDecode(token);
-    }, [])
-
     const navigate = useNavigate()
 
     const handleLogout = () => {
