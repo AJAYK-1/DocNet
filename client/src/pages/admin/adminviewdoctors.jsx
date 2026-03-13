@@ -1,24 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import AXIOS from 'axios';
+import axios from 'axios';
 import AdminNavbar from './adminnavbar';
 import Footer from '../../components/layouts/footer'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 
 export default function AdminViewDoctors() {
     const [doctors, setDoctors] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const token = localStorage.getItem('token')
 
+    const fetchDoctors = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/admin/view-doctors`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            if (res.status === 200) {
+                setDoctors(res.data.data)
+            } else {
+                toast.error(res.data.msg)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error('Something went wrong...')
+        }
+    }
 
     useEffect(() => {
-        AXIOS.get(`${import.meta.env.VITE_HOST_URL}/api/admin/adminviewdoctors`)
-            .then((res) => setDoctors(res.data.data))
-            .catch((err) => console.log(err));
+        fetchDoctors()
     }, []);
 
     const handleAction = (id, accountStatus) => {
         const doctorStatusChange = accountStatus === "Active" ? "Deactivated" : "Active";
-        AXIOS.put(`${import.meta.env.VITE_HOST_URL}/api/admin/action-on-doctor`, { id, doctorStatusChange })
+        axios.put(`${import.meta.env.VITE_HOST_URL}/api/admin/action-on-doctor`, { id, doctorStatusChange })
             .then((res) => {
                 window.location.reload()
             })
@@ -32,7 +47,7 @@ export default function AdminViewDoctors() {
     };
 
     const filteredDoctors = doctors.filter(doctor =>
-        doctor.docname.toLowerCase().includes(searchTerm) ||
+        doctor.name.toLowerCase().includes(searchTerm) ||
         doctor.specialization.toLowerCase().includes(searchTerm) ||
         doctor.email.toLowerCase().includes(searchTerm)
     );
@@ -69,7 +84,7 @@ export default function AdminViewDoctors() {
                         <tbody>
                             {filteredDoctors.map((doctor) => (
                                 <tr key={doctor._id}>
-                                    <td>{doctor.docname}</td>
+                                    <td>{doctor.name}</td>
                                     <td>
                                         <img
                                             src={`${import.meta.env.VITE_HOST_URL}/uploads/${doctor.profileImage}`}

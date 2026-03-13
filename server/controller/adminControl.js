@@ -1,29 +1,32 @@
-const User = require('../models/userModel')
-const Doctor = require('../models/doctorModel')
+const Users = require('../models/usersModel')
 const Appointment = require('../models/appointmentModel')
 const Prescription = require('../models/prescriptionModel')
-
 
 // view all users...
 const AdminviewUsers = async (req, res) => {
     try {
-        const allUsers = await User.find({})
-        res.json({ msg: 'All users fetched...', data: allUsers, status: 200 })
+        const allUsers = await Users.find({ role: 'patient' })
+        if (!allUsers)
+            return res.status(404).json({ msg: 'Users not found...', data: [] })
+
+        return res.status(200).json({ msg: 'All users fetched...', data: allUsers })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "An Error Occured...", status: 404 })
+        res.status(500).json({ msg: "An Error Occured..." })
     }
 }
-
 
 // View all doctors...
 const AdminviewDoctors = async (req, res) => {
     try {
-        const allDoctors = await Doctor.find({})
-        res.json({ msg: 'All doctors fetched...', data: allDoctors, status: 200 })
+        const allDoctors = await Users.find({ role: 'doctor' })
+        if (!allDoctors)
+            return res.status(404).json({ msg: 'Users not found...', data: [] })
+
+        return res.status(200).json({ msg: 'All users fetched...', data: allDoctors })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "An Error Occured...", status: 404 })
+        res.status(500).json({ msg: "An Error Occured..." })
     }
 }
 
@@ -31,10 +34,10 @@ const AdminviewDoctors = async (req, res) => {
 const ActionOnUser = async (req, res) => {
     try {
         const { id, userStatusChange } = req.body
-        const thatUser = await User.findById(id)
+        const thatUser = await Users.findById(id)
         thatUser.accountStatus = userStatusChange
         await thatUser.save()
-        res.json({ msg: "User's account status changed", status: 200 })
+        return res.json({ msg: "User's account status changed", status: 200 })
     } catch (err) {
         console.log(err)
         res.json({ msg: "An Error Occured...", status: 404 })
@@ -46,7 +49,7 @@ const ActionOnUser = async (req, res) => {
 const ActionOnDoctor = async (req, res) => {
     try {
         const { id, doctorStatusChange } = req.body
-        const thatDoctor = await Doctor.findById(id)
+        const thatDoctor = await Users.findById(id)
         thatDoctor.accountStatus = doctorStatusChange
         await thatDoctor.save()
         res.json({ msg: "Doctor's account status changed", status: 200 })
@@ -60,8 +63,8 @@ const ActionOnDoctor = async (req, res) => {
 // Data for charts on dashboard...
 const Calculations = async (req, res) => {
     try {
-        const numberOfUsers = await User.find()
-        const numberOfDoctors = await Doctor.find()
+        const numberOfUsers = await Users.find()
+        const numberOfDoctors = await Users.find()
         const numberOfAppointments = await Appointment.find()
         const numberOfPrescriptions = await Prescription.find()
         res.json({ numberOfUsers, numberOfDoctors, numberOfAppointments, numberOfPrescriptions })

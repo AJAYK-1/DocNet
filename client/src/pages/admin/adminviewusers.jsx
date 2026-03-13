@@ -9,10 +9,13 @@ import { toast } from 'react-toastify';
 export default function AdminViewUsers() {
     const [users, setUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const token = localStorage.getItem('token')
 
-    const dashboardData = async () => {
+    const fetchUsers = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/admin/adminviewusers`)
+            const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/admin/view-users`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
             if (res.status === 200) {
                 setUsers(res.data.data);
             } else {
@@ -25,7 +28,7 @@ export default function AdminViewUsers() {
     }
 
     useEffect(() => {
-        dashboardData()
+        fetchUsers()
     }, []);
 
     const handleAction = (id, accountStatus) => {
@@ -48,7 +51,7 @@ export default function AdminViewUsers() {
     };
 
     const filteredUsers = users.filter(user =>
-        user.username.toLowerCase().includes(searchTerm) ||
+        user.name.toLowerCase().includes(searchTerm) ||
         user.email.toLowerCase().includes(searchTerm)
     );
 
@@ -79,7 +82,7 @@ export default function AdminViewUsers() {
                         <tbody>
                             {filteredUsers.map((user) => (
                                 <tr key={user._id}>
-                                    <td>{user.username}</td>
+                                    <td>{user.name}</td>
                                     <td>{user.email}</td>
                                     <td><span className={`badge ${user.accountStatus == 'Active' ? 'bg-success' : 'bg-secondary'}`}>
                                         {user.accountStatus == "Active" ? 'Active' : 'Deactivated'}
