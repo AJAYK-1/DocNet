@@ -31,15 +31,21 @@ export default function AdminViewDoctors() {
         fetchDoctors()
     }, []);
 
-    const handleAction = (id, accountStatus) => {
-        const doctorStatusChange = accountStatus === "Active" ? "Deactivated" : "Active";
-        axios.put(`${import.meta.env.VITE_HOST_URL}/api/admin/action-on-doctor`, { id, doctorStatusChange })
-            .then((res) => {
+    const handleAction = async (id, accountStatus) => {
+        try {
+            const doctorStatusChange = accountStatus === "Active" ? "Deactivated" : "Active";
+            const res = await axios.put(`${import.meta.env.VITE_HOST_URL}/api/admin/action-on-doctor`,
+                { id, doctorStatusChange },
+                { headers: { Authorization: `Bearer ${token}` } })
+            if (res.status === 200) {
                 window.location.reload()
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+            } else {
+                toast.error(res.data.msg)
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error('Something went wrong...')
+        }
     };
 
     const handleSearchChange = (e) => {

@@ -31,19 +31,25 @@ export default function AdminViewUsers() {
         fetchUsers()
     }, []);
 
-    const handleAction = (id, accountStatus) => {
-        const userStatusChange = accountStatus === "Active" ? "Deactivated" : "Active";
-        axios.put(`${import.meta.env.VITE_HOST_URL}/api/admin/action-on-user`, { id, userStatusChange })
-            .then((res) => {
+    const handleAction = async (id, accountStatus) => {
+        try {
+            const userStatusChange = accountStatus === "Active" ? "Deactivated" : "Active";
+            const res = await axios.put(`${import.meta.env.VITE_HOST_URL}/api/admin/action-on-user`,
+                { id, userStatusChange },
+                { headers: { Authorization: `Bearer ${token}` } })
+            if (res.status === 200) {
                 setUsers(prev =>
                     prev.map(user =>
                         user._id === id ? { ...user, accountStatus: userStatusChange } : user
                     )
                 );
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+            } else {
+                toast.error(res.data.msg)
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error('Something went wrong...')
+        }
     };
 
     const handleSearchChange = (e) => {
