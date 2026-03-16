@@ -7,24 +7,34 @@ import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserDoctor, faUsers, faCalendarCheck, faPrescriptionBottleMedical } from '@fortawesome/free-solid-svg-icons'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+import { toast } from 'react-toastify'
 
 export default function Adminhome() {
 
+  const token = localStorage.getItem('token')
+  const [Calculations, setCalculations] = useState({
+    totalUsers: 0, totalDoctors: 0, totalAppointments: 0, totalPrescriptions: 0
+  })
   const navigate = useNavigate()
-  const [Calculations, setCalculations] = useState([])
+
+  const fetchDashboardData = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/admin/dashboard-data`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      if (res.status === 200) {
+        setCalculations(res.data.data)
+      } else {
+        toast.error(res.data.msg)
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Something went wrong...')
+    }
+  }
 
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_HOST_URL}/api/admin/admingetappointments`)
-      .then((res) => {
-        setCalculations({
-          numberOfUsers: res.data.numberOfUsers.length,
-          numberOfDoctors: res.data.numberOfDoctors.length,
-          numberOfAppointments: res.data.numberOfAppointments.length,
-          numberOfPrescriptions: res.data.numberOfPrescriptions.length
-        })
-      }).catch((err) => {
-        console.log(err)
-      })
+    fetchDashboardData()
   }, [])
 
   return (
@@ -44,7 +54,7 @@ export default function Adminhome() {
             </h4>
             <Row className="g-4 justify-content-center">
               <Col md={5}>
-                <Card className="text-center shadow-sm border border-2 border-light bg-light">
+                <Card className="text-center shadow-sm border-2 border-light bg-light">
                   <Card.Body>
                     <i className="bi bi-people-fill fs-1 text-dark mb-3"></i>
                     <Card.Title style={{ color: 'black' }}>Manage Users</Card.Title>
@@ -56,7 +66,7 @@ export default function Adminhome() {
                 </Card>
               </Col>
               <Col md={5}>
-                <Card className="text-center shadow-sm border border-2 border-light bg-light">
+                <Card className="text-center shadow-sm border-2 border-light bg-light">
                   <Card.Body>
                     <i className="bi bi-person-badge-fill fs-1 text-dark mb-3"></i>
                     <Card.Title style={{ color: 'black' }}>Manage Doctors</Card.Title>
@@ -82,8 +92,8 @@ export default function Adminhome() {
                   <PieChart>
                     <Pie
                       data={[
-                        { name: 'Appointments', value: Calculations.numberOfAppointments || 0 },
-                        { name: 'Prescriptions', value: Calculations.numberOfPrescriptions || 0 }
+                        { name: 'Appointments', value: Calculations.totalAppointments || 0 },
+                        { name: 'Prescriptions', value: Calculations.totalPrescriptions || 0 }
                       ]}
                       dataKey="value"
                       nameKey="name"
@@ -106,48 +116,48 @@ export default function Adminhome() {
             <Col md={5}>
               <Row className="g-4 justify-content-center">
                 <Col xs={6}>
-                  <Card className="text-center shadow-sm border border-2 border-light bg-light">
+                  <Card className="text-center shadow-sm border-2 border-light bg-light">
                     <Card.Body>
                       <FontAwesomeIcon className="fa-2x mb-2 text-danger" icon={faUsers} />
                       <Card.Title style={{ color: 'black' }}>Total Users</Card.Title>
                       <Card.Text style={{ fontSize: '22px', color: 'black' }}>
-                        {Calculations.numberOfUsers}
+                        {Calculations.totalUsers}
                       </Card.Text>
                     </Card.Body>
                   </Card>
                 </Col>
 
                 <Col xs={6}>
-                  <Card className="text-center shadow-sm border border-2 border-light bg-light">
+                  <Card className="text-center shadow-sm border-2 border-light bg-light">
                     <Card.Body>
                       <FontAwesomeIcon className="fa-2x mb-2 text-info" icon={faUserDoctor} />
                       <Card.Title style={{ color: 'black' }}>Total Doctors</Card.Title>
                       <Card.Text style={{ fontSize: '22px', color: 'black' }}>
-                        {Calculations.numberOfDoctors}
+                        {Calculations.totalDoctors}
                       </Card.Text>
                     </Card.Body>
                   </Card>
                 </Col>
 
                 <Col xs={6}>
-                  <Card className="text-center shadow-sm border border-2 border-light bg-light">
+                  <Card className="text-center shadow-sm border-2 border-light bg-light">
                     <Card.Body>
                       <FontAwesomeIcon className="fa-2x mb-2 text-warning" icon={faCalendarCheck} />
                       <Card.Title style={{ color: 'black' }}>Total Appointments</Card.Title>
                       <Card.Text style={{ fontSize: '22px', color: 'black' }}>
-                        {Calculations.numberOfAppointments}
+                        {Calculations.totalAppointments}
                       </Card.Text>
                     </Card.Body>
                   </Card>
                 </Col>
 
                 <Col xs={6}>
-                  <Card className="text-center shadow-sm border border-2 border-light bg-light">
+                  <Card className="text-center shadow-sm border-2 border-light bg-light">
                     <Card.Body>
                       <FontAwesomeIcon className="fa-2x mb-2 text-success" icon={faPrescriptionBottleMedical} />
                       <Card.Title style={{ color: 'black' }}>Total Prescriptions</Card.Title>
                       <Card.Text style={{ fontSize: '22px', color: 'black' }}>
-                        {Calculations.numberOfPrescriptions}
+                        {Calculations.totalPrescriptions}
                       </Card.Text>
                     </Card.Body>
                   </Card>

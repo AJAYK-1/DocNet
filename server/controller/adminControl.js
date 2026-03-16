@@ -5,7 +5,7 @@ const Prescription = require('../models/prescriptionModel')
 // view all users...
 const AdminviewUsers = async (req, res) => {
     try {
-        const allUsers = await Users.find({ role: 'patient' })
+        const allUsers = await Users.find({ role: 'patient' }).select('-password -otp -otpExpiry')
         if (!allUsers)
             return res.status(404).json({ msg: 'Users not found...', data: [] })
 
@@ -19,7 +19,7 @@ const AdminviewUsers = async (req, res) => {
 // View all doctors...
 const AdminviewDoctors = async (req, res) => {
     try {
-        const allDoctors = await Users.find({ role: 'doctor' })
+        const allDoctors = await Users.find({ role: 'doctor' }).select('-password -otp -otpExpiry')
         if (!allDoctors)
             return res.status(404).json({ msg: 'Users not found...', data: [] })
 
@@ -69,11 +69,12 @@ const ActionOnDoctor = async (req, res) => {
 // Data for charts on dashboard...
 const Calculations = async (req, res) => {
     try {
-        const numberOfUsers = await Users.find()
-        const numberOfDoctors = await Users.find()
-        const numberOfAppointments = await Appointment.find()
-        const numberOfPrescriptions = await Prescription.find()
-        res.json({ numberOfUsers, numberOfDoctors, numberOfAppointments, numberOfPrescriptions })
+        const totalUsers = await Users.countDocuments({ role: 'patient' })
+        const totalDoctors = await Users.countDocuments({ role: 'doctor' })
+        const totalAppointments = await Appointment.countDocuments()
+        const totalPrescriptions = await Prescription.countDocuments()
+
+        res.status(200).json({ msg: 'Dashboard data fetched successfully...', data: { totalUsers, totalDoctors, totalAppointments, totalPrescriptions } })
     } catch (err) {
         console.log(err)
         res.status(500).json({ msg: "An Error Occured..." })
