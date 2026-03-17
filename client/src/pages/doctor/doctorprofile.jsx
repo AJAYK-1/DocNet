@@ -322,7 +322,7 @@ export default function DoctorProfile() {
                 <Modal.Body style={{ background: 'rgba(143, 211, 229, 0.33)' }}>
                     <Form>
                         <FloatingLabel controlId="floatingDocName" label="Doctor Name" className="mb-3">
-                            <Form.Control type="text" name="docname" value={ProfileEdit.name} onChange={handleChange} placeholder="Enter name" />
+                            <Form.Control type="text" name="name" value={ProfileEdit.name} onChange={handleChange} placeholder="Enter name" />
                         </FloatingLabel>
 
                         <FloatingLabel controlId="floatingLicense" label="Medical License Number" className="mb-3">

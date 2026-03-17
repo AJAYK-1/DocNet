@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FaInstagram, FaLinkedin, FaGithub, FaEnvelope, FaGlobe, FaPhoneAlt, FaMapMarkerAlt } from 'react-icons/fa';
 import Docnetlogo from '../../assets/docnetlogo.png'
+import AuthContext from '../../context/authContext';
 
 export default function Footer() {
-  return (
-    <>
+  const { role } = useContext(AuthContext)
+
+  if (!role)
+    return (
       <footer className='bg-[#2c3e50] text-white px-5 py-5'>
         <div className='max-w-6xl mx-auto grid grid-cols-1 divide-y-1 md:divide-y-0 md:grid-cols-3 md:divide-x-2 gap-8'>
           <div className=' md:pr-6 px-4 py-2'>
-            <h2 className='flex items-center text-lg font-bold'> 
-              <img src={Docnetlogo} alt="Logo" className='w-8 h-8 me-2' /> DocNet 
-              </h2>
+            <h2 className='flex items-center text-lg font-bold'>
+              <img src={Docnetlogo} alt="Logo" className='w-8 h-8 me-2' /> DocNet
+            </h2>
             <p className='text-sm'>An online doctor's appointment booking system</p>
             <p className='flex items-center'>
               <FaGlobe className="me-2 fs-5" />
@@ -80,6 +83,13 @@ export default function Footer() {
         </div>
 
       </footer>
-    </>
-  );
+    );
+  else
+    return (
+      <footer className='bg-[#2c3e50] text-white px-2 pb-5'>
+        <div className='mt-5 pt-5 text-center text-sm'>
+          © {new Date().getFullYear()} DocNet. All rights reserved.
+        </div>
+      </footer>
+    )
 }
