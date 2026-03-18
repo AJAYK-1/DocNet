@@ -1,6 +1,6 @@
 import React from 'react'
 import { Container, Row, Col, Button, Card, Carousel } from 'react-bootstrap'
-import HomeNavbar from '../../components/layouts/homenavbar'
+import Navbar from '../../components/layouts/navbar'
 import Footer from '../../components/layouts/footer'
 import { FaUserMd, FaNotesMedical, FaLaptopMedical } from 'react-icons/fa'
 import { useGSAP } from '@gsap/react'
@@ -15,7 +15,7 @@ export default function Home() {
 
     return (
         <>
-            <HomeNavbar />
+            <Navbar />
 
             {/* Hero Section Starting */}
             <div className="hero-section text-center ">

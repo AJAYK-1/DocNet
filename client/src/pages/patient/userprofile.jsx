@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import UserNavbar from './usernavbar';
+import Navbar from '../../components/layouts/navbar'
 import Footer from '../../components/layouts/footer';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -44,7 +44,7 @@ export default function UserProfile() {
 
     return (
         <>
-            <UserNavbar />
+            <Navbar />
             <div className="container d-flex align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
                 <div className="card shadow-lg p-4 w-100" style={{ maxWidth: '500px' }}>
                     <div className="text-center mb-4">

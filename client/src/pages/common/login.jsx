@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { Button, Form, FloatingLabel, Container, Card, Tabs, Tab } from 'react-bootstrap';
-import HomeNavbar from '../../components/layouts/homenavbar'
+import Navbar from '../../components/layouts/navbar'
 import Footer from '../../components/layouts/footer'
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
@@ -103,7 +103,7 @@ export default function Login() {
 
   return (
     <>
-      <HomeNavbar />
+      <Navbar />
 
       <div className="login-background">
         <div className="login-overlay" />

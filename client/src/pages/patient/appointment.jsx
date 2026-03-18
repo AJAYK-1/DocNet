@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import UserNavbar from './usernavbar'
+import Navbar from '../../components/layouts/navbar'
 import Footer from '../../components/layouts/footer'
 import { FaHeartbeat, FaRegCommentDots } from 'react-icons/fa'
 import { Row, Col, Card, ListGroup, Modal, Button } from 'react-bootstrap';
@@ -54,7 +54,7 @@ export default function Appointment() {
 
   return (
     <>
-      <UserNavbar />
+      <Navbar />
       <div style={{ minHeight: '550px', padding: '40px' }}>
         <div>
           <h2

@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useState, useEffect, useMemo } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import DoctorNavbar from './doctornavbar'
+import Navbar from '../../components/layouts/navbar'
 import { Card, Container, Row, Col } from 'react-bootstrap'
 import { FaNotesMedical, FaUser, FaPills, FaRegCommentDots } from 'react-icons/fa'
 import Footer from '../../components/layouts/footer'
@@ -29,7 +29,7 @@ export default function ViewPrescription() {
 
     return (
         <>
-            <DoctorNavbar />
+            <Navbar />
             <Container className="mt-5" style={{ minHeight: '550px', padding: '40px' }}>
                 <h2 className="text-center mb-4 flex justify-center" style={{ fontFamily: "'Poppins', sans-serif", color: '#2c3e50', borderBottom: '2px solid #BDC3C7', fontSize: '2.2rem' }}>
                     <FaNotesMedical style={{ marginRight: '10px', marginBottom: '10px', color: '#2980B9' }} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import UserNavbar from './usernavbar';
+import Navbar from '../../components/layouts/navbar'
 import Footer from '../../components/layouts/footer';
 import { Form, Card, Button } from 'react-bootstrap';
 import { BsGeoAltFill, BsPersonWorkspace } from "react-icons/bs";
@@ -51,7 +51,7 @@ export default function SeeAllDoctors() {
 
   return (
     <>
-      <UserNavbar />
+      <Navbar />
 
       <div className="see-all-container">
         <h2 className="see-all-heading">Find the best doctors</h2>

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import AXIOS from 'axios';
-import UserNavbar from './usernavbar';
+import Navbar from '../../components/layouts/navbar'
 import Footer from '../../components/layouts/footer';
-import { Card, Button, Container, Row, Col } from 'react-bootstrap';
+import { Card, Container, Row, Col } from 'react-bootstrap';
 import { BsGeoAltFill, BsCalendarCheck, BsPersonWorkspace, BsPersonCircle, BsFileEarmarkText } from "react-icons/bs";
 import { FaArrowRight, FaHeartbeat } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -62,7 +62,7 @@ export default function UserHome() {
 
     return (
         <>
-            <UserNavbar />
+            <Navbar />
 
             <div className="hero-section z-0">
                 <div className="hero-overlay"></div>

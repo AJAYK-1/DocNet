@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
-import DoctorNavbar from './doctornavbar'
+import Navbar from '../../components/layouts/navbar'
 import Footer from '../../components/layouts/footer'
 import { Container, Row, Col, Image, Card, Button, Form, FloatingLabel } from 'react-bootstrap'
 import { gsap } from 'gsap'
@@ -167,7 +167,7 @@ export default function DoctorProfile() {
 
     return (
         <>
-            <DoctorNavbar />
+            <Navbar />
             <div style={{ minHeight: '550px' }}>
                 <Container className="my-5">
                     <Row className="justify-content-center text-center">

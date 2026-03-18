@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Tab, Tabs, Form, Button, FloatingLabel, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import AXIOS from 'axios';
-import HomeNavbar from '../../components/layouts/homenavbar';
+import Navbar from '../../components/layouts/navbar';
 import Footer from '../../components/layouts/footer';
 import { toast } from 'react-toastify';
 import { SPECIALIZATIONS } from '../../components/constants/specializations';
@@ -93,7 +93,7 @@ export default function CombinedRegistration() {
 
   return (
     <>
-      <HomeNavbar />
+      <Navbar />
       <div className="registration-page">
         <div className="login-overlay" />
         <Container className="registration-card">

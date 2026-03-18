@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import axios from 'axios'
-import DoctorNavbar from './doctornavbar'
+import Navbar from '../../components/layouts/navbar'
 import { Container, Row, Col, Card, Button } from 'react-bootstrap'
 import { FaCalendarCheck, FaPrescriptionBottleAlt, FaUserMd } from 'react-icons/fa'
 import Footer from '../../components/layouts/footer'
@@ -37,7 +37,7 @@ export default function Doctorhome() {
 
   return (
     <>
-      <DoctorNavbar />
+      <Navbar />
       <div style={{ minHeight: '600px' }}>
 
         {/* Hero Welcome Section */}

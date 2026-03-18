@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Card, Form, Button, FloatingLabel, Modal } from 'react-bootstrap';
+import { Form, Button, FloatingLabel, Modal } from 'react-bootstrap';
 import { FaComment, FaStar, FaUser } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import UserNavbar from './usernavbar';
+import Navbar from '../../components/layouts/navbar'
 import Footer from '../../components/layouts/footer';
 import './userStyling.css'
 
@@ -69,7 +69,7 @@ export default function UserFeedback() {
 
   return (
     <>
-      <UserNavbar />
+      <Navbar />
       <div className="see-all-container">
         <h1 className='see-all-heading'>💭What other users said</h1>
         <div className="all-feedbacks">

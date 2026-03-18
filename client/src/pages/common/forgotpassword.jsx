@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { Button, Form, FloatingLabel, Container, Card, Tabs, Tab } from 'react-bootstrap';
-import HomeNavbar from '../../components/layouts/homenavbar'
+import Navbar from '../../components/layouts/navbar'
 import Footer from '../../components/layouts/footer'
 import { toast } from 'react-toastify';
 import Lottie from 'lottie-react';
@@ -79,7 +79,7 @@ export default function ForgotPassword() {
 
   return (
     <>
-      <HomeNavbar />
+      <Navbar />
       <div className="resetpassword-background">
         <div className="login-overlay" />
         {/* <Lottie animationData={ForgotPasswordAnimation} className='h-400px z-20 ml-5' /> */}

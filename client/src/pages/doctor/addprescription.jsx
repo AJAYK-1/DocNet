@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useParams, useNavigate } from 'react-router-dom'
-import DoctorNavbar from './doctornavbar'
+import Navbar from '../../components/layouts/navbar'
 import { MdLocalPharmacy } from 'react-icons/md'
 import { Form, FloatingLabel } from 'react-bootstrap'
 import Footer from '../../components/layouts/footer'
@@ -60,7 +60,7 @@ export default function AddPrescription() {
 
     return (
         <>
-            <DoctorNavbar />
+            <Navbar />
             <div className="container mt-5" style={{ minHeight: '600px', padding: '40px' }}>
                 <h2
                     className="text-center mb-4 fw-bold text-dark border-bottom pb-2"

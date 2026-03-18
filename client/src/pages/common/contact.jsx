@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap'
 import { FaUserTie, FaMobileAlt, FaTools } from 'react-icons/fa'
-import HomeNavbar from '../../components/layouts/homenavbar'
+import Navbar from '../../components/layouts/navbar'
 import Footer from '../../components/layouts/footer'
 import { useGSAP } from '@gsap/react'
 import { HomePageHeroSection } from '../../components/gsapAnimation'
@@ -45,7 +45,7 @@ export default function Contact() {
 
     return (
         <>
-            <HomeNavbar />
+            <Navbar />
 
             {/* Header Section */}
             <div className="hero-section">

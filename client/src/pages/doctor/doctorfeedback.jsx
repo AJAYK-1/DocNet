@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaStar, FaUser } from 'react-icons/fa';
 import Footer from '../../components/layouts/footer'
-import DoctorNavbar from './doctornavbar';
+import Navbar from '../../components/layouts/navbar'
 import './doctorStyle.css'
 import { toast } from 'react-toastify';
 
@@ -30,7 +30,7 @@ export default function DoctorSeeFeedback() {
 
   return (
     <>
-      <DoctorNavbar />
+      <Navbar />
       <div className="see-all-container">
         <h1 className='see-all-heading'>💭this is what different users said</h1>
         <div className="all-feedbacks">

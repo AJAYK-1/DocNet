@@ -1,10 +1,9 @@
 import axios from 'axios'
 import React, { useEffect, useState, useMemo } from 'react'
 import { jwtDecode } from 'jwt-decode'
-import DoctorNavbar from './doctornavbar'
+import Navbar from '../../components/layouts/navbar'
 import { FaFirstAid } from 'react-icons/fa'
 import Footer from '../../components/layouts/footer'
-
 
 export default function AppointmentHistory() {
 
@@ -51,7 +50,7 @@ export default function AppointmentHistory() {
 
   return (
     <>
-      <DoctorNavbar />
+      <Navbar />
       <div className="container mt-5" style={{ minHeight: '550px', padding: '40px' }}>
         <h2
           className="mb-4 text-center d-flex justify-content-center align-items-center"

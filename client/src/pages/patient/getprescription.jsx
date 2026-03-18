@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import UserNavbar from './usernavbar';
+import Navbar from '../../components/layouts/navbar'
 import Footer from '../../components/layouts/footer';
 import { Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
 import { FaNotesMedical } from 'react-icons/fa';
@@ -34,7 +34,7 @@ export default function GetMyPrescription() {
 
     return (
         <>
-            <UserNavbar />
+            <Navbar />
             <div style={{ minHeight: '550px', paddingBottom: '40px' }}>
                 <Container className="mt-4 mb-5">
                     <h2 className="text-center mb-4 flex items-center justify-center mt-5"
