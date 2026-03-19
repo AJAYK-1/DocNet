@@ -187,9 +187,12 @@ const doctorProfileEdit = async (req, res) => {
 const fetchAppointments = async (req, res) => {
     try {
         const doctorId = req.user.id
-        const appointments = await Appointment.find({ doctorId })
+        const appointments = await Appointment.find({ doctorId, appointmentStatus: 'Pending' })
             .populate("patientId", "name email")
             .sort({ appointmentDate: 1, appointmentTime: 1 })
+
+        if (!appointments)
+            return res.status(404).json({ msg: 'No Appointments found', appointments: [] })
 
         return res.status(200).json({ msg: "Fetched Appointments successfully...", appointments })
     } catch (err) {

@@ -1,53 +1,49 @@
 import axios from 'axios'
-import React, { useEffect, useState, useMemo } from 'react'
-import { jwtDecode } from 'jwt-decode'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/layouts/navbar'
-import { FaHeartbeat } from 'react-icons/fa'
 import Footer from '../../components/layouts/footer'
+import { useNavigate } from 'react-router-dom'
+import { FaHeartbeat } from 'react-icons/fa'
+import { toast } from 'react-toastify'
 
 export default function DoctorViewAppointment() {
-  const decodedtoken = useMemo(() => {
-            const token = localStorage.getItem('token');
-            return jwtDecode(token);
-        }, [])
 
-  const [Appointments, setAppointments] = useState([])
+  const token = localStorage.getItem('token');
+
+  const [appointments, setAppointments] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
-  const [filteredAppointments, setFilteredAppointments] = useState([])
 
   const navigate = useNavigate()
 
- useEffect(() => {
-  axios
-    .get(`${import.meta.env.VITE_HOST_URL}/api/doctor/fetchappointments`, {
-      headers: { id: decodedtoken.id },
-    })
-    .then((res) => {
-      const pendingAppointments = res.data.data.filter(
-        (a) => a.appointmentStatus === 'Pending'
-      );
-      const sorted = pendingAppointments.sort(
-        (a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate)
-      );
-      setAppointments(sorted);
-      setFilteredAppointments(sorted);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}, []);
-
+  const fetchAppointments = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/doctor/fetchappointments`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      if (res.status === 200) {
+        setAppointments(res.data.appointments);
+      } else {
+        toast.error(res.data.msg)
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Something went wrong...')
+    }
+  }
 
   useEffect(() => {
-    const lower = searchTerm.toLowerCase()
-    const filtered = Appointments.filter((a) =>
-      (a.userId?.username || '').toLowerCase().includes(lower) ||
-      (a.patientName || '').toLowerCase().includes(lower) ||
-      (a.appointmentDate || '').toLowerCase().includes(lower)
-    )
-    setFilteredAppointments(filtered)
-  }, [searchTerm, Appointments])
+    fetchAppointments()
+  }, []);
+
+  // useEffect(() => {
+  //   const lower = searchTerm.toLowerCase()
+  //   const filtered = appointments.filter((a) =>
+  //     (a.userId?.name || '').toLowerCase().includes(lower) ||
+  //     (a.patientName || '').toLowerCase().includes(lower) ||
+  //     (a.appointmentDate || '').toLowerCase().includes(lower)
+  //   )
+  //   setAppointments(filtered)
+  // }, [searchTerm, appointments])
 
   const handleButton = (id) => {
     navigate(`/addprescription/${id}`)
@@ -82,7 +78,7 @@ export default function DoctorViewAppointment() {
           <input
             type="text"
             className="form-control w-50 "
-            style={{background: 'rgb(215, 250, 252)', borderRadius: '20px'}}
+            style={{ background: 'rgb(215, 250, 252)', borderRadius: '20px' }}
             placeholder="Search by username, patient name, or date"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -91,17 +87,17 @@ export default function DoctorViewAppointment() {
 
 
         {/* Appointments List */}
-        {filteredAppointments.length === 0 ? (
+        {appointments.length === 0 ? (
           <p className="text-center mt-5 fs-5 text-muted">No appointments found.</p>
         ) : (
           <div className="row g-4">
-            {filteredAppointments.map((appointment) => (
+            {appointments.map((appointment) => (
               <div className="col-md-6 col-lg-5" key={appointment._id}>
                 <div className="card shadow-sm h-100">
                   <div className="card-body d-flex flex-column">
                     <div className="d-flex justify-content-between align-items-center mb-2">
                       <h5 className="card-title text-danger m-0">
-                        An appointment from {appointment.userId?.username || 'N/A'}
+                        An appointment from {appointment.userId?.name || 'N/A'}
                       </h5>
                       <h6 className="text-primary m-0" style={{ whiteSpace: 'nowrap' }}>
                         {appointment.appointmentDate}
