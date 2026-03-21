@@ -4,49 +4,43 @@ import { jwtDecode } from 'jwt-decode'
 import Navbar from '../../components/layouts/navbar'
 import { FaFirstAid } from 'react-icons/fa'
 import Footer from '../../components/layouts/footer'
+import { toast } from 'react-toastify'
 
 export default function AppointmentHistory() {
 
-  const decodedtoken = useMemo(() => {
-    const token = localStorage.getItem('token');
-    return jwtDecode(token);
-  }, [])
+  const token = localStorage.getItem('token');
 
-  const [Appointments, setAppointments] = useState([])
+  const [appointments, setAppointments] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
-  const [filteredAppointments, setFilteredAppointments] = useState([])
 
-
-  useEffect(() => {
-    axios.get(`${import.meta.env.VITE_HOST_URL}/api/doctor/fetchappointments`, {
-      headers: { id: decodedtoken.id },
-    })
-      .then((res) => {
-        const pendingAppointments = res.data.data.filter(
-          (a) => a.appointmentStatus === 'Complete'
-        );
-        const sorted = pendingAppointments.sort(
-          (a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate)
-        );
-        setAppointments(sorted);
-        setFilteredAppointments(sorted);
+  const fetchCompletedAppointments = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/doctor/completed-appointments`, {
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      if (res.status === 200) {
+        setAppointments(sorted);
+      } else {
+        toast.error(res.data.msg)
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Something went wrong...')
+    }
+  }
+  useEffect(() => {
+    fetchCompletedAppointments()
   }, []);
-
 
   useEffect(() => {
     const lower = searchTerm.toLowerCase()
-    const filtered = Appointments.filter((a) =>
+    const filtered = appointments.filter((a) =>
       (a.userId?.username || '').toLowerCase().includes(lower) ||
       (a.patientName || '').toLowerCase().includes(lower) ||
       (a.appointmentDate || '').toLowerCase().includes(lower)
     )
-    setFilteredAppointments(filtered)
-  }, [searchTerm, Appointments])
-
+    setAppointments(filtered)
+  }, [searchTerm, appointments])
 
   return (
     <>
@@ -86,11 +80,11 @@ export default function AppointmentHistory() {
 
 
         {/* Appointments List */}
-        {filteredAppointments.length === 0 ? (
+        {appointments.length === 0 ? (
           <p className="text-center mt-5 fs-5 text-muted">No appointments found.</p>
         ) : (
           <div className="row g-4">
-            {filteredAppointments.map((appointment) => (
+            {appointments.map((appointment) => (
               <div className="col-md-6 col-lg-5" key={appointment._id}>
                 <div className="card shadow-sm h-100">
                   <div className="card-body d-flex flex-column">

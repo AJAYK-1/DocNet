@@ -48,7 +48,7 @@ export default function DoctorProfile() {
                 // setSelectedDates(unavailableDates.map(d => new DateObject(d))); // Initialize selection in calendar
 
                 setProfileEdit({
-                    name: res.data.data.docname,
+                    name: res.data.data.name,
                     address: res.data.data.address,
                     license: res.data.data.license,
                     qualification: res.data.data.qualification,

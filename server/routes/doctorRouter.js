@@ -1,5 +1,5 @@
 const express = require('express')
-const { DoctorRegister, fetchAppointments, addPrescription, viewPrescription, viewLoggedDoctor, editSchedule, doctorProfileEdit, createSchedule } = require('../controller/doctorControl')
+const { DoctorRegister, fetchAppointments, addPrescription, viewPrescription, viewLoggedDoctor, editSchedule, doctorProfileEdit, createSchedule, fetchCompletedAppointments } = require('../controller/doctorControl')
 const upload = require('../config/multerConfig')
 const authorizeRole = require('../middlewares/authorizeRole')
 const verifyToken = require('../middlewares/verifyToken')
@@ -10,7 +10,8 @@ RouterDoctor.get('/profile', verifyToken, authorizeRole('doctor'), viewLoggedDoc
 RouterDoctor.post('/create-schedule', verifyToken, authorizeRole('doctor'), createSchedule)
 RouterDoctor.put('/edit-schedule', verifyToken, authorizeRole('doctor'), editSchedule)
 RouterDoctor.put('/edit-profile', verifyToken, authorizeRole('doctor'), upload.single('profileImage'), doctorProfileEdit)
-RouterDoctor.get('/appointments', verifyToken, authorizeRole('doctor'), fetchAppointments)
+RouterDoctor.get('/new-appointments', verifyToken, authorizeRole('doctor'), fetchAppointments)
+RouterDoctor.get('/completed-appointments', verifyToken, authorizeRole('doctor'), fetchCompletedAppointments)
 RouterDoctor.post('/prescription/:appointmentId', verifyToken, authorizeRole('doctor'), addPrescription)
 RouterDoctor.get('/prescriptions', verifyToken, authorizeRole('doctor'), viewPrescription)
 

@@ -17,7 +17,7 @@ export default function DoctorViewAppointment() {
 
   const fetchAppointments = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/doctor/fetchappointments`, {
+      const res = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/doctor/new-appointments`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       if (res.status === 200) {

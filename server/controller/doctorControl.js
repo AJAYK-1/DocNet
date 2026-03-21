@@ -201,6 +201,23 @@ const fetchAppointments = async (req, res) => {
     }
 }
 
+const fetchCompletedAppointments = async (req, res) => {
+    try {
+        const doctorId = req.user.id
+        const appointments = await Appointment.find({ doctorId, appointmentStatus: 'Completed' })
+            .populate("patientId", "name email")
+            .sort({ appointmentDate: 1, appointmentTime: 1 })
+
+        if (!appointments)
+            return res.status(404).json({ msg: 'No Appointments found', appointments: [] })
+
+        return res.status(200).json({ msg: "Fetched Appointments successfully...", appointments })
+    } catch (error) {
+        console.log(err)
+        return res.status(500).json({ msg: "Internal Server Error..." })
+    }
+}
+
 // Give Prescriptions...
 const addPrescription = async (req, res) => {
     try {
@@ -275,6 +292,7 @@ module.exports = {
     editSchedule,
     doctorProfileEdit,
     fetchAppointments,
+    fetchCompletedAppointments,
     addPrescription,
     viewPrescription
 }
