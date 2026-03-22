@@ -19,7 +19,7 @@ export default function AppointmentHistory() {
         headers: { Authorization: `Bearer ${token}` },
       })
       if (res.status === 200) {
-        setAppointments(sorted);
+        setAppointments(res.data.appointments);
       } else {
         toast.error(res.data.msg)
       }
@@ -40,7 +40,7 @@ export default function AppointmentHistory() {
       (a.appointmentDate || '').toLowerCase().includes(lower)
     )
     setAppointments(filtered)
-  }, [searchTerm, appointments])
+  }, [searchTerm])
 
   return (
     <>
