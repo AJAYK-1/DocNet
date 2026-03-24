@@ -1,12 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Form, FloatingLabel } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal';
 import { SPECIALIZATIONS } from '../../../components/constants/specializations'
 
 const EditProfile = ({ DocData, show, handleClose }) => {
-    
-    const [ProfileEdit, setProfileEdit] = useState(DocData);
+
+    const [ProfileEdit, setProfileEdit] = useState({});
     const [doctorImage, setDoctorImage] = useState(null);
+
+    useEffect(() => {
+        setProfileEdit(DocData)
+    }, [DocData])
 
     const handleChange = (e) => {
         setProfileEdit({ ...ProfileEdit, [e.target.name]: e.target.value })
@@ -20,7 +24,7 @@ const EditProfile = ({ DocData, show, handleClose }) => {
         e.preventDefault()
         try {
             const newData = new FormData()
-            newData.append('docname', ProfileEdit.name)
+            newData.append('name', ProfileEdit.name)
             newData.append('license', ProfileEdit.license)
             newData.append('qualification', ProfileEdit.qualification)
             newData.append('specialization', ProfileEdit.specialization)
