@@ -5,7 +5,8 @@ import DatePicker, { DateObject } from "react-multi-date-picker"
 const Schedule = ({ setOpen, handlecloseModal }) => {
     const [selectedDates, setSelectedDates] = useState([]);
     const [markedDates, setMarkedDates] = useState([])
-
+    const [schedule, setSchedule] = useState([])
+    
     const handleDateChange = (dates) => {
         setSelectedDates(dates);
     }
