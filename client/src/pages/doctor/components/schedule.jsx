@@ -1,29 +1,37 @@
 import React, { useState } from 'react'
 import { Card } from 'react-bootstrap'
 import DatePicker, { DateObject } from "react-multi-date-picker"
+import { toast } from 'react-toastify'
 
-const Schedule = ({ setOpen, handlecloseModal }) => {
+const Schedule = ({ token, handlecloseModal }) => {
     const [selectedDates, setSelectedDates] = useState([]);
     const [markedDates, setMarkedDates] = useState([])
     const [schedule, setSchedule] = useState([])
-    
+
     const handleDateChange = (dates) => {
         setSelectedDates(dates);
     }
 
-    const handleAvailability = (e) => {
-        e.preventDefault()
-        const formattedSchedule = selectedDates.map((date) => ({
-            dates: date.format("YYYY-MM-DD")
-        }));
-        console.log(formattedSchedule)
-        axios.put(`${import.meta.env.VITE_HOST_URL}/api/doctor/changeavailability`, { id: decoded.id, schedule: formattedSchedule }
-        ).then((res) => {
-            window.location.reload()
-            toast.success(res.data.msg)
-        }).catch((err) => {
-            console.log(err)
-        })
+    const handleSchedule = async (e) => {
+        try {
+            e.preventDefault()
+            const formattedSchedule = selectedDates.map((date) => ({
+                dates: date.format("YYYY-MM-DD")
+            }));
+            console.log(formattedSchedule)
+            const res = await axios.put(`${import.meta.env.VITE_HOST_URL}/api/doctor/changeavailability`,
+                { id: decoded.id, schedule: formattedSchedule },
+            )
+            if (res.status === 200) {
+                window.location.reload()
+                toast.success(res.data.msg)
+            } else {
+                toast.error(res.data.msg)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error('Something went wrong...')
+        }
     }
 
     return (
@@ -74,7 +82,7 @@ const Schedule = ({ setOpen, handlecloseModal }) => {
                         <button className="btn btn-secondary" onClick={handlecloseModal}>
                             Cancel
                         </button>
-                        <button className="btn btn-success" onClick={handleAvailability} onMouseEnter={() => setOpen(!open)} onMouseLeave={() => setOpen(!open)}>
+                        <button className="btn btn-success" onClick={handleSchedule} >
                             Set Dates
                         </button>
 

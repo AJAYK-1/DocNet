@@ -11,6 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { toast } from 'react-toastify'
 import Schedule from './components/schedule'
 import EditProfile from './components/editprofile'
+import CreateSchedule from './components/createSchedule'
 
 export default function DoctorProfile() {
 
@@ -20,7 +21,6 @@ export default function DoctorProfile() {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const [open, setOpen] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
     const fetchProfile = async () => {
@@ -29,7 +29,7 @@ export default function DoctorProfile() {
                 headers: { Authorization: `Bearer ${token}` }
             })
             if (res.status === 200) {
-                setDocData(res.data.data)        
+                setDocData(res.data.data)
             } else {
                 toast.error(res.data.msg)
             }
@@ -157,7 +157,8 @@ export default function DoctorProfile() {
                                     </Button>
 
                                     {showModal && (
-                                        <Schedule setOpen={setOpen} handlecloseModal={handlecloseModal} />
+                                        <CreateSchedule token={token} handlecloseModal={handlecloseModal} />
+                                        // <Schedule token={token} handlecloseModal={handlecloseModal} />
                                     )}
 
                                     <div className="d-flex gap-3 justify-content-center mt-3">
