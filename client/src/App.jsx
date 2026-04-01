@@ -31,6 +31,7 @@ const UserFeedback = React.lazy(() => import('./pages/patient/userfeedback'))
 
 const Doctorhome = React.lazy(() => import("./pages/doctor/doctorhome"))
 const DoctorProfile = React.lazy(() => import('./pages/doctor/doctorprofile'))
+const Schedule = React.lazy(() => import('./pages/doctor/schedule'))
 const DoctorViewAppointment = React.lazy(() => import('./pages/doctor/viewappointment'))
 const AddPrescription = React.lazy(() => import('./pages/doctor/addprescription'))
 const ViewPrescription = React.lazy(() => import('./pages/doctor/viewprescription'))
@@ -108,6 +109,7 @@ function App() {
                 <Route path='/' element={<Navigate to={'/doctorhome'} />} />
                 <Route path='/doctorhome' element={<Doctorhome />} />
                 <Route path='/doctorprofile' element={<DoctorProfile />} />
+                <Route path='/schedule' element={<Schedule />} />
                 <Route path='/viewappointment' element={<DoctorViewAppointment />} />
                 <Route path='/addprescription/:id' element={<AddPrescription />} />
                 <Route path='/viewprescription' element={<ViewPrescription />} />

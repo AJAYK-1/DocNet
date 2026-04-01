@@ -111,6 +111,23 @@ const viewLoggedDoctor = async (req, res) => {
     }
 }
 
+// Fetch doctor's schedule...
+const fetchSchedule = async (req, res) => {
+    try {
+        const doctorId = req.user.id
+        const schedule = await DoctorSchedule.find({ doctorId })
+
+        if (schedule.length === 0)
+            return res.status(404).json({ msg: 'Schedule not found', schedule: [] })
+
+        return res.status(200).json({ msg: 'Schedule fetched successfully', schedule })
+
+    } catch (error) {
+        console.log(err)
+        return res.status(500).json({ msg: "Error user not found..." })
+    }
+}
+
 // Changing the doctors schedule...
 const editSchedule = async (req, res) => {
     try {
@@ -288,6 +305,7 @@ const viewPrescription = async (req, res) => {
 module.exports = {
     DoctorRegister,
     createSchedule,
+    fetchSchedule,
     viewLoggedDoctor,
     editSchedule,
     doctorProfileEdit,

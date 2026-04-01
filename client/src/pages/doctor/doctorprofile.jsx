@@ -9,7 +9,7 @@ import { FaAddressCard } from 'react-icons/fa';
 import { useGSAP } from '@gsap/react'
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from 'react-toastify'
-import Schedule from './components/schedule'
+import Schedule from './schedule'
 import EditProfile from './components/editprofile'
 import CreateSchedule from './components/createSchedule'
 
@@ -152,13 +152,13 @@ export default function DoctorProfile() {
                                         <strong>Address:</strong> {DocData.address || 'N/A'}
                                     </Card.Text>
 
-                                    <Button variant="success" size="md" style={{ fontWeight: '600' }} onClick={handleOpen}>
+                                    <Button variant="success" size="md" style={{ fontWeight: '600' }} onClick={() => navigate('/schedule')}>
                                         Your Schedule
                                     </Button>
 
                                     {showModal && (
-                                        <CreateSchedule token={token} handlecloseModal={handlecloseModal} />
-                                        // <Schedule token={token} handlecloseModal={handlecloseModal} />
+                                        // <CreateSchedule token={token} handlecloseModal={handlecloseModal} />
+                                        <Schedule token={token} handlecloseModal={handlecloseModal} />
                                     )}
 
                                     <div className="d-flex gap-3 justify-content-center mt-3">
