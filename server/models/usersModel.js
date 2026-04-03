@@ -46,6 +46,12 @@ const newUser = new mongoose.Schema({
             return this.role === 'doctor'
         }
     },
+    fees: {
+        type: String,
+        required: function () {
+            return this.role === 'doctor'
+        }
+    }
 }, { timestamps: true })
 
 newUser.index({ email: 1 }, { unique: true })

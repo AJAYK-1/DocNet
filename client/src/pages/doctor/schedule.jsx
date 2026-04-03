@@ -24,6 +24,7 @@ const Schedule = () => {
             )
             if (res.status === 200) {
                 setSchedule(res.data.schedule)
+                setSelectedDates(res.data.schedule[0].slots);
             } else {
                 toast.error(res.data.msg)
             }
@@ -97,7 +98,7 @@ const Schedule = () => {
 
                     <div className="modal-footer">
                         <button className="btn btn-success" onClick={handleSchedule} >
-                            Set Dates
+                            Set Schedule
                         </button>
                     </div>
 
