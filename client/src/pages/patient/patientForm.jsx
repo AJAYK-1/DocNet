@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { Form, FloatingLabel, Modal, Button } from 'react-bootstrap';
 import DatePicker, { DateObject } from 'react-multi-date-picker';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import Footer from '../../components/layouts/footer';
+import Navbar from '../../components/layouts/navbar';
 
 const PatientForm = ({ show, handleClose, token, selectedDoctor }) => {
 
+    const { doctor } = useParams()
+    console.log(doctor);
+    
     const [schedule, setSchedule] = useState([])
     const [PatientDetails, setPatientDetails] = useState({
         patientName: '',
@@ -24,7 +29,8 @@ const PatientForm = ({ show, handleClose, token, selectedDoctor }) => {
 
     const fetchSchedule = async () => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetch-schedule`, selectedDoctor,
+            const response = await axios.get(`${import.meta.env.VITE_HOST_URL}/api/user/fetch-schedule`,
+                selectedDoctor,
                 { headers: { Authorization: `Bearer ${token}` } }
             )
             if (response.status === 200) {
@@ -131,63 +137,67 @@ const PatientForm = ({ show, handleClose, token, selectedDoctor }) => {
     }
 
     return (
-        <Modal show={show} onHide={handleClose}>
-            <Form onSubmit={(e) => {
-                e.preventDefault();
-                handlePayment(selectedDoctor._id)
-            }}>
-                <Modal.Header closeButton>
-                    <Modal.Title>✏️ Fill the Patient's Details please</Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="modal-body-bg">
-                    <FloatingLabel controlId="floatingPatientName" label="Patient's Name" className="mb-3">
-                        <Form.Control type="text" name="patientName" onChange={handleChange} placeholder="Enter name" required />
-                    </FloatingLabel>
-                    <FloatingLabel controlId="floatingPatientAge" label="Patient's Age" className="mb-3">
-                        <Form.Control type="number" name="patientAge" onChange={handleChange} placeholder="Enter age" required />
-                    </FloatingLabel>
-                    <Form.Group className="mb-3">
-                        <Form.Label className='text-muted'>Patient's Gender:</Form.Label>
-                        <Form.Check type='radio' label='♂️ Male' name="patientGender" value={'Male'} onChange={handleChange} required />
-                        <Form.Check type='radio' label='♀️ Female' name="patientGender" value={'Female'} onChange={handleChange} />
-                    </Form.Group>
-                    <FloatingLabel controlId="floatingSymptoms" label="Patient's Symptoms" className="mb-3">
-                        <Form.Control as="textarea" name="patientSymptoms" onChange={handleChange} style={{ height: '100px' }} required />
-                    </FloatingLabel>
-                    <Form.Label className='text-muted'>Select Appointment date:</Form.Label>
-                    <DatePicker
-                        disable={(selectedDoctor.schedule || [])
-                            .filter(entry => entry.availability === "Unavailable")
-                            .map(item => new DateObject(item.dates))}
-                        onChange={(date) => setSelectedDates(date)}
-                        value={selectedDates}
-                        format="YYYY-MM-DD"
-                        minDate={new Date()}
-                        highlightToday
-                        onlyCalendar
-                        mapDays={({ date }) => {
-                            const isUnavailable = (selectedDoctor.schedule || []).some(
-                                entry => entry.availability === "Unavailable" && entry.dates === date.format("YYYY-MM-DD")
-                            );
-                            return {
-                                disabled: isUnavailable,
-                                style: isUnavailable
-                                    ? { backgroundColor: "#e74c3c", color: "white", borderRadius: "50%" }
-                                    : {}
-                            };
-                        }}
-                        required
-                    /> <br />
-                    <Form.Text className='text-muted mt-1'>
-                        ⚠️ You cannot select a date on which the doctor is unavailable.
-                    </Form.Text>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>Close</Button>
-                    <Button variant="primary" type='submit'>Confirm Booking</Button>
-                </Modal.Footer>
-            </Form>
-        </Modal>
+        <>
+            <Navbar />
+            <Modal show={show} onHide={handleClose}>
+                <Form onSubmit={(e) => {
+                    e.preventDefault();
+                    handlePayment(selectedDoctor._id)
+                }}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>✏️ Fill the Patient's Details please</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body className="modal-body-bg">
+                        <FloatingLabel controlId="floatingPatientName" label="Patient's Name" className="mb-3">
+                            <Form.Control type="text" name="patientName" onChange={handleChange} placeholder="Enter name" required />
+                        </FloatingLabel>
+                        <FloatingLabel controlId="floatingPatientAge" label="Patient's Age" className="mb-3">
+                            <Form.Control type="number" name="patientAge" onChange={handleChange} placeholder="Enter age" required />
+                        </FloatingLabel>
+                        <Form.Group className="mb-3">
+                            <Form.Label className='text-muted'>Patient's Gender:</Form.Label>
+                            <Form.Check type='radio' label='♂️ Male' name="patientGender" value={'Male'} onChange={handleChange} required />
+                            <Form.Check type='radio' label='♀️ Female' name="patientGender" value={'Female'} onChange={handleChange} />
+                        </Form.Group>
+                        <FloatingLabel controlId="floatingSymptoms" label="Patient's Symptoms" className="mb-3">
+                            <Form.Control as="textarea" name="patientSymptoms" onChange={handleChange} style={{ height: '100px' }} required />
+                        </FloatingLabel>
+                        <Form.Label className='text-muted'>Select Appointment date:</Form.Label>
+                        <DatePicker
+                            disable={(selectedDoctor.schedule || [])
+                                .filter(entry => entry.availability === "Unavailable")
+                                .map(item => new DateObject(item.dates))}
+                            onChange={(date) => setSelectedDates(date)}
+                            value={selectedDates}
+                            format="YYYY-MM-DD"
+                            minDate={new Date()}
+                            highlightToday
+                            onlyCalendar
+                            mapDays={({ date }) => {
+                                const isUnavailable = (selectedDoctor.schedule || []).some(
+                                    entry => entry.availability === "Unavailable" && entry.dates === date.format("YYYY-MM-DD")
+                                );
+                                return {
+                                    disabled: isUnavailable,
+                                    style: isUnavailable
+                                        ? { backgroundColor: "#e74c3c", color: "white", borderRadius: "50%" }
+                                        : {}
+                                };
+                            }}
+                            required
+                        /> <br />
+                        <Form.Text className='text-muted mt-1'>
+                            ⚠️ You cannot select a date on which the doctor is unavailable.
+                        </Form.Text>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>Close</Button>
+                        <Button variant="primary" type='submit'>Confirm Booking</Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+            <Footer />
+        </>
     )
 }
 

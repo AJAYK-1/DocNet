@@ -7,12 +7,11 @@ import { FaHeartbeat, FaSearch } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import './userStyling.css';
 import axios from 'axios';
-import PatientForm from './components/patientForm';
+import PatientForm from './patientForm';
+import { Navigate } from 'react-router-dom';
 
 export default function SeeAllDoctors() {
-
   const token = localStorage.getItem('token');
-
   const [DocProfiles, setDocProfiles] = useState([]);
   const [show, setShow] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -46,6 +45,7 @@ export default function SeeAllDoctors() {
 
   const chooseDoctor = (doctor) => {
     setSelectedDoctor(doctor);
+    <Navigate to={'/patient-form'} />
     handleShow();
   };
 
@@ -108,9 +108,9 @@ export default function SeeAllDoctors() {
         </div>
       </div>
 
-      {selectedDoctor && (
+      {/* {selectedDoctor && (
         <PatientForm show={show} handleClose={handleClose} token={token} selectedDoctor={selectedDoctor} />
-      )}
+      )} */}
 
       <Footer />
     </>
