@@ -8,14 +8,14 @@ import { toast } from 'react-toastify';
 import './userStyling.css';
 import axios from 'axios';
 import PatientForm from './patientForm';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function SeeAllDoctors() {
   const token = localStorage.getItem('token');
   const [DocProfiles, setDocProfiles] = useState([]);
   const [show, setShow] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
-
+  const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState("");
 
   const getDoctors = async () => {
@@ -45,8 +45,9 @@ export default function SeeAllDoctors() {
 
   const chooseDoctor = (doctor) => {
     setSelectedDoctor(doctor);
-    <Navigate to={'/patient-form'} />
-    handleShow();
+    const id = doctor._id
+    navigate(`/patient-form/${id}`)
+    // handleShow();
   };
 
   return (
