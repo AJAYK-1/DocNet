@@ -27,7 +27,7 @@ const UserProfile = React.lazy(() => import('./pages/patient/userprofile'))
 const Appointment = React.lazy(() => import('./pages/patient/appointment'))
 const GetMyPrescription = React.lazy(() => import('./pages/patient/getprescription'))
 const SeeAllDoctors = React.lazy(() => import('./pages/patient/seealldoctors'))
-const PatientForm = React.lazy(() => ('./pages/patient/patientForm'))
+const PatientForm = React.lazy(() => import('./pages/patient/patientForm'))
 const UserFeedback = React.lazy(() => import('./pages/patient/userfeedback'))
 
 const Doctorhome = React.lazy(() => import("./pages/doctor/doctorhome"))
