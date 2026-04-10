@@ -235,10 +235,10 @@ const viewDoctorsProfile = async (req, res) => {
 
 const fetchSchedule = async (req, res) => {
     try {
-        const { id: doctorId } = req.body
+        const { id: doctorId } = req.query
         const schedule = await docScheduleModel.find(doctorId)
 
-        if (!schedule) return res.status(404).json({ msg: 'No schedule found for this doctor...' })
+        if (!schedule) return res.status(404).json({ msg: 'No schedule found for this doctor...', schedule: [] })
 
         return res.status(200).json({ msg: "Schedule fetched successfully...", schedule })
     } catch (error) {
