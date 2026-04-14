@@ -19,7 +19,7 @@ const PatientForm = () => {
         patientGender: '',
         patientSymptoms: ''
     });
-    const [selectedDates, setSelectedDates] = useState([]);
+    const [selectedDate, setSelectedDate] = useState([]);
 
     const navigate = useNavigate();
 
@@ -28,7 +28,7 @@ const PatientForm = () => {
     };
 
     const handleDate = (sch) => {
-        setSelectedDates(sch);
+        setSelectedDate(sch);
     }
 
     const fetchSchedule = async () => {
@@ -38,7 +38,7 @@ const PatientForm = () => {
             )
             if (response.status === 200) {
                 setSchedule(response.data.schedule)
-                setSelectedDates(response.data.schedule[0].slots)
+                setSelectedDate(response.data.schedule[0].slots)
             } else {
                 toast.error(response.data.msg)
             }
@@ -58,7 +58,7 @@ const PatientForm = () => {
                 userId: decoded.id,
                 doctorId: docId,
                 ...PatientDetails,
-                appointmentDate: selectedDates.format('YYYY-MM-DD')
+                appointmentDate: selectedDate.format('YYYY-MM-DD')
             })
             if (res.data.status === 200) {
                 toast.success(res.data.msg);
@@ -153,7 +153,7 @@ const PatientForm = () => {
                             e.preventDefault();
                             handlePayment(selectedDoctor._id)
                         }}>
-                        <div className="modal-body-bg">
+                        <div className="modal-body-bg p-5">
                             <FloatingLabel controlId="floatingPatientName" label="Patient's Name" className="mb-3">
                                 <Form.Control type="text" name="patientName" onChange={handleChange} placeholder="Enter name" required />
                             </FloatingLabel>
@@ -174,6 +174,7 @@ const PatientForm = () => {
                                 {schedule.map((sch) =>
                                     <button
                                         key={sch._id}
+                                        type='button'
                                         onClick={() => handleDate(sch.slots)}
                                         className="btn btn-success mx-2">
                                         {new Date(sch.date).toLocaleDateString()}
@@ -182,44 +183,24 @@ const PatientForm = () => {
                             </div>
 
                             <div className="modal-body d-flex justify-center flex-wrap">
-                                {selectedDates.map((selected) =>
-                                    <div key={selected._id} className='bg-gray-400 m-2 p-2 rounded-2xl'>{selected.time}</div>
-                                )}
+                                {selectedDate.map((selected) =>
+                                    selected.isBooked ? (
+                                        <div key={selected._id} className='bg-red-400 m-2 p-2 rounded-2xl'>{selected.time}</div>
+                                    ) : (
+                                        <div key={selected._id} className='bg-gray-400 m-2 p-2 rounded-2xl'>{selected.time}</div>
+                                    ))}
                             </div>
-                            {/* <DatePicker
-                            disable={(selectedDoctor.schedule || [])
-                            .filter(entry => entry.availability === "Unavailable")
-                            .map(item => new DateObject(item.dates))}
-                            onChange={(date) => setSelectedDates(date)}
-                            value={selectedDates}
-                            format="YYYY-MM-DD"
-                            minDate={new Date()}
-                            highlightToday
-                            onlyCalendar
-                            mapDays={({ date }) => {
-                                const isUnavailable = (selectedDoctor.schedule || []).some(
-                                    entry => entry.availability === "Unavailable" && entry.dates === date.format("YYYY-MM-DD")
-                                    );
-                                    return {
-                                        disabled: isUnavailable,
-                                        style: isUnavailable
-                                        ? { backgroundColor: "#e74c3c", color: "white", borderRadius: "50%" }
-                                        : {}
-                                };
-                                }}
-                                required
-                                /> <br /> */}
+
                             <Form.Text className='text-muted mt-1'>
                                 ⚠️ You cannot select a date on which the doctor is unavailable.
                             </Form.Text>
                         </div>
-                        <div>
-                            {/* <Button variant="secondary" onClick={handleClose}>Close</Button> */}
+                        <div className=''>
                             <Button variant="primary" type='submit'>Confirm Booking</Button>
                         </div>
                     </Form>
-                </div>
-            </div>
+                </div >
+            </div >
 
             <Footer />
         </>
