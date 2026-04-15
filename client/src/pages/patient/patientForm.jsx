@@ -19,7 +19,8 @@ const PatientForm = () => {
         patientGender: '',
         patientSymptoms: ''
     });
-    const [selectedDate, setSelectedDate] = useState([]);
+    const [selectedSlots, setSelectedSlots] = useState([]);
+    const [selectedDate, setSelectedDate] = useState()
 
     const navigate = useNavigate();
 
@@ -28,7 +29,7 @@ const PatientForm = () => {
     };
 
     const handleDate = (sch) => {
-        setSelectedDate(sch);
+        setSelectedSlots(sch);
     }
 
     const fetchSchedule = async () => {
@@ -38,7 +39,8 @@ const PatientForm = () => {
             )
             if (response.status === 200) {
                 setSchedule(response.data.schedule)
-                setSelectedDate(response.data.schedule[0].slots)
+                setSelectedDate(response.data.schedule[0].date)
+                setSelectedSlots(response.data.schedule[0].slots)
             } else {
                 toast.error(response.data.msg)
             }
@@ -58,7 +60,7 @@ const PatientForm = () => {
                 userId: decoded.id,
                 doctorId: docId,
                 ...PatientDetails,
-                appointmentDate: selectedDate.format('YYYY-MM-DD')
+                appointmentDate: selectedSlots.format('YYYY-MM-DD')
             })
             if (res.data.status === 200) {
                 toast.success(res.data.msg);
@@ -183,7 +185,7 @@ const PatientForm = () => {
                             </div>
 
                             <div className="modal-body d-flex justify-center flex-wrap">
-                                {selectedDate.map((selected) =>
+                                {selectedSlots.map((selected) =>
                                     selected.isBooked ? (
                                         <div key={selected._id} className='bg-red-400 m-2 p-2 rounded-2xl'>{selected.time}</div>
                                     ) : (
