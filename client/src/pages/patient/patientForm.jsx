@@ -17,7 +17,9 @@ const PatientForm = () => {
         patientName: '',
         patientAge: '',
         patientGender: '',
-        patientSymptoms: ''
+        patientSymptoms: '',
+        appointmentDate: '',
+        appointmentTime: ''
     });
     const [selectedSlots, setSelectedSlots] = useState([]);
     const [selectedDate, setSelectedDate] = useState()
@@ -187,9 +189,9 @@ const PatientForm = () => {
                             <div className="modal-body d-flex justify-center flex-wrap">
                                 {selectedSlots.map((selected) =>
                                     selected.isBooked ? (
-                                        <div key={selected._id} className='bg-red-400 m-2 p-2 rounded-2xl'>{selected.time}</div>
+                                        <button key={selected._id} className='bg-red-400 m-2 p-2 rounded-2xl'>{selected.time}</button>
                                     ) : (
-                                        <div key={selected._id} className='bg-gray-400 m-2 p-2 rounded-2xl'>{selected.time}</div>
+                                        <button key={selected._id} className='bg-gray-400 m-2 p-2 rounded-2xl'>{selected.time}</button>
                                     ))}
                             </div>
 
