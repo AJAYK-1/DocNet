@@ -30,9 +30,15 @@ const PatientForm = () => {
         setPatientDetails({ ...PatientDetails, [e.target.name]: e.target.value });
     };
 
-    const handleDate = (sch) => {
-        setSelectedSlots(sch);
+    const handleSlot = (appointmentTime) => {
+        setPatientDetails({ ...PatientDetails, appointmentTime })
     }
+
+    const handleDate = (sch) => {
+        setSelectedSlots(sch.slots);
+        setPatientDetails({ ...PatientDetails, appointmentDate: sch.date })
+    }
+    console.log(PatientDetails);
 
     const fetchSchedule = async () => {
         try {
@@ -56,11 +62,11 @@ const PatientForm = () => {
         fetchSchedule()
     }, [])
 
-    const handleAppointment = async (docId) => {
+    const handleAppointment = async () => {
         try {
             const res = await axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/bookappointment`, {
                 userId: decoded.id,
-                doctorId: docId,
+                doctorId: id,
                 ...PatientDetails,
                 appointmentDate: selectedSlots.format('YYYY-MM-DD')
             })
@@ -76,7 +82,8 @@ const PatientForm = () => {
         }
     };
 
-    const handlePayment = async (docId) => {
+    const handlePayment = async (e) => {
+        e.preventDefault()
         axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/payment`,
             {
                 amount: 1000,
@@ -102,7 +109,7 @@ const PatientForm = () => {
                             .then((res) => {
                                 if (res.data.status == 200) {
                                     toast.success(res.data.msg)
-                                    handleAppointment(docId)
+                                    handleAppointment(id)
                                 } else {
                                     toast.error(res.data.msg)
                                 }
@@ -152,11 +159,10 @@ const PatientForm = () => {
                     <div className="modal-header">
                         <h5 className="modal-title">✏️ Fill the Patient's Details please</h5>
                     </div>
-                    <Form className="modal-body flex flex-col justify-content-center bg-gray-100 p-5"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handlePayment(selectedDoctor._id)
-                        }}>
+
+                    <Form
+                        className="modal-body flex flex-col justify-content-center bg-gray-100 p-5"
+                        onSubmit={handlePayment}>
                         <div className="modal-body-bg p-5">
                             <FloatingLabel controlId="floatingPatientName" label="Patient's Name" className="mb-3">
                                 <Form.Control type="text" name="patientName" onChange={handleChange} placeholder="Enter name" required />
@@ -179,7 +185,7 @@ const PatientForm = () => {
                                     <button
                                         key={sch._id}
                                         type='button'
-                                        onClick={() => handleDate(sch.slots)}
+                                        onClick={() => handleDate(sch)}
                                         className="btn btn-success mx-2">
                                         {new Date(sch.date).toLocaleDateString()}
                                     </button>
@@ -189,9 +195,18 @@ const PatientForm = () => {
                             <div className="modal-body d-flex justify-center flex-wrap">
                                 {selectedSlots.map((selected) =>
                                     selected.isBooked ? (
-                                        <button key={selected._id} className='bg-red-400 m-2 p-2 rounded-2xl'>{selected.time}</button>
+                                        <button
+                                            key={selected._id}
+                                            className='bg-sky-400 m-2 p-2 rounded-xl'>
+                                            {selected.time}
+                                        </button>
                                     ) : (
-                                        <button key={selected._id} className='bg-gray-400 m-2 p-2 rounded-2xl'>{selected.time}</button>
+                                        <button
+                                            key={selected._id}
+                                            onClick={() => handleSlot(selected.time)}
+                                            className='bg-gray-400 m-2 p-2 rounded-xl'>
+                                            {selected.time}
+                                        </button>
                                     ))}
                             </div>
 
