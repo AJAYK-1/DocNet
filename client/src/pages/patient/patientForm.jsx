@@ -65,10 +65,11 @@ const PatientForm = () => {
     const handleAppointment = async () => {
         try {
             const res = await axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/bookappointment`, {
-                userId: decoded.id,
                 doctorId: id,
                 ...PatientDetails,
                 appointmentDate: selectedSlots.format('YYYY-MM-DD')
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
             })
             if (res.data.status === 200) {
                 toast.success(res.data.msg);
