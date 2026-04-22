@@ -235,15 +235,17 @@ const viewDoctorsProfile = async (req, res) => {
 
 const fetchSchedule = async (req, res) => {
     try {
-        const { id: doctorId } = req.query
-        const schedule = await docScheduleModel.find(doctorId)
+        const id = req.params.id
+        const schedule = await docScheduleModel.find({ doctorId: id })
+        const doctor = await Users.findOne({ _id: id })
 
-        if (!schedule) return res.status(404).json({ msg: 'No schedule found for this doctor...', schedule: [] })
+        if (!schedule)
+            return res.status(404).json({ msg: 'No schedule found for this doctor...', schedule: [], fees: doctor.fees })
 
-        return res.status(200).json({ msg: "Schedule fetched successfully...", schedule })
+        return res.status(200).json({ msg: "Schedule fetched successfully...", schedule, fees: doctor.fees })
     } catch (error) {
-        console.log(err)
-        return res.json({ msg: "Internal Server Error", status: 500 })
+        console.log(error)
+        return res.status(500).json({ msg: "Internal Server Error" })
     }
 }
 

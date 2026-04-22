@@ -10,7 +10,6 @@ import Navbar from '../../components/layouts/navbar';
 const PatientForm = () => {
     const token = localStorage.getItem('token')
     const { id } = useParams()
-    // console.log(doctor);
 
     const [schedule, setSchedule] = useState([])
     const [PatientDetails, setPatientDetails] = useState({
@@ -23,6 +22,7 @@ const PatientForm = () => {
     });
     const [selectedSlots, setSelectedSlots] = useState([]);
     const [selectedDate, setSelectedDate] = useState()
+    const [fees, setFees] = useState(0)
 
     const navigate = useNavigate();
 
@@ -49,6 +49,7 @@ const PatientForm = () => {
                 setSchedule(response.data.schedule)
                 setSelectedDate(response.data.schedule[0].date)
                 setSelectedSlots(response.data.schedule[0].slots)
+                setFees(response.data.fees)
             } else {
                 toast.error(response.data.msg)
             }
@@ -67,7 +68,6 @@ const PatientForm = () => {
             const res = await axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/bookappointment`, {
                 doctorId: id,
                 ...PatientDetails,
-                appointmentDate: selectedSlots.format('YYYY-MM-DD')
             }, {
                 headers: { Authorization: `Bearer ${token}` }
             })
@@ -85,9 +85,10 @@ const PatientForm = () => {
 
     const handlePayment = async (e) => {
         e.preventDefault()
+        const amount = fees * 100
         axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/payment`,
             {
-                amount: 1000,
+                amount: amount,
                 currency: "INR",
                 receipt: "qazwsx1"
             },
@@ -97,7 +98,7 @@ const PatientForm = () => {
                 const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID
                 const options = {
                     "key": keyId, // Enter the Key ID generated from the Dashboard
-                    amount: 1000, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                    amount: amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                     currency: "INR",
                     "name": "DocNet", //your business name
                     "description": "Dummy Transaction",
@@ -197,12 +198,14 @@ const PatientForm = () => {
                                 {selectedSlots.map((selected) =>
                                     selected.isBooked ? (
                                         <button
+                                            type='button'
                                             key={selected._id}
                                             className='bg-sky-400 m-2 p-2 rounded-xl'>
                                             {selected.time}
                                         </button>
                                     ) : (
                                         <button
+                                            type='button'
                                             key={selected._id}
                                             onClick={() => handleSlot(selected.time)}
                                             className='bg-gray-400 m-2 p-2 rounded-xl'>
@@ -212,7 +215,7 @@ const PatientForm = () => {
                             </div>
 
                             <Form.Text className='text-muted mt-1'>
-                                ⚠️ You cannot select a date on which the doctor is unavailable.
+                                ⚠️ You cannot select a date/time on which the doctor is unavailable.
                             </Form.Text>
                         </div>
                         <div className=''>
