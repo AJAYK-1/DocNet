@@ -23,6 +23,9 @@ const PatientForm = () => {
     const [selectedSlots, setSelectedSlots] = useState([]);
     const [selectedDate, setSelectedDate] = useState()
     const [fees, setFees] = useState(0)
+    const [timeSlot, SetTimeSlot] = useState({
+        date: '', time: ''
+    })
 
     const navigate = useNavigate();
 
@@ -32,6 +35,7 @@ const PatientForm = () => {
 
     const handleSlot = (appointmentTime) => {
         setPatientDetails({ ...PatientDetails, appointmentTime })
+        SetTimeSlot({ time: appointmentTime })
     }
 
     const handleDate = (sch) => {
@@ -47,7 +51,7 @@ const PatientForm = () => {
             )
             if (response.status === 200) {
                 setSchedule(response.data.schedule)
-                setSelectedDate(response.data.schedule[0].date)
+                SetTimeSlot({ date: response.data.schedule[0].date })
                 setSelectedSlots(response.data.schedule[0].slots)
                 setFees(response.data.fees)
             } else {
@@ -115,12 +119,10 @@ const PatientForm = () => {
                                 } else {
                                     toast.error(res.data.msg)
                                 }
-
                             }).catch((err) => {
                                 console.log(err)
                                 toast.error("Payment Error...")
                             })
-
                     },
                     "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
                         "name": "", //your customer's name
@@ -200,17 +202,27 @@ const PatientForm = () => {
                                         <button
                                             type='button'
                                             key={selected._id}
+                                            disabled
                                             className='bg-sky-400 m-2 p-2 rounded-xl'>
                                             {selected.time}
                                         </button>
                                     ) : (
-                                        <button
-                                            type='button'
-                                            key={selected._id}
-                                            onClick={() => handleSlot(selected.time)}
-                                            className='bg-gray-400 m-2 p-2 rounded-xl'>
-                                            {selected.time}
-                                        </button>
+                                        selected.time === timeSlot.time && PatientDetails.appointmentDate === timeSlot.date ? (
+                                            <button
+                                                type='button'
+                                                key={selected._id}
+                                                className='bg-red-400 m-2 p-2 rounded-xl'>
+                                                {selected.time}
+                                            </button>
+                                        ) : (
+                                            <button
+                                                type='button'
+                                                key={selected._id}
+                                                onClick={() => handleSlot(selected.time)}
+                                                className='bg-gray-400 m-2 p-2 rounded-xl'>
+                                                {selected.time}
+                                            </button>
+                                        )
                                     ))}
                             </div>
 
