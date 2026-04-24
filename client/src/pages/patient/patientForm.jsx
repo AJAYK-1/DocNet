@@ -89,14 +89,14 @@ const PatientForm = () => {
 
     const handlePayment = async (e) => {
         e.preventDefault()
-        const amount = fees * 100
+        const amount = fees * 100 + 2500
         axios.post(`${import.meta.env.VITE_HOST_URL}/api/user/payment`,
             {
                 amount: amount,
                 currency: "INR",
                 receipt: "qazwsx1"
             },
-            { headers: { "Content-Type": "application/json" } })
+            { headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` } })
             .then((res) => {
                 const order = res.data
                 const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID
