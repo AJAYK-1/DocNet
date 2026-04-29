@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 const CreateSchedule = ({ token }) => {
     const [schedule, setSchedule] = useState({
-        startTime: '', endTime: '', interval: 30
+        startTime: '', endTime: '', interval: 30, fees: 0
     })
 
     const navigate = useNavigate()
@@ -61,6 +61,10 @@ const CreateSchedule = ({ token }) => {
 
                             <FloatingLabel controlId="floatingInterval" label="Interval" className="mb-3">
                                 <Form.Control type="text" name="interval" value={schedule.interval} onChange={handleChange} placeholder="Enter Interval" />
+                            </FloatingLabel>
+
+                            <FloatingLabel controlId="floatingFees" label="Fees" className="mb-3">
+                                <Form.Control type="number" name="fees" value={schedule.fees} onChange={handleChange} placeholder="Enter Fees" />
                             </FloatingLabel>
                         </Form>
 
