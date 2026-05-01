@@ -9,13 +9,44 @@ const { WelcomeMailDoctor } = require('../emails/welcomeDoctor')
 const DoctorSchedule = require("../models/docScheduleModel")
 const generateSlots = require("../utils/generateSlots")
 
+// Registration for doctors...
+const DoctorRegister = async (req, res) => {
+    try {
+        const { docname, email, password, address, license, qualification, specialization } = req.body
+        const profileImage = req.file.filename
+        const ExistingDoctor = await Users.findOne({ email })
+        if (ExistingDoctor) {
+            res.json({ msg: "Account already exists...", status: 400 })
+        } else {
+            const hashedPassword = await argon2.hash(password)
+            const DoctorData = await Users({
+                docname,
+                email,
+                password: hashedPassword,
+                address,
+                license,
+                qualification,
+                specialization,
+                profileImage
+            })
+            const personalMail = await WelcomeMailDoctor(docname)
+            sendaMail(email, "🎉 Welcome to DocNet – Your Health, Simplified!", "", personalMail)
+            await DoctorData.save()
+            res.status(200).json({ msg: "Registration Successfull..." })
+        }
+    } catch (err) {
+        console.log(err)
+        res.json({ msg: "Registration Error...", status: 404 })
+    }
+}
+
 // Create a schedule for the doctor...
 const createSchedule = async (req, res) => {
     try {
         const doctorId = req.user.id
-        const { startTime, endTime, interval } = req.body
+        const { startTime, endTime, interval, fees } = req.body
 
-        if (!startTime || !endTime || !interval) {
+        if (!startTime || !endTime || !interval || !fees) {
             return res.status(400).json({ msg: "All fields required" })
         }
 
@@ -56,42 +87,15 @@ const createSchedule = async (req, res) => {
             await DoctorSchedule.insertMany(schedules)
         }
 
+        const doctor = await Users.findById(doctorId)
+        doctor.fees = fees
+        await doctor.save()
+
         return res.status(200).json({ msg: "Schedule created successfully" })
 
     } catch (err) {
         console.log(err)
         return res.status(500).json({ msg: "Internal Server Error" })
-    }
-}
-
-// Registration for doctors...
-const DoctorRegister = async (req, res) => {
-    try {
-        const { docname, email, password, address, license, qualification, specialization } = req.body
-        const profileImage = req.file.filename
-        const ExistingDoctor = await Users.findOne({ email })
-        if (ExistingDoctor) {
-            res.json({ msg: "Account already exists...", status: 400 })
-        } else {
-            const hashedPassword = await argon2.hash(password)
-            const DoctorData = await Users({
-                docname,
-                email,
-                password: hashedPassword,
-                address,
-                license,
-                qualification,
-                specialization,
-                profileImage
-            })
-            const personalMail = await WelcomeMailDoctor(docname)
-            sendaMail(email, "🎉 Welcome to DocNet – Your Health, Simplified!", "", personalMail)
-            await DoctorData.save()
-            res.status(200).json({ msg: "Registration Successfull..." })
-        }
-    } catch (err) {
-        console.log(err)
-        res.json({ msg: "Registration Error...", status: 404 })
     }
 }
 
