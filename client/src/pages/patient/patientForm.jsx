@@ -24,7 +24,7 @@ const PatientForm = () => {
     const [selectedDate, setSelectedDate] = useState()
     const [fees, setFees] = useState(0)
     const [timeSlot, SetTimeSlot] = useState({
-        date: '', time: ''
+        date: "", time: ""
     })
 
     const navigate = useNavigate();
@@ -35,12 +35,16 @@ const PatientForm = () => {
 
     const handleSlot = (appointmentTime) => {
         setPatientDetails({ ...PatientDetails, appointmentTime })
-        SetTimeSlot({ time: appointmentTime })
+        SetTimeSlot({ ...timeSlot, time: appointmentTime })
     }
 
     const handleDate = (sch) => {
         setSelectedSlots(sch.slots);
         setPatientDetails({ ...PatientDetails, appointmentDate: sch.date })
+        SetTimeSlot({
+            date: sch.date,
+            time: ""
+        })
     }
     console.log(PatientDetails);
 
@@ -198,33 +202,23 @@ const PatientForm = () => {
                             </div>
 
                             <div className="modal-body d-flex justify-center flex-wrap">
-                                {selectedSlots.map((selected) =>
-                                    selected.isBooked ? (
+                                {selectedSlots.map((slot) => {
+                                    const isSelected = slot.time === timeSlot.time && PatientDetails.appointmentDate === timeSlot.date
+
+                                    return (
                                         <button
                                             type='button'
-                                            key={selected._id}
-                                            disabled
-                                            className='bg-sky-400 m-2 p-2 rounded-xl'>
-                                            {selected.time}
+                                            key={slot._id}
+                                            disabled={slot.isBooked}
+                                            onClick={() => handleSlot(slot.time)}
+                                            className={`m-2 p-2 rounded-xl
+                                            ${slot.isBooked ? 'bg-red-500 cursor-not-allowed' :
+                                                    isSelected ? 'bg-green-500 text-white' : 'bg-gray-400'
+                                                }`}>
+                                            {slot.time}
                                         </button>
-                                    ) : (
-                                        selected.time === timeSlot.time && PatientDetails.appointmentDate === timeSlot.date ? (
-                                            <button
-                                                type='button'
-                                                key={selected._id}
-                                                className='bg-red-400 m-2 p-2 rounded-xl'>
-                                                {selected.time}
-                                            </button>
-                                        ) : (
-                                            <button
-                                                type='button'
-                                                key={selected._id}
-                                                onClick={() => handleSlot(selected.time)}
-                                                className='bg-gray-400 m-2 p-2 rounded-xl'>
-                                                {selected.time}
-                                            </button>
-                                        )
-                                    ))}
+                                    )
+                                })}
                             </div>
 
                             <Form.Text className='text-muted mt-1'>
