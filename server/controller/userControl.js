@@ -389,7 +389,6 @@ const fetchMyPrescription = async (req, res) => {
     }
 }
 
-
 // Fetch a single prescription ...
 const fetchPrescriptionById = async (req, res) => {
     try {
@@ -406,7 +405,6 @@ const fetchPrescriptionById = async (req, res) => {
     }
 }
 
-
 // View all feedbacks...
 const viewFeedbacks = async (req, res) => {
     try {
@@ -417,7 +415,6 @@ const viewFeedbacks = async (req, res) => {
         res.json({ msg: "An Error Occured...", status: 404 })
     }
 }
-
 
 // Submit a feedback...
 const submitFeedback = async (req, res) => {
@@ -431,7 +428,6 @@ const submitFeedback = async (req, res) => {
         res.json({ msg: "Feeback Submisson error...", status: 400 })
     }
 }
-
 
 // Payment using RazorPay...
 const Payment = async (req, res) => {
@@ -450,10 +446,10 @@ const Payment = async (req, res) => {
         res.json(order)
 
     } catch (err) {
+        console.log(err)
         res.json(err)
     }
 }
-
 
 // Validate the payment...
 const ValidatePayment = async (req, res) => {
@@ -469,10 +465,9 @@ const ValidatePayment = async (req, res) => {
 
     } catch (err) {
         console.log(err)
-        res.json({ msg: "An Error Occured...", status: 404 })
+        res.json({ msg: "An Error Occured...", status: 500 })
     }
 }
-
 
 module.exports = {
     registerUser,
