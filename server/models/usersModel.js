@@ -51,6 +51,11 @@ const newUser = new mongoose.Schema({
         required: function () {
             return this.role === 'doctor'
         }
+    },
+    schedule: {
+        startTime: { type: String },
+        endTime: { type: String },
+        interval: { type: String }
     }
 }, { timestamps: true })
 
