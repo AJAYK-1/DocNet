@@ -55,7 +55,8 @@ const newUser = new mongoose.Schema({
     schedule: {
         startTime: { type: String },
         endTime: { type: String },
-        interval: { type: String }
+        interval: { type: Number, default: 30 },
+        leave: [{ type: String }]
     }
 }, { timestamps: true })
 
