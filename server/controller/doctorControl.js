@@ -44,7 +44,7 @@ const DoctorRegister = async (req, res) => {
 const createSchedule = async (req, res) => {
     try {
         const doctorId = req.user.id
-        const { startTime, endTime, interval, fees } = req.body
+        const { startTime, endTime, interval, leave, fees } = req.body
 
         if (!startTime || !endTime || !interval || !fees) {
             return res.status(400).json({ msg: "All fields required" })
@@ -89,6 +89,10 @@ const createSchedule = async (req, res) => {
 
         const doctor = await Users.findById(doctorId)
         doctor.fees = fees
+        doctor.schedule.startTime = startTime
+        doctor.schedule.endTime = endTime
+        doctor.schedule.interval = interval
+        if (leave) doctor.schedule.leave = leave
         await doctor.save()
 
         return res.status(200).json({ msg: "Schedule created successfully" })
