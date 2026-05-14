@@ -50,7 +50,6 @@ const createSchedule = async (req, res) => {
             return res.status(400).json({ msg: "All fields required" })
         }
 
-        const generatedSlots = generateSlots(startTime, endTime, interval)
 
         if (generatedSlots.length === 0) {
             return res.status(400).json({ msg: "Invalid time range" })
@@ -123,12 +122,16 @@ const viewLoggedDoctor = async (req, res) => {
 const fetchSchedule = async (req, res) => {
     try {
         const doctorId = req.user.id
+        const doctor = await Users.findById(doctorId)
+
+        const generatedSlots = await generateSlots(doctor.schedule.startTime, doctor.schedule.endTime, doctor.schedule.interval)
+
         const schedule = await DoctorSchedule.find({ doctorId })
 
         if (schedule.length === 0)
             return res.status(404).json({ msg: 'Schedule not found', schedule: [] })
 
-        return res.status(200).json({ msg: 'Schedule fetched successfully', schedule })
+        return res.status(200).json({ msg: 'Schedule fetched successfully', schedule: generatedSlots })
 
     } catch (error) {
         console.log(err)
