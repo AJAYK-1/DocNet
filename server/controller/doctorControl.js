@@ -128,7 +128,7 @@ const fetchSchedule = async (req, res) => {
 
         const schedule = await DoctorSchedule.find({ doctorId })
 
-        if (schedule.length === 0)
+        if (generatedSlots.length === 0)
             return res.status(404).json({ msg: 'Schedule not found', schedule: [] })
 
         return res.status(200).json({ msg: 'Schedule fetched successfully', schedule: generatedSlots })
