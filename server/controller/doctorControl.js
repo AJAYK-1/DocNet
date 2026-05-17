@@ -126,7 +126,7 @@ const fetchSchedule = async (req, res) => {
 
         const generatedSlots = await generateSlots(doctor.schedule.startTime, doctor.schedule.endTime, doctor.schedule.interval)
 
-        const schedule = await DoctorSchedule.find({ doctorId })
+        // const schedule = await DoctorSchedule.find({ doctorId })
 
         if (generatedSlots.length === 0)
             return res.status(404).json({ msg: 'Schedule not found', schedule: [] })
