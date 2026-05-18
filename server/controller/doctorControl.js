@@ -10,33 +10,49 @@ const DoctorSchedule = require("../models/docScheduleModel")
 const generateSlots = require("../utils/generateSlots")
 
 // Registration for doctors...
-const DoctorRegister = async (req, res) => {
+// const DoctorRegister = async (req, res) => {
+//     try {
+//         const { docname, email, password, address, license, qualification, specialization } = req.body
+//         const profileImage = req.file.filename
+//         const ExistingDoctor = await Users.findOne({ email })
+//         if (ExistingDoctor) {
+//             res.json({ msg: "Account already exists...", status: 400 })
+//         } else {
+//             const hashedPassword = await argon2.hash(password)
+//             const DoctorData = await Users({
+//                 docname,
+//                 email,
+//                 password: hashedPassword,
+//                 address,
+//                 license,
+//                 qualification,
+//                 specialization,
+//                 profileImage
+//             })
+//             const personalMail = await WelcomeMailDoctor(docname)
+//             sendaMail(email, "🎉 Welcome to DocNet – Your Health, Simplified!", "", personalMail)
+//             await DoctorData.save()
+//             res.status(200).json({ msg: "Registration Successfull..." })
+//         }
+//     } catch (err) {
+//         console.log(err)
+//         res.json({ msg: "Registration Error...", status: 404 })
+//     }
+// }
+
+// Currently Logged in doctor...
+const viewLoggedDoctor = async (req, res) => {
     try {
-        const { docname, email, password, address, license, qualification, specialization } = req.body
-        const profileImage = req.file.filename
-        const ExistingDoctor = await Users.findOne({ email })
-        if (ExistingDoctor) {
-            res.json({ msg: "Account already exists...", status: 400 })
-        } else {
-            const hashedPassword = await argon2.hash(password)
-            const DoctorData = await Users({
-                docname,
-                email,
-                password: hashedPassword,
-                address,
-                license,
-                qualification,
-                specialization,
-                profileImage
-            })
-            const personalMail = await WelcomeMailDoctor(docname)
-            sendaMail(email, "🎉 Welcome to DocNet – Your Health, Simplified!", "", personalMail)
-            await DoctorData.save()
-            res.status(200).json({ msg: "Registration Successfull..." })
-        }
+        const id = req.user.id
+        const LoggedinDoctor = await Users.findById(id).select("-password -otp -otpExpiry")
+
+        if (!LoggedinDoctor)
+            return res.status(404).json({ msg: "No doctor found..." })
+
+        return res.status(200).json({ msg: "Doctor data fetched successfully...", data: LoggedinDoctor })
     } catch (err) {
         console.log(err)
-        res.json({ msg: "Registration Error...", status: 404 })
+        return res.status(500).json({ msg: "Error user not found..." })
     }
 }
 
@@ -49,7 +65,6 @@ const createSchedule = async (req, res) => {
         if (!startTime || !endTime || !interval || !fees) {
             return res.status(400).json({ msg: "All fields required" })
         }
-
 
         if (generatedSlots.length === 0) {
             return res.status(400).json({ msg: "Invalid time range" })
@@ -99,22 +114,6 @@ const createSchedule = async (req, res) => {
     } catch (err) {
         console.log(err)
         return res.status(500).json({ msg: "Internal Server Error" })
-    }
-}
-
-// Currently Logged in doctor...
-const viewLoggedDoctor = async (req, res) => {
-    try {
-        const id = req.user.id
-        const LoggedinDoctor = await Users.findById(id).select("-password -otp -otpExpiry")
-
-        if (!LoggedinDoctor)
-            return res.status(404).json({ msg: "No doctor found..." })
-
-        return res.status(200).json({ msg: "Doctor data fetched successfully...", data: LoggedinDoctor })
-    } catch (err) {
-        console.log(err)
-        return res.status(500).json({ msg: "Error user not found..." })
     }
 }
 
